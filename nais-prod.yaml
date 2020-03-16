@@ -1,0 +1,24 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+    name: vis-stilling
+    namespace: default
+    labels:
+        team: {{ team }}
+spec:
+    image: {{ version }}
+    team: {{ team }}
+    port: 3000
+    ingresses:
+        - https://tjenester.nav.no/vis-stilling
+    liveness:
+        initialDelay: 5
+        path: /vis-stilling/internal/isAlive
+    readiness:
+        initialDelay: 5
+        path: /vis-stilling/internal/isReady
+    vault:
+        enabled: true
+    env:
+        - name: APIGW_URL
+          value: https://api-gw.oera.no
