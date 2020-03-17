@@ -1,0 +1,65 @@
+name: Bygg og deploy
+
+on:
+  [push]
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/rekrutteringsbistand-sms:${{ github.sha }}
+
+jobs:
+  test:
+    name: Bygg applikasjon
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Installer avhengigheter
+        run: npm install
+      - name: Bygg applikasjon
+        run: npm run build
+
+  deploy-til-dev:
+    name: Deploy til dev
+    needs: test
+
+    # Legg inn feature branch her hvis du ønsker å teste den i preprod.
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bytt-fra-circleci-til-githubactions'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Bygg og publiser Docker-image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${IMAGE} .
+          echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
+          docker push ${IMAGE}
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          VAR: version=${{ env.IMAGE }}
+          RESOURCE: nais-dev.yaml
+
+  deploy-to-prod:
+    name: Deploy til prod
+    needs: deploy-til-dev
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-fss
+          VAR: version=${{ env.IMAGE }}
+          RESOURCE: nais-prod.yaml
