@@ -7,7 +7,7 @@ env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/rekrutteringsbistand-sms:${{ github.sha }}
 
 jobs:
-  test:
+  bygg-og-push-docker-image:
     name: Bygg applikasjon
     runs-on: ubuntu-latest
     steps:
@@ -26,16 +26,6 @@ jobs:
         run: npm install
       - name: Bygg applikasjon
         run: npm run build
-
-  deploy-til-dev:
-    name: Deploy til dev
-    needs: test
-
-    # Legg inn feature branch her hvis du ønsker å teste den i preprod.
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bytt-fra-circleci-til-githubactions'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
       - name: Bygg og publiser Docker-image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,6 +33,16 @@ jobs:
           docker build --tag ${IMAGE} .
           echo ${GITHUB_TOKEN} | docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} --password-stdin
           docker push ${IMAGE}
+
+  deploy-til-dev:
+    name: Deploy til dev
+    needs: bygg-og-push-docker-image
+
+    # Legg inn feature branch her hvis du ønsker å teste den i preprod.
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bytt-fra-circleci-til-githubactions'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
