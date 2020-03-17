@@ -4,7 +4,7 @@ on:
   [push]
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/rekrutteringsbistand-sms:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/vis-stilling:${{ github.sha }}
 
 jobs:
   test:
