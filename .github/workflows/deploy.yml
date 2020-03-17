@@ -39,7 +39,7 @@ jobs:
     needs: bygg-og-push-docker-image
 
     # Legg inn feature branch her hvis du ønsker å teste den i preprod.
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bytt-fra-circleci-til-githubactions'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pipeline'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
