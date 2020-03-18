@@ -19,9 +19,8 @@ spec:
     vault:
         enabled: true
         paths:
-            # Managed secrets
-            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-sms/vis-stilling
-              mountPath: /var/run/secrets/nais.io/vault
+            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-sms/vis-stilling_q1
+              mountPath: /secret/apigw
     env:
         - name: APIGW_URL
           value: https://api-gw-q1.oera.no
