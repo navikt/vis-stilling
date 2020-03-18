@@ -4,10 +4,9 @@ metadata:
     name: vis-stilling
     namespace: default
     labels:
-        team: {{ team }}
+        team: arbeidsgiver
 spec:
-    image: {{ version }}
-    team: {{ team }}
+    image: {{ image }}
     port: 3000
     ingresses:
         - https://tjenester-q0.nav.no/vis-stilling
