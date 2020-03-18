@@ -4,21 +4,23 @@ metadata:
     name: vis-stilling
     namespace: default
     labels:
-        team: {{ team }}
+        team: arbeidsgiver
 spec:
-    image: {{ version }}
-    team: {{ team }}
+    image: {{ image }}
     port: 3000
     ingresses:
-        - https://tjenester.nav.no/vis-stilling
+        - https://www.nav.no/arbeid/stilling
     liveness:
         initialDelay: 5
-        path: /vis-stilling/internal/isAlive
+        path: /arbeid/stilling/internal/isAlive
     readiness:
         initialDelay: 5
-        path: /vis-stilling/internal/isReady
+        path: /arbeid/stilling/internal/isReady
     vault:
         enabled: true
+        paths:
+            - kvPath: /apikey/apigw/prod/rekrutteringsbistand-api/vis-stilling
+              mountPath: /secret/apigw
     env:
         - name: APIGW_URL
           value: https://api-gw.oera.no

@@ -2,7 +2,7 @@
     "name": "vis-stilling",
     "version": "0.1.0",
     "private": true,
-    "homepage": "/vis-stilling",
+    "homepage": "/arbeid/stilling",
     "dependencies": {
         "@craco/craco": "^5.6.3",
         "@testing-library/jest-dom": "^4.2.4",

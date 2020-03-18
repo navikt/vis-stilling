@@ -6,13 +6,14 @@ const cookieParser = require('cookie-parser');
 // const sonekryssing = require('./sonekryssing.js');
 
 const PORT = 3000;
-const BASE_PATH = '/vis-stilling';
+const BASE_PATH = '/arbeid/stilling';
 
 const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 const startServer = html => {
     server.use(BASE_PATH, express.static(buildPath, { index: false }));
+
     server.get(BASE_PATH, (req, res) => {
         res.send(html);
     });
