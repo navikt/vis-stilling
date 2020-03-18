@@ -3,7 +3,7 @@ const express = require('express');
 const hentDekoratør = require('./dekoratør');
 const mustacheExpress = require('mustache-express');
 const cookieParser = require('cookie-parser');
-// const sonekryssing = require('./sonekryssing.js');
+const sonekryssing = require('./sonekryssing.js');
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
@@ -18,8 +18,7 @@ const startServer = html => {
         res.send(html);
     });
 
-    // TODO: Legg til sonekryssing av uuid-endepunkt
-
+    server.use(`${BASE_PATH}/hent/`, sonekryssing);
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
 

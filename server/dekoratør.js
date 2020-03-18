@@ -7,7 +7,7 @@ const QUERY_PARAMS = 'header-withmenu=true&styles=true&scripts=true&footer-withm
 const URL_PROD = `https://appres.nav.no/common-html/v4/navno?${QUERY_PARAMS}`;
 const URL_DEV = `https://appres-q0.nav.no/common-html/v4/navno?${QUERY_PARAMS}`;
 
-const url = process.env.NAIS_CLUSTER_NAME === 'prod-sbs' ? URL_PROD : URL_DEV;
+const url = URL_PROD; //process.env.NAIS_CLUSTER_NAME === 'prod-sbs' ? URL_PROD : URL_DEV;
 
 const hentDekoratørFraUrl = behandleRespons => request(url, behandleRespons);
 
