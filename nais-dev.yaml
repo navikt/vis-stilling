@@ -9,13 +9,13 @@ spec:
     image: {{ image }}
     port: 3000
     ingresses:
-        - https://tjenester-q0.nav.no/vis-stilling
+        - https://www-q0.nav.no/arbeid/stilling
     liveness:
         initialDelay: 5
-        path: /vis-stilling/internal/isAlive
+        path: /arbeid/stilling/internal/isAlive
     readiness:
         initialDelay: 5
-        path: /vis-stilling/internal/isReady
+        path: /arbeid/stilling/internal/isReady
     vault:
         enabled: true
     env:
