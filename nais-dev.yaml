@@ -17,7 +17,7 @@ spec:
         initialDelay: 5
         path: /arbeid/stilling/internal/isReady
     vault:
-        enabled: true
+        enabled: false
         paths:
             - kvPath: /apikey/apigw/dev/rekrutteringsbistand-sms/vis-stilling_q1
               mountPath: /secret/apigw
