@@ -37,8 +37,6 @@ jobs:
   deploy-til-dev:
     name: Deploy til dev
     needs: bygg-og-push-docker-image
-
-    # Legg inn feature branch her hvis du ønsker å teste den i preprod.
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pipeline'
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +45,6 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-sbs
-          VAR: image=${{ env.IMAGE }}
           RESOURCE: nais-dev.yaml
 
   deploy-to-prod:
@@ -61,5 +58,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-sbs
-          VAR: image=${{ env.IMAGE }}
           RESOURCE: nais-prod.yaml
