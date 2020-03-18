@@ -18,6 +18,10 @@ spec:
         path: /arbeid/stilling/internal/isReady
     vault:
         enabled: true
+        paths:
+            # Managed secrets
+            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-sms/vis-stilling
+              mountPath: /var/run/secrets/nais.io/vault
     env:
         - name: APIGW_URL
           value: https://api-gw-q1.oera.no
