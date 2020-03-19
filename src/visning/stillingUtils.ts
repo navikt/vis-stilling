@@ -16,10 +16,12 @@ export const hentKommuneOgEllerBy = (location: Location) => {
     return null;
 };
 
+export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString();
+
 export const hentSøknadsfrist = (properties: Properties) =>
     properties.applicationdue === 'Snarest'
         ? properties.applicationdue
-        : new Date(properties.applicationdue).toLocaleDateString();
+        : formaterDato(properties.applicationdue);
 
 export const hentAdresse = (location: Location) => {
     if (location.address) {
