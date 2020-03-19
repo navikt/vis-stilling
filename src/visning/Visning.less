@@ -14,6 +14,10 @@
 
     &__advarsel {
         margin: 2.5rem 0;
+
+        .alertstripe__tekst {
+            max-width: none;
+        }
     }
 
     &__container {
@@ -46,7 +50,10 @@
 
     &__infopanel {
         padding: 1.25rem;
-        margin-bottom: 1.25rem;
+
+        &:not(:last-child) {
+            margin-bottom: 1.25rem;
+        }
     }
 
     &__infopaneltittel {
