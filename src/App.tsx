@@ -1,32 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { Systemtittel } from 'nav-frontend-typografi';
+import { Systemtittel, Sidetittel } from 'nav-frontend-typografi';
+import { Respons, Status, hentStilling } from './api/api';
 import './App.less';
-import * as api from './api/api';
+
+const getUuidFromPath = () => window.location.pathname.split('/')[3];
 
 const App = () => {
-    const [stilling, setStilling] = useState<api.Respons>({
-        status: api.Status.IkkeLastet,
+    const uuidFraUrl = getUuidFromPath();
+    const [stilling, setStilling] = useState<Respons>({
+        status: Status.IkkeLastet,
     });
 
-    useEffect(() => {
-        const hentStilling = async () => {
-            const stilling = await api.hentStilling('e4b3531a-7728-4150-8e1d-f948497f8482');
-            console.log('Hentet stilling:', stilling);
-            setStilling(stilling);
-        };
+    const hentStillingMedUuid = async (uuid: string) => {
+        const stilling = await hentStilling(uuid);
 
-        hentStilling();
-    }, []);
+        console.log('Stilling fra rekrutteringsbistand-api:', stilling);
+        setStilling(stilling);
+    };
+
+    useEffect(() => {
+        hentStillingMedUuid(uuidFraUrl);
+    }, [uuidFraUrl]);
 
     return (
         <div className="app typo-normal">
             <header className="app__header">
-                <Systemtittel tag="h1" className="blokk-m">
+                <Sidetittel tag="h1" className="blokk-m">
                     Se stilling
-                </Systemtittel>
+                </Sidetittel>
             </header>
             <main className="app__main">
-                {stilling.status === api.Status.Suksess ? stilling.stilling.title : '...'}
+                {stilling.status === Status.Suksess ? (
+                    <article>
+                        <Systemtittel>{stilling.data.title}</Systemtittel>
+                        <div
+                            dangerouslySetInnerHTML={{ __html: stilling.data.properties.adtext }}
+                        ></div>
+                    </article>
+                ) : (
+                    '...'
+                )}
             </main>
         </div>
     );

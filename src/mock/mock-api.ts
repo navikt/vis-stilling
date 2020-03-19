@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import * as stilling from './stilling.json';
+import stilling from './stilling.json';
 
 const basePath = '/arbeid/stilling';
 

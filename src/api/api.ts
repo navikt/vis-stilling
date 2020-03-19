@@ -22,7 +22,7 @@ type LasterInn = {
 
 type Suksess = {
     status: Status.Suksess;
-    stilling: any;
+    data: any;
 };
 
 type Feil = {
@@ -47,7 +47,7 @@ export const hentStilling = async (uuid: string): Promise<Respons> => {
 
             return {
                 status: Status.Suksess,
-                stilling: stilling.default,
+                data: stilling,
             };
         }
 
