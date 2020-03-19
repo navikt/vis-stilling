@@ -18,7 +18,8 @@ const startServer = html => {
         res.send(html);
     });
 
-    server.use(`${BASE_PATH}/hent/`, sonekryssing);
+    server.use(`${BASE_PATH}/api/`, sonekryssing);
+
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
 
@@ -46,7 +47,7 @@ const logError = feil => error => {
 };
 
 const initialiserServer = () => {
-    console.log('Initialiserer server ...');
+    console.log('\nInitialiserer server ...');
 
     server.engine('html', mustacheExpress());
     server.set('view engine', 'mustache');
