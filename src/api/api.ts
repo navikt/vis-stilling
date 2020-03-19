@@ -1,3 +1,5 @@
+import { Stilling } from '../Stilling';
+
 if (process.env.REACT_APP_MOCK) {
     require('../mock/mock-api.ts');
 }
@@ -22,7 +24,7 @@ type LasterInn = {
 
 type Suksess = {
     status: Status.Suksess;
-    data: any;
+    data: Stilling;
 };
 
 type Feil = {
