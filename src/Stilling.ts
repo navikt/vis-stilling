@@ -1,4 +1,4 @@
-type Location = {
+export type Location = {
     address?: string;
     postalCode?: string;
     county?: string;
@@ -8,32 +8,34 @@ type Location = {
     country?: string;
 };
 
-enum Workhour {
+export enum Workhour {
     Dagtid = 'Dagtid',
     Kveld = 'Kveld',
     Natt = 'Natt',
 }
 
-enum Workday {
+export enum Workday {
     Ukedager = 'Ukedager',
     Lørdag = 'Lørdag',
     Søndag = 'Søndag',
 }
 
-enum Sector {
+export enum Sector {
     Privat = 'Privat',
     Offentlig = 'Offentlig',
     IkkeOppgitt = 'Ikke oppgitt',
 }
 
-enum Extent {
+export enum Extent {
     Heltid = 'Heltid',
     Deltid = 'Deltid',
 }
 
-type Due = Date | 'Snarest';
+export type Due = Date | 'Snarest';
 
-type Properties = {
+export type StartTime = Date | 'Etter avtale';
+
+export type Properties = {
     // Praktiske opplysninger
     engagementtype: string;
     jobarrangement?: string;
@@ -43,7 +45,7 @@ type Properties = {
     sector: Sector;
     positioncount: string;
     applicationdue: Due;
-    starttime: string;
+    starttime?: StartTime;
 
     // Hvordan sende søknad?
     applicationurl?: string;
@@ -58,14 +60,14 @@ type Properties = {
     adtext: string;
 };
 
-type Contact = {
+export type Contact = {
     name?: string;
     email?: string;
     phone?: string;
     title?: string;
 };
 
-type Employer = {
+export type Employer = {
     publicName: string;
     orgnr: string;
     location: Location;

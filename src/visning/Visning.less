@@ -1,0 +1,76 @@
+.visning {
+    &__header {
+        display: flex;
+        flex-direction: column;
+        background-color: #cce1f3;
+        border-bottom: 5px solid #99c2e8;
+        padding: 2.5rem 1rem;
+    }
+
+    &__header-inner {
+        width: 75rem;
+        margin: 0 auto;
+    }
+
+    &__advarsel {
+        margin: 2.5rem 0;
+    }
+
+    &__container {
+        max-width: 75rem;
+        margin: 0 auto;
+        margin-bottom: 3.5rem;
+    }
+
+    &__main {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__stillingstekst,
+    &__infopanel {
+        background-color: white;
+        border-radius: 0.25rem;
+    }
+
+    &__stillingstekst {
+        max-width: 45rem;
+        width: 100%;
+        padding: 2.5rem;
+    }
+
+    &__stillingsinfo {
+        max-width: 25rem;
+        width: 100%;
+    }
+
+    &__infopanel {
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    &__infopaneltittel {
+        margin-bottom: 1rem;
+    }
+
+    &__rad {
+        display: flex;
+        flex-direction: row;
+
+        &:not(:last-child) {
+            margin-bottom: 0.5rem;
+        }
+
+        > * {
+            flex: 1;
+            flex-shrink: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    &__label {
+        color: #78706a;
+        font-weight: 200;
+    }
+}
