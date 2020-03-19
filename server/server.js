@@ -12,14 +12,14 @@ const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 const startServer = html => {
-    server.use(`${BASE_PATH}/api/`, sonekryssing);
+    server.get(`${BASE_PATH}/api/`, sonekryssing);
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
 
     server.use(BASE_PATH, express.static(buildPath, { index: false }));
 
-    server.get([BASE_PATH, `${BASE_PATH}/:id`], (req, res) => {
+    server.get(`${BASE_PATH}/*`, (req, res) => {
         res.send(html);
     });
 
