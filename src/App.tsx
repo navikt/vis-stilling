@@ -10,12 +10,11 @@ const App = () => {
 
     useEffect(() => {
         const hentStilling = async () => {
-            const stilling = await api.hentStilling('d328d737-1965-487b-a1bb-9f3872e1c1e7');
+            const stilling = await api.hentStilling('e4b3531a-7728-4150-8e1d-f948497f8482');
             console.log('Hentet stilling:', stilling);
             setStilling(stilling);
         };
 
-        console.log('Prøver å hente ...');
         hentStilling();
     }, []);
 

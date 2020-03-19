@@ -8,8 +8,14 @@ const envProperties = {
 const proxyConfig = {
     changeOrigin: true,
     target: envProperties.API_GATEWAY,
-    pathRewrite: {
-        '^/arbeid/stilling/api': '/rekrutteringsbistand/api/v1/stilling',
+    pathRewrite: (path, req) => {
+        const newPath = path.replace(
+            '/arbeid/stilling/api',
+            '/rekrutteringsbistand-api/rekrutteringsbistand/api/v1/stilling'
+        );
+        console.log('Proxying request to', envProperties.API_GATEWAY + newPath);
+        return newPath;
+        //'^/arbeid/stilling/api': '/rekrutteringsbistand/api/v1/stilling',
     },
     secure: true,
     xfwd: true,
