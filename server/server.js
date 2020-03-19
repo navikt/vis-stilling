@@ -19,7 +19,7 @@ const startServer = html => {
 
     server.use(BASE_PATH, express.static(buildPath, { index: false }));
 
-    server.get(`${BASE_PATH}/*`, (req, res) => {
+    server.get([BASE_PATH, `${BASE_PATH}/:id`], (req, res) => {
         res.send(html);
     });
 
