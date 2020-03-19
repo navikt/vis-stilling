@@ -3,7 +3,7 @@ const express = require('express');
 const hentDekoratør = require('./dekoratør');
 const mustacheExpress = require('mustache-express');
 const cookieParser = require('cookie-parser');
-// const sonekryssing = require('./sonekryssing.js');
+const sonekryssing = require('./sonekryssing.js');
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
@@ -12,16 +12,16 @@ const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 const startServer = html => {
-    server.use(BASE_PATH, express.static(buildPath, { index: false }));
-
-    server.get(BASE_PATH, (req, res) => {
-        res.send(html);
-    });
-
-    // TODO: Legg til sonekryssing av uuid-endepunkt
+    server.use(`${BASE_PATH}/api/`, sonekryssing);
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
+
+    server.use(BASE_PATH, express.static(buildPath, { index: false }));
+
+    server.get([BASE_PATH, `${BASE_PATH}/:id`], (req, res) => {
+        res.send(html);
+    });
 
     server.listen(PORT, () => {
         console.log('Server kjører på port', PORT);
@@ -47,7 +47,7 @@ const logError = feil => error => {
 };
 
 const initialiserServer = () => {
-    console.log('Initialiserer server ...');
+    console.log('\nInitialiserer server ...');
 
     server.engine('html', mustacheExpress());
     server.set('view engine', 'mustache');

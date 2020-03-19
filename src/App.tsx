@@ -1,16 +1,43 @@
-import React from 'react';
-import { Systemtittel } from 'nav-frontend-typografi';
+import React, { useEffect, useState } from 'react';
+import { Systemtittel, Sidetittel } from 'nav-frontend-typografi';
+import { Respons, Status, hentStilling } from './api/api';
 import './App.less';
 
+const getUuidFromPath = () => window.location.pathname.split('/')[3];
+
 const App = () => {
+    const uuidFraUrl = getUuidFromPath();
+    const [stilling, setStilling] = useState<Respons>({
+        status: Status.IkkeLastet,
+    });
+
+    const hentStillingMedUuid = async (uuid: string) => {
+        setStilling(await hentStilling(uuid));
+    };
+
+    useEffect(() => {
+        hentStillingMedUuid(uuidFraUrl);
+    }, [uuidFraUrl]);
+
     return (
         <div className="app typo-normal">
             <header className="app__header">
-                <Systemtittel tag="h1" className="blokk-m">
+                <Sidetittel tag="h1" className="blokk-m">
                     Se stilling
-                </Systemtittel>
+                </Sidetittel>
             </header>
-            <main className="app__main">...</main>
+            <main className="app__main">
+                {stilling.status === Status.Suksess ? (
+                    <article>
+                        <Systemtittel>{stilling.data.title}</Systemtittel>
+                        <div
+                            dangerouslySetInnerHTML={{ __html: stilling.data.properties.adtext }}
+                        ></div>
+                    </article>
+                ) : (
+                    '...'
+                )}
+            </main>
         </div>
     );
 };

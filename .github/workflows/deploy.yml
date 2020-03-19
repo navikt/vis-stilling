@@ -37,7 +37,7 @@ jobs:
   deploy-til-dev:
     name: Deploy til dev
     needs: bygg-og-push-docker-image
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/pipeline'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/sonekryssing'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -50,7 +50,7 @@ jobs:
   deploy-to-prod:
     name: Deploy til prod
     needs: deploy-til-dev
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/endremegtilmaster' # TODO: Endre til master når produksjonsklart
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

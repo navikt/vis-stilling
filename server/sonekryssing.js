@@ -9,7 +9,7 @@ const proxyConfig = {
     changeOrigin: true,
     target: envProperties.API_GATEWAY,
     pathRewrite: {
-        // TODO: Legg til pathRewrite'^/vis-stilling': '<backend-endepunkt>',
+        '^/arbeid/stilling/api': '/rekrutteringsbistand-api/rekrutteringsbistand/api/v1/stilling',
     },
     secure: true,
     xfwd: true,
