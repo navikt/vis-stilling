@@ -12,10 +12,7 @@ const App = () => {
     });
 
     const hentStillingMedUuid = async (uuid: string) => {
-        const stilling = await hentStilling(uuid);
-
-        console.log('Stilling fra rekrutteringsbistand-api:', stilling);
-        setStilling(stilling);
+        setStilling(await hentStilling(uuid));
     };
 
     useEffect(() => {
