@@ -1,19 +1,21 @@
 .visning {
+    // Mobile
     &__header {
         display: flex;
         flex-direction: column;
         background-color: #cce1f3;
         border-bottom: 5px solid #99c2e8;
-        padding: 2.5rem 1rem;
+        padding: 1.5rem 1rem;
     }
 
     &__header-inner {
-        width: 75rem;
+        max-width: 75rem;
         margin: 0 auto;
+        width: 100%;
     }
 
     &__advarsel {
-        margin: 2.5rem 0;
+        margin: 1rem 0;
 
         .alertstripe__tekst {
             max-width: none;
@@ -21,13 +23,14 @@
     }
 
     &__container {
-        max-width: 75rem;
         margin: 0 auto;
         margin-bottom: 3.5rem;
+        padding: 0 1rem;
     }
 
     &__main {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
     }
 
@@ -38,13 +41,17 @@
     }
 
     &__stillingstekst {
-        max-width: 45rem;
         width: 100%;
-        padding: 2.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+
+        p:first-child,
+        p:last-child {
+            margin: 0;
+        }
     }
 
     &__stillingsinfo {
-        max-width: 25rem;
         width: 100%;
     }
 
@@ -62,7 +69,7 @@
 
     &__rad {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
 
         &:not(:last-child) {
             margin-bottom: 0.5rem;
@@ -79,5 +86,61 @@
     &__label {
         color: #78706a;
         font-weight: 200;
+    }
+
+    &__kortOmBedriften {
+        margin: 2rem 0 0;
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    // Tablet
+    @media (min-width: 32rem) {
+        &__header {
+            padding: 2.5rem 2rem;
+        }
+
+        &__advarsel {
+            margin: 2.5rem 0;
+        }
+
+        &__rad {
+            display: flex;
+            flex-direction: row;
+        }
+
+        &__stillingstekst {
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            margin-right: 2rem;
+        }
+
+        &__container {
+            padding: 0 2rem;
+        }
+    }
+
+    // Desktop
+    @media (min-width: 52rem) {
+        &__main {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        &__stillingstekst {
+            max-width: 45rem;
+        }
+
+        &__stillingsinfo {
+            max-width: 25rem;
+        }
+
+        &__container {
+            max-width: 79rem;
+        }
     }
 }
