@@ -12,7 +12,7 @@ const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 const startServer = html => {
-    server.get(`${BASE_PATH}/api/`, sonekryssing);
+    server.use(`${BASE_PATH}/api/`, sonekryssing);
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
