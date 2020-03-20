@@ -86,8 +86,10 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Bedriftens navn">{bedriftensNavn}</Rad>
                     <Rad label="Adresse">{bedriftensAdresse}</Rad>
                     <Rad label="Nettsted">{bedriftensNettside}</Rad>
+                    <Rad label="Sosiale medier">
+                        <SosialeMedier properties={properties} />
+                    </Rad>
                 </Tabell>
-                <SosialeMedier properties={properties} />
                 {bedriftsbeskrivelse}
             </Infopanel>
             <Infopanel tittel="Om annonsen">
