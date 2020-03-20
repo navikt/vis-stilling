@@ -50,7 +50,7 @@ jobs:
   deploy-to-prod:
     name: Deploy til prod
     needs: deploy-til-dev
-    if: github.ref == 'refs/heads/endremegtilmaster' # TODO: Endre til master når produksjonsklart
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
