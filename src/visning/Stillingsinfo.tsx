@@ -45,9 +45,6 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             <Infopanel tittel="Søknad">
                 <Tabell>
                     <Rad label="Søknadsfrist">{hentSøknadsfrist(stilling.properties)}</Rad>
-                    {properties.applicationurl && (
-                        <Lenkeknapp href={properties.applicationurl}>Søk på stillingen</Lenkeknapp>
-                    )}
                     {!properties.applicationurl && properties.applicationemail && (
                         <Rad label="Søknad sendes til">
                             <Lenke href={`mailto:ola.nordmann@firma.no`}>
@@ -56,6 +53,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                         </Rad>
                     )}
                 </Tabell>
+                {properties.applicationurl && (
+                    <Lenkeknapp href={properties.applicationurl}>Søk på stillingen</Lenkeknapp>
+                )}
             </Infopanel>
             <Infopanel tittel="Om stillingen">
                 <Tabell>
@@ -86,8 +86,8 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Bedriftens navn">{bedriftensNavn}</Rad>
                     <Rad label="Adresse">{bedriftensAdresse}</Rad>
                     <Rad label="Nettsted">{bedriftensNettside}</Rad>
-                    <SosialeMedier properties={properties} />
                 </Tabell>
+                <SosialeMedier properties={properties} />
                 {bedriftsbeskrivelse}
             </Infopanel>
             <Infopanel tittel="Om annonsen">

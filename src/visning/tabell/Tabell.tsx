@@ -6,7 +6,7 @@ type RadProps = {
     children: ReactNode;
 };
 
-const Tabell: FunctionComponent = ({ children }) => <div className="tabell">{children}</div>;
+const Tabell: FunctionComponent = ({ children }) => <dl className="tabell">{children}</dl>;
 
 export const Rad: FunctionComponent<RadProps> = ({ label, children }) => {
     if (!children) return null;
