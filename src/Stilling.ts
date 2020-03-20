@@ -68,8 +68,8 @@ export type Contact = {
 };
 
 export type Employer = {
+    name: string;
     publicName: string;
-    orgnr: string;
     location: Location;
 };
 
@@ -94,6 +94,5 @@ export type Stilling = {
 
     // Om annonsen
     id: number;
-    source: string;
     status: string;
 };

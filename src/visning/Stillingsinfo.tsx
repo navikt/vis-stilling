@@ -1,10 +1,10 @@
 import React, { FunctionComponent } from 'react';
 import Lenke from 'nav-frontend-lenker';
 
-import { hentSøknadsfrist, hentAdresse, formaterDato } from './stillingUtils';
+import { hentSøknadsfrist, hentAdresse, formaterDato, lagInnerHtml } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
-import Tabell, { Rad } from './Tabell';
+import Tabell, { Rad } from './tabell/Tabell';
 
 interface Props {
     stilling: Stilling;
@@ -12,8 +12,11 @@ interface Props {
 
 const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const { properties } = stilling;
-    const kontaktinfo =
-        stilling.contactList && stilling.contactList.length > 0 && stilling.contactList[0];
+
+    const kontaktinfo = stilling.contactList?.[0];
+
+    const bedriftensNavn =
+        stilling.businessName || stilling.employer.publicName || stilling.employer.name;
 
     const bedriftensAdresse = stilling.employer.location && hentAdresse(stilling.employer.location);
 
@@ -23,8 +26,16 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
         </Lenke>
     );
 
-    const kontaktinfoEpost = kontaktinfo && kontaktinfo.email && (
-        <Lenke href={`mailto:${kontaktinfo.email}`}>{kontaktinfo.email}</Lenke>
+    const bedriftsbeskrivelse = stilling.properties.employerdescription && (
+        <div
+            className="visning__kort-om-bedriften"
+            dangerouslySetInnerHTML={lagInnerHtml(stilling.properties.employerdescription)}
+        />
+    );
+
+    const bedriftensEpost = stilling.contactList?.[0]?.email;
+    const lenkeTilBedriftensEpost = bedriftensEpost && (
+        <Lenke href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Lenke>
     );
 
     return (
@@ -57,30 +68,21 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                         <Rad label="Kontaktperson">{kontaktinfo.name}</Rad>
                         <Rad label="Stillingstittel">{kontaktinfo.title}</Rad>
                         <Rad label="Telefon">{kontaktinfo.phone}</Rad>
-                        <Rad label="E-post">{kontaktinfoEpost}</Rad>
+                        <Rad label="E-post">{lenkeTilBedriftensEpost}</Rad>
                     </Tabell>
                 </Infopanel>
             )}
             <Infopanel tittel="Om bedriften">
                 <Tabell>
-                    <Rad label="Bedriftens navn">{stilling.employer.publicName}</Rad>
+                    <Rad label="Bedriftens navn">{bedriftensNavn}</Rad>
                     <Rad label="Adresse">{bedriftensAdresse}</Rad>
                     <Rad label="Nettsted">{bedriftensNettside}</Rad>
                 </Tabell>
-
-                {stilling.properties.employerdescription && (
-                    <div
-                        className="visning__kortOmBedriften"
-                        dangerouslySetInnerHTML={{
-                            __html: stilling.properties.employerdescription,
-                        }}
-                    />
-                )}
+                {bedriftsbeskrivelse}
             </Infopanel>
             <Infopanel tittel="Om annonsen">
                 <Tabell>
                     <Rad label="Sist endret">{formaterDato(stilling.updated)}</Rad>
-                    <Rad label="Hentet fra">{stilling.source}</Rad>
                     <Rad label="Annonsenummer">{stilling.id}</Rad>
                 </Tabell>
             </Infopanel>

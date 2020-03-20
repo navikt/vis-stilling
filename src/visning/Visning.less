@@ -1,5 +1,4 @@
 .visning {
-    // Mobile
     &__header {
         display: flex;
         flex-direction: column;
@@ -67,28 +66,7 @@
         margin-bottom: 1rem;
     }
 
-    &__rad {
-        display: flex;
-        flex-direction: column;
-
-        &:not(:last-child) {
-            margin-bottom: 0.5rem;
-        }
-
-        > * {
-            flex: 1;
-            flex-shrink: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
-
-    &__label {
-        color: #78706a;
-        font-weight: 200;
-    }
-
-    &__kortOmBedriften {
+    &__kort-om-bedriften {
         margin: 2rem 0 0;
 
         p:last-child {
@@ -96,19 +74,13 @@
         }
     }
 
-    // Tablet
-    @media (min-width: 32rem) {
+    @media (min-width: 36rem) {
         &__header {
             padding: 2.5rem 2rem;
         }
 
         &__advarsel {
             margin: 2.5rem 0;
-        }
-
-        &__rad {
-            display: flex;
-            flex-direction: row;
         }
 
         &__stillingstekst {
@@ -122,8 +94,7 @@
         }
     }
 
-    // Desktop
-    @media (min-width: 52rem) {
+    @media (min-width: 64rem) {
         &__main {
             display: flex;
             flex-direction: row;

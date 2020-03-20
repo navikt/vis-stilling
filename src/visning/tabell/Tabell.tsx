@@ -1,21 +1,20 @@
 import React, { FunctionComponent, ReactNode } from 'react';
+import './Tabell.less';
 
 type RadProps = {
     label: string;
     children: ReactNode;
 };
 
-const Tabell: FunctionComponent = ({ children }) => (
-    <div className="visning__tabell">{children}</div>
-);
+const Tabell: FunctionComponent = ({ children }) => <div className="tabell">{children}</div>;
 
 export const Rad: FunctionComponent<RadProps> = ({ label, children }) => {
     if (!children) return null;
 
     return (
-        <div className="visning__rad">
-            <span className="visning__label">{`${label}:`}</span>
-            <span>{children}</span>
+        <div className="tabell__rad">
+            <dt className="tabell__label">{`${label}:`}</dt>
+            <dd>{children}</dd>
         </div>
     );
 };

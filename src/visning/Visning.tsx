@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { Sidetittel } from 'nav-frontend-typografi';
 import { AlertStripeInfo } from 'nav-frontend-alertstriper';
 
-import { hentKommuneOgEllerBy } from './stillingUtils';
+import { hentKommuneOgEllerBy, lagInnerHtml } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Stillingsinfo from './Stillingsinfo';
 import './Visning.less';
@@ -28,7 +28,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => (
             <main className="visning__main">
                 <article
                     className="visning__stillingstekst"
-                    dangerouslySetInnerHTML={{ __html: stilling.properties.adtext }}
+                    dangerouslySetInnerHTML={lagInnerHtml(stilling.properties.adtext)}
                 />
                 <aside className="visning__stillingsinfo">
                     <Stillingsinfo stilling={stilling} />

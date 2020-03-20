@@ -30,3 +30,7 @@ export const hentAdresse = (location: Location) => {
         }
     } else return hentKommuneOgEllerBy(location);
 };
+
+export const lagInnerHtml = (markup: string) => ({
+    __html: markup,
+});

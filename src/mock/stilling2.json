@@ -118,7 +118,7 @@
         "workhours": "[\"Dagtid\"]",
         "employerhomepage": "https://www.vg.no",
         "applicationdue": "2020-03-19T12:16:10.388778",
-        "workday": "[\"Ukedager\"]",
+        "workday": "[\"Ukedager\", \"Lørdag\"]",
         "jobtitle": "Hjelpearbeider (privat/offentlig virksomhet)",
         "positioncount": "1",
         "engagementtype": "Fast",
