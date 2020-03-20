@@ -1,10 +1,12 @@
 import React, { FunctionComponent } from 'react';
+import Hovedknapp from 'nav-frontend-knapper';
 import Lenke from 'nav-frontend-lenker';
 
 import { hentSøknadsfrist, hentAdresse, formaterDato, lagInnerHtml } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
 import Tabell, { Rad } from './tabell/Tabell';
+import Lenkeknapp from './Lenkeknapp';
 
 interface Props {
     stilling: Stilling;
@@ -43,9 +45,16 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             <Infopanel tittel="Søknad">
                 <Tabell>
                     <Rad label="Søknadsfrist">{hentSøknadsfrist(stilling.properties)}</Rad>
-                    <Rad label="Søknad sendes til">
-                        <Lenke href={`mailto:ola.nordmann@firma.no`}>ola.nordmann@firma.no</Lenke>
-                    </Rad>
+                    {properties.applicationurl && (
+                        <Lenkeknapp href={properties.applicationurl}>Søk på stillingen</Lenkeknapp>
+                    )}
+                    {!properties.applicationurl && properties.applicationemail && (
+                        <Rad label="Søknad sendes til">
+                            <Lenke href={`mailto:ola.nordmann@firma.no`}>
+                                {properties.applicationemail}
+                            </Lenke>
+                        </Rad>
+                    )}
                 </Tabell>
             </Infopanel>
             <Infopanel tittel="Om stillingen">

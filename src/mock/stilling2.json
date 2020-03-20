@@ -9,7 +9,7 @@
     "contactList": [
         {
             "name": "Kontakt Kontaktus",
-            "email": "kontakt.kontaktus@xn--tys-0na.no",
+            "email": "kontakt.kontaktus@tøys.no",
             "phone": "00000000",
             "role": null,
             "title": "leder"
@@ -124,7 +124,7 @@
         "engagementtype": "Fast",
         "employerdescription": "<p>Kort om bedriften</p>",
         "adtext": "<p>Tulleskolen søker tøysekopper! Nå har du anledning til å tøyse på fulltid!</p>",
-        "applicationemail": "tull@xn--tys-0na.no",
+        "applicationemail": "tull@tøys.no",
         "searchtags": "[{\"label\":\"Siviltjenestearbeider\",\"score\":1.0},{\"label\":\"Community Services Specialist\",\"score\":0.3836871}]",
         "applicationurl": "https://www.nrk.no",
         "classification_input_source": "categoryName",
