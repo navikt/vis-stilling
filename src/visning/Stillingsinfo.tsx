@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import Hovedknapp from 'nav-frontend-knapper';
 import Lenke from 'nav-frontend-lenker';
 
 import { hentSøknadsfrist, hentAdresse, formaterDato, lagInnerHtml } from './stillingUtils';
@@ -7,6 +6,7 @@ import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
 import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
+import SosialeMedier from './SosialeMedier';
 
 interface Props {
     stilling: Stilling;
@@ -86,6 +86,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Bedriftens navn">{bedriftensNavn}</Rad>
                     <Rad label="Adresse">{bedriftensAdresse}</Rad>
                     <Rad label="Nettsted">{bedriftensNettside}</Rad>
+                    <SosialeMedier properties={properties} />
                 </Tabell>
                 {bedriftsbeskrivelse}
             </Infopanel>

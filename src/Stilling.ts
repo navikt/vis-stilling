@@ -54,6 +54,9 @@ export type Properties = {
     // Om bedriften
     employerdescription?: string;
     employerhomepage?: string;
+    twitteraddress?: string;
+    facebookpage?: string;
+    linkedinpage?: string;
 
     // Om stillingen
     jobtitle?: string;
