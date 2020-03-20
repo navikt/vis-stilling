@@ -38,6 +38,15 @@ type UkjentFeil = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | UkjentFeil;
 
+const transformerTilStilling = (data: any): Stilling => ({
+    ...data,
+    properties: {
+        ...data.properties,
+        workday: JSON.parse(data.properties.workday),
+        workhours: JSON.parse(data.properties.workhours),
+    },
+});
+
 export const hentStilling = async (uuid: string): Promise<Respons> => {
     try {
         const respons = await fetch(`${API}/${uuid}`, {
@@ -49,7 +58,7 @@ export const hentStilling = async (uuid: string): Promise<Respons> => {
 
             return {
                 status: Status.Suksess,
-                data: stilling,
+                data: transformerTilStilling(stilling),
             };
         }
 

@@ -1,24 +1,12 @@
 .app {
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-    padding: 0 1rem 3.5rem;
-    max-width: 50rem;
-
-    &__main {
-        background-color: white;
-        padding: 2rem;
-        margin: 0 -1rem;
+    &__loading,
+    &__feilmelding {
+        margin: 0 auto;
+        margin: 2.5rem;
+        width: 100%;
     }
 
-    @media (min-width: 40rem) {
-        &__tilbake-og-header {
-            flex-direction: row;
-        }
-
-        &__main {
-            padding: 4rem;
-            margin: 0;
-        }
+    &__feilmelding {
+        text-align: center;
     }
 }
