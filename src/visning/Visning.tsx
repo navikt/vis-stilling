@@ -22,8 +22,8 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => (
 
         <div className="visning__container">
             <AlertStripeInfo className="visning__advarsel">
-                Dette er en intern NAV-stilling. Stillingen er kun tilgjengelig via denne lenken, og
-                kan ikke søkes opp på Arbeidsplassen.no
+                Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare
+                tilgjengelig via denne lenken.
             </AlertStripeInfo>
             <main className="visning__main">
                 <article
