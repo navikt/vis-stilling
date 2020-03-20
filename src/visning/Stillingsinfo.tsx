@@ -40,6 +40,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
         <Lenke href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Lenke>
     );
 
+    const harSosialeMedier =
+        properties.facebookpage || properties.linkedinpage || properties.twitteraddress;
+
     return (
         <>
             <Infopanel tittel="Søknad">
@@ -86,9 +89,11 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Bedriftens navn">{bedriftensNavn}</Rad>
                     <Rad label="Adresse">{bedriftensAdresse}</Rad>
                     <Rad label="Nettsted">{bedriftensNettside}</Rad>
-                    <Rad label="Sosiale medier">
-                        <SosialeMedier properties={properties} />
-                    </Rad>
+                    {harSosialeMedier && (
+                        <Rad label="Sosiale medier">
+                            <SosialeMedier properties={properties} />
+                        </Rad>
+                    )}
                 </Tabell>
                 {bedriftsbeskrivelse}
             </Infopanel>
