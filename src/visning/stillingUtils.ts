@@ -1,7 +1,7 @@
-import { Location, Properties } from '../Stilling';
+import { Location, Properties, Stilling } from '../Stilling';
 
 export const normaliserNavn = (navn: string) => {
-    if (navn.length > 0) {
+    if (navn && navn.length > 0) {
         return navn[0] + (navn.length > 1 ? navn.substring(1).toLowerCase() : '');
     } else {
         return '';
@@ -22,6 +22,11 @@ export const hentSøknadsfrist = (properties: Properties) =>
     properties.applicationdue === 'Snarest'
         ? properties.applicationdue
         : formaterDato(properties.applicationdue);
+
+export const hentBedriftensVisningsnavn = (stilling: Stilling) =>
+    stilling.businessName ||
+    normaliserNavn(stilling.employer.publicName) ||
+    normaliserNavn(stilling.employer.name);
 
 export const hentAdresse = (location: Location) => {
     if (location.address) {

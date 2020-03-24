@@ -1,7 +1,13 @@
 import React, { FunctionComponent } from 'react';
 import Lenke from 'nav-frontend-lenker';
 
-import { hentSøknadsfrist, hentAdresse, formaterDato, lagInnerHtml } from './stillingUtils';
+import {
+    hentSøknadsfrist,
+    hentAdresse,
+    formaterDato,
+    lagInnerHtml,
+    hentBedriftensVisningsnavn,
+} from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
 import Tabell, { Rad } from './tabell/Tabell';
@@ -17,9 +23,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     const kontaktinfo = stilling.contactList?.[0];
 
-    const bedriftensNavn =
-        stilling.businessName || stilling.employer.publicName || stilling.employer.name;
-
+    const bedriftensNavn = hentBedriftensVisningsnavn(stilling);
     const bedriftensAdresse = stilling.employer.location && hentAdresse(stilling.employer.location);
 
     const bedriftensNettside = stilling.properties.employerhomepage && (
