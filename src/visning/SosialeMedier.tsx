@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, Fragment } from 'react';
 import Lenke from 'nav-frontend-lenker';
 import { Properties } from '../Stilling';
 
@@ -22,10 +22,10 @@ const SosialeMedier: FunctionComponent<Props> = ({ properties }) => {
                 const skilletegn = index !== 0 ? ' / ' : '';
 
                 return (
-                    <>
+                    <Fragment key={href}>
                         {skilletegn}
                         <Lenke href={href || '#'}>{plattform}</Lenke>
-                    </>
+                    </Fragment>
                 );
             })}
         </>
