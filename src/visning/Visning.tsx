@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { Sidetittel } from 'nav-frontend-typografi';
 import { AlertStripeInfo } from 'nav-frontend-alertstriper';
 
 import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from './stillingUtils';
 import { Stilling } from '../Stilling';
+import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import './Visning.less';
 
@@ -22,7 +23,9 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
             <header className="visning__header">
                 <div className="visning__header-inner">
                     {hvemOgHvor}
-                    <Sidetittel>{stilling.title}</Sidetittel>
+                    <Sidetittel>
+                        <NaturligLinjeskift>{stilling.title}</NaturligLinjeskift>
+                    </Sidetittel>
                 </div>
             </header>
 
