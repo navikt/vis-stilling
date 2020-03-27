@@ -98,4 +98,5 @@ export type Stilling = {
     // Om annonsen
     id: number;
     status: string;
+    source: string;
 };

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Sidetittel } from 'nav-frontend-typografi';
 import { AlertStripeInfo } from 'nav-frontend-alertstriper';
 
@@ -31,8 +31,9 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
 
             <div className="visning__container">
                 <AlertStripeInfo className="visning__advarsel">
-                    Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare
-                    tilgjengelig via denne lenken.
+                    {stilling.source !== 'DIR'
+                        ? 'Denne stillingen kan du også finne på arbeidsplassen.no'
+                        : 'Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare tilgjengelig via denne lenken.'}
                 </AlertStripeInfo>
                 <main className="visning__main">
                     <article
