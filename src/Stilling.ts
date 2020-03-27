@@ -37,11 +37,11 @@ export type StartTime = Date | 'Etter avtale';
 
 export type Properties = {
     // Praktiske opplysninger
-    engagementtype: string;
+    engagementtype?: string;
     jobarrangement?: string;
     extent: Extent;
-    workday: Workday[];
-    workhours: Workhour[];
+    workday?: Workday[];
+    workhours?: Workhour[];
     sector: Sector;
     positioncount: string;
     applicationdue: Due;
