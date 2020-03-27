@@ -7,6 +7,7 @@ import { Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import './Visning.less';
+import Lenke from 'nav-frontend-lenker';
 
 interface Props {
     stilling: Stilling;
@@ -14,6 +15,7 @@ interface Props {
 
 const Visning: FunctionComponent<Props> = ({ stilling }) => {
     const annonsetekst = lagInnerHtml(stilling.properties.adtext);
+    const stillingPåArbeidsplassen = `https://arbeidsplassen.nav.no/stillinger/stilling/${stilling.uuid}`;
     const hvemOgHvor = `${hentBedriftensVisningsnavn(stilling)}, ${hentKommuneOgEllerBy(
         stilling.location
     )}`;
@@ -31,9 +33,14 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
 
             <div className="visning__container">
                 <AlertStripeInfo className="visning__advarsel">
-                    {stilling.source !== 'DIR'
-                        ? 'Denne stillingen kan du også finne på arbeidsplassen.no'
-                        : 'Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare tilgjengelig via denne lenken.'}
+                    {stilling.source !== 'DIR' ? (
+                        <>
+                            <Lenke href={stillingPåArbeidsplassen}>Denne stillingen</Lenke> kan du
+                            også finne på arbeidsplassen.no
+                        </>
+                    ) : (
+                        'Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare tilgjengelig via denne lenken.'
+                    )}
                 </AlertStripeInfo>
                 <main className="visning__main">
                     <article
