@@ -20,22 +20,21 @@ interface Props {
 
 const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const { properties } = stilling;
+    const { starttime } = properties;
 
     const kontaktinfo = stilling.contactList?.[0];
 
     const bedriftensNavn = hentBedriftensVisningsnavn(stilling);
     const bedriftensAdresse = stilling.employer.location && hentAdresse(stilling.employer.location);
 
-    const bedriftensNettside = stilling.properties.employerhomepage && (
-        <Lenke href={stilling.properties.employerhomepage}>
-            {stilling.properties.employerhomepage}
-        </Lenke>
+    const bedriftensNettside = properties.employerhomepage && (
+        <Lenke href={properties.employerhomepage}>{properties.employerhomepage}</Lenke>
     );
 
-    const bedriftsbeskrivelse = stilling.properties.employerdescription && (
+    const bedriftsbeskrivelse = properties.employerdescription && (
         <div
             className="visning__kort-om-bedriften"
-            dangerouslySetInnerHTML={lagInnerHtml(stilling.properties.employerdescription)}
+            dangerouslySetInnerHTML={lagInnerHtml(properties.employerdescription)}
         />
     );
 
@@ -47,11 +46,16 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const harSosialeMedier =
         properties.facebookpage || properties.linkedinpage || properties.twitteraddress;
 
+    let stillingensOppstart;
+    if (starttime) {
+        stillingensOppstart = starttime === 'Etter avtale' ? starttime : formaterDato(starttime);
+    }
+
     return (
         <>
             <Infopanel tittel="Søknad">
                 <Tabell>
-                    <Rad label="Søknadsfrist">{hentSøknadsfrist(stilling.properties)}</Rad>
+                    <Rad label="Søknadsfrist">{hentSøknadsfrist(properties)}</Rad>
                     {!properties.applicationurl && properties.applicationemail && (
                         <Rad label="Søknad sendes til">
                             <Lenke href={`mailto:ola.nordmann@firma.no`}>
@@ -75,7 +79,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Arbeidstid">{properties.workhours.join(', ')}</Rad>
                     <Rad label="Antall stillinger">{properties.positioncount}</Rad>
                     <Rad label="Sektor">{properties.sector}</Rad>
-                    <Rad label="Oppstart">{properties.starttime}</Rad>
+                    <Rad label="Oppstart">{stillingensOppstart}</Rad>
                 </Tabell>
             </Infopanel>
             {kontaktinfo && (
