@@ -1,4 +1,19 @@
-import { Location, Properties, Stilling } from '../Stilling';
+import { Location, Properties, Stilling, Annonsestatus } from '../Stilling';
+
+export const stillingInneholderPåkrevdeFelter = (data: any): boolean => {
+    if (data.employer === null) return false;
+    if (Object.keys(data.properties).length === 0) return false;
+
+    return true;
+};
+
+export const stillingenErPublisert = (stilling: Stilling) => {
+    if (stilling.status !== Annonsestatus.Inaktiv) {
+        return true;
+    }
+
+    return stilling.deactivatedByExpiry;
+};
 
 export const normaliserNavn = (navn: string) => {
     if (navn && navn.length > 0) {

@@ -70,6 +70,12 @@ export type Contact = {
     title?: string;
 };
 
+export enum Annonsestatus {
+    Aktiv = 'ACTIVE',
+    Inaktiv = 'INACTIVE',
+    Stoppet = 'STOPPED',
+}
+
 export type Employer = {
     name: string;
     publicName: string;
@@ -90,13 +96,14 @@ export type Stilling = {
 
     // Fra Altinn
     employer: Employer;
-    businessName?: string;
+    businessName: string | null;
 
     // Kontaktinformasjon
-    contactList?: Contact[];
+    contactList: Contact[];
 
     // Om annonsen
     id: number;
-    status: string;
+    status: Annonsestatus;
     source: string;
+    deactivatedByExpiry: boolean;
 };
