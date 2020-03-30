@@ -105,5 +105,5 @@ export type Stilling = {
     id: number;
     status: Annonsestatus;
     source: string;
-    deactivatedByExpiry: boolean;
+    deactivatedByExpiry?: boolean;
 };
