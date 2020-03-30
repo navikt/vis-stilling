@@ -75,8 +75,8 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Ansettelsesform">{properties.engagementtype}</Rad>
                     <Rad label="Arbeidstidsordning">{properties.jobarrangement}</Rad>
                     <Rad label="Omfang">{properties.extent}</Rad>
-                    <Rad label="Arbeidsdager">{properties.workday.join(', ')}</Rad>
-                    <Rad label="Arbeidstid">{properties.workhours.join(', ')}</Rad>
+                    <Rad label="Arbeidsdager">{properties.workday?.join(', ')}</Rad>
+                    <Rad label="Arbeidstid">{properties.workhours?.join(', ')}</Rad>
                     <Rad label="Antall stillinger">{properties.positioncount}</Rad>
                     <Rad label="Sektor">{properties.sector}</Rad>
                     <Rad label="Oppstart">{stillingensOppstart}</Rad>

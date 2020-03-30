@@ -38,14 +38,20 @@ type UkjentFeil = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | UkjentFeil;
 
-const transformerTilStilling = (data: any): Stilling => ({
-    ...data,
-    properties: {
-        ...data.properties,
-        workday: JSON.parse(data.properties.workday),
-        workhours: JSON.parse(data.properties.workhours),
-    },
-});
+const transformerTilStilling = (data: any): Stilling => {
+    if (data?.properties?.workday && data?.properties?.workhours) {
+        return {
+            ...data,
+            properties: {
+                ...data.properties,
+                workday: JSON.parse(data.properties.workday),
+                workhours: JSON.parse(data.properties.workhours),
+            },
+        };
+    }
+
+    return data;
+};
 
 export const hentStilling = async (uuid: string): Promise<Respons> => {
     try {
