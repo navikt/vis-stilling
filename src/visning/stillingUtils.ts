@@ -12,7 +12,11 @@ export const stillingenErPublisert = (stilling: Stilling) => {
         return true;
     }
 
-    return stilling.deactivatedByExpiry === true;
+    if (stilling.deactivatedByExpiry === false) {
+        return false;
+    }
+
+    return true;
 };
 
 export const normaliserNavn = (navn: string) => {
