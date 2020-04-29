@@ -13,6 +13,7 @@ import Infopanel from './Infopanel';
 import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
+import { logEvent } from '../amplitude/amplitude';
 
 interface Props {
     stilling: Stilling;
@@ -65,7 +66,11 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     )}
                 </Tabell>
                 {properties.applicationurl && (
-                    <Lenkeknapp href={properties.applicationurl}>Søk på stillingen</Lenkeknapp>
+                    <Lenkeknapp href={properties.applicationurl} onClick={() => {
+                        logEvent('søkeknapp', 'klikk')
+                    }}>
+                        Søk på stillingen
+                    </Lenkeknapp>
                 )}
             </Infopanel>
             <Infopanel tittel="Om stillingen">
