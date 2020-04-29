@@ -7,6 +7,7 @@ import { Stilling } from './Stilling';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from './visning/stillingUtils';
 import Visning from './visning/Visning';
 import './App.less';
+import { logEvent } from './amplitude/amplitude';
 
 const getUuidFromPath = () => window.location.pathname.split('/')[3];
 
@@ -19,6 +20,10 @@ const App: FunctionComponent = () => {
     const [stilling, setStilling] = useState<Respons>({
         status: Status.IkkeLastet,
     });
+
+    useEffect(() => {
+        logEvent('stilling', 'åpne')
+    }, []);
 
     const hentStillingMedUuid = async (uuid: string) => {
         setStilling(await hentStilling(uuid));
