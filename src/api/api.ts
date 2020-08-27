@@ -39,15 +39,19 @@ type UkjentFeil = {
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | UkjentFeil;
 
 const transformerTilStilling = (data: any): Stilling => {
-    if (data?.properties?.workday && data?.properties?.workhours) {
-        return {
-            ...data,
-            properties: {
-                ...data.properties,
-                workday: JSON.parse(data.properties.workday),
-                workhours: JSON.parse(data.properties.workhours),
-            },
-        };
+    if (data?.properties) {
+        const { workday, workhours } = data.properties;
+
+        if (workday || workhours) {
+            return {
+                ...data,
+                properties: {
+                    ...data.properties,
+                    workday: workday ? JSON.parse(workday) : undefined,
+                    workhours: workhours ? JSON.parse(workhours) : undefined,
+                },
+            };
+        }
     }
 
     return data;
@@ -61,7 +65,6 @@ export const hentStilling = async (uuid: string): Promise<Respons> => {
 
         if (respons.ok) {
             const stilling = await respons.json();
-
             return {
                 status: Status.Suksess,
                 data: transformerTilStilling(stilling),

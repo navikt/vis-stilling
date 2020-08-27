@@ -22,7 +22,7 @@ const App: FunctionComponent = () => {
     });
 
     useEffect(() => {
-        logEvent('stilling', 'åpne')
+        logEvent('stilling', 'åpne');
     }, []);
 
     const hentStillingMedUuid = async (uuid: string) => {
