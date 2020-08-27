@@ -66,9 +66,12 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     )}
                 </Tabell>
                 {properties.applicationurl && (
-                    <Lenkeknapp href={properties.applicationurl} onClick={() => {
-                        logEvent('søkeknapp', 'klikk')
-                    }}>
+                    <Lenkeknapp
+                        href={properties.applicationurl}
+                        onClick={() => {
+                            logEvent('søkeknapp', 'klikk');
+                        }}
+                    >
                         Søk på stillingen
                     </Lenkeknapp>
                 )}
