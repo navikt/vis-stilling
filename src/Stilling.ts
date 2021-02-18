@@ -105,5 +105,11 @@ export type Stilling = {
     id: number;
     status: Annonsestatus;
     source: string;
+    privacy: Privacy | null;
     deactivatedByExpiry?: boolean;
 };
+
+export enum Privacy {
+    Intern = 'INTERNAL_NOT_SHOWN',
+    Arbeidsplassen = 'SHOW_ALL',
+}

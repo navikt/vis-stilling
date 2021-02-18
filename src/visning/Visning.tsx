@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { Sidetittel } from 'nav-frontend-typografi';
 import { AlertStripeInfo } from 'nav-frontend-alertstriper';
 
-import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from './stillingUtils';
-import { Stilling } from '../Stilling';
+import { hentBedriftensVisningsnavn, hentKommuneOgEllerBy, lagInnerHtml } from './stillingUtils';
+import { Privacy, Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import './Visning.less';
@@ -33,7 +33,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
 
             <div className="visning__container">
                 <AlertStripeInfo className="visning__advarsel">
-                    {stilling.source !== 'DIR' ? (
+                    {stilling.privacy === Privacy.Arbeidsplassen ? (
                         <>
                             <Lenke href={stillingPåArbeidsplassen}>Denne stillingen</Lenke> kan du
                             også finne på arbeidsplassen.no
