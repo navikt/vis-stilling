@@ -1,7 +1,7 @@
 name: Bygg og deploy
 
 on:
-  [push]
+  [ push ]
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/vis-stilling:${{ github.sha }}
@@ -37,7 +37,7 @@ jobs:
   deploy-til-dev:
     name: Deploy til dev
     needs: bygg-og-push-docker-image
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/vis-kun-komplette-stillinger'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feb-2020-oppgraderinger'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
