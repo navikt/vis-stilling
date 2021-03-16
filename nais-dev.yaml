@@ -19,7 +19,7 @@ spec:
     vault:
         enabled: true
         paths:
-            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-api/vis-stilling_q1
+            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-stilling-api/vis-stilling_q1
               mountPath: /secret/apigw
     env:
         - name: APIGW_URL
