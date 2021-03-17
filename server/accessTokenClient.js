@@ -5,7 +5,7 @@ const clientSecret = process.env.AZURE_APP_CLIENT_SECRET;
 const tenantId = process.env.AZURE_APP_TENANT_ID;
 
 const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-const rekrutteringsbistandStillingApiScope = `api://${process.env.NAIS_CLUSTER_NAME}.arbeidsgiver.rekrutteringsbistand-stilling-api/.default`;
+const rekrutteringsbistandStillingApiScope = `api://dev-fss.arbeidsgiver.rekrutteringsbistand-stilling-api/.default`;
 
 async function getAccessToken() {
     const formData = {
@@ -21,7 +21,12 @@ async function getAccessToken() {
         body: params,
     });
 
-    return await response.json();
+    if (response.ok) {
+        return await response.json();
+    } else {
+        const error = await response.json();
+        console.error('Klarte ikke å hente token:', error.error_description);
+    }
 }
 
 module.exports = {
