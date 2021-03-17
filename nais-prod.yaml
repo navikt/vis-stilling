@@ -18,4 +18,4 @@ spec:
         path: /arbeid/stilling/internal/isReady
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
-          value: https://rekrutteringsbistand-api.prod-fss-pub.nais.io
+          value: https://rekrutteringsbistand-api.prod-fss-pub.nais.io/rekrutteringsbistand-api
