@@ -4,6 +4,7 @@ const hentDekoratør = require('./dekoratør');
 const mustacheExpress = require('mustache-express');
 const cookieParser = require('cookie-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const { getAccessToken } = require('./accessTokenClient');
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
@@ -12,7 +13,7 @@ const EKSPONERT_STILLING_URL = `${process.env.REKRUTTERINGSBISTAND_STILLING_API}
 const buildPath = path.join(__dirname, '../build');
 const server = express();
 
-const startServer = html => {
+const startServer = async html => {
     server.use(setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL));
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
@@ -27,6 +28,13 @@ const startServer = html => {
     server.listen(PORT, () => {
         console.log('Server kjører på port', PORT);
     });
+
+    const accessToken = await getAccessToken();
+    console.log(
+        `Fikk access token med ${Object.keys(accessToken).length} felter. Token har lengde ${
+            accessToken?.access_token?.length
+        }`
+    );
 };
 
 const setupProxy = (fraPath, tilTarget) =>
