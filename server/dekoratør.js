@@ -4,10 +4,10 @@ const request = require('request');
 const { JSDOM } = jsdom;
 
 const QUERY_PARAMS = 'header-withmenu=true&styles=true&scripts=true&footer-withmenu=true';
-const URL_PROD = `https://appres.nav.no/common-html/v4/navno?${QUERY_PARAMS}`;
-const URL_DEV = `https://appres-q0.nav.no/common-html/v4/navno?${QUERY_PARAMS}`;
+const URL_PROD = `https://www.nav.no/dekoratoren/?${QUERY_PARAMS}`;
+const URL_DEV = `https://dekoratoren.dev.nav.no/?${QUERY_PARAMS}`;
 
-const url = process.env.NAIS_CLUSTER_NAME === 'prod-sbs' ? URL_PROD : URL_DEV;
+const url = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? URL_PROD : URL_DEV;
 
 const hentDekoratørFraUrl = behandleRespons => request(url, behandleRespons);
 
