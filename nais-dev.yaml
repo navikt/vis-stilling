@@ -9,7 +9,7 @@ spec:
     image: {{ image }}
     port: 3000
     ingresses:
-        - https://dev.nav.no/arbeid/stilling
+        - https://www.dev.nav.no/arbeid/stilling
     liveness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isAlive
