@@ -1,13 +1,13 @@
-FROM navikt/node-express:12.2.0-alpine
+FROM navikt/node-express:14-alpine
 
-WORKDIR /app
+WORKDIR /var
 
 COPY build/ build/
 COPY server/ server/
 
-WORKDIR /app/server
-RUN npm install
+WORKDIR /var/server
+RUN npm ci
 
 EXPOSE 3000
 
-ENTRYPOINT ["/bin/sh", "start.sh"]
+ENTRYPOINT ["node", "server.js"]

@@ -3,16 +3,17 @@ const express = require('express');
 const hentDekoratør = require('./dekoratør');
 const mustacheExpress = require('mustache-express');
 const cookieParser = require('cookie-parser');
-const sonekryssing = require('./sonekryssing.js');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
+const EKSPONERT_STILLING_URL = `${process.env.REKRUTTERINGSBISTAND_STILLING_API}/rekrutteringsbistand/ekstern/api/v1/stilling`;
 
 const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 const startServer = html => {
-    server.use(`${BASE_PATH}/api/`, sonekryssing);
+    server.use(setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL));
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
@@ -27,6 +28,18 @@ const startServer = html => {
         console.log('Server kjører på port', PORT);
     });
 };
+
+const setupProxy = (fraPath, tilTarget) =>
+    createProxyMiddleware(fraPath, {
+        target: tilTarget,
+        changeOrigin: true,
+        secure: true,
+        pathRewrite: path => {
+            const nyPath = path.replace(fraPath, '');
+            console.log(`Proxy fra '${path}' til '${tilTarget + nyPath}'`);
+            return nyPath;
+        },
+    });
 
 const renderAppMedDekoratør = dekoratør =>
     new Promise((resolve, reject) => {

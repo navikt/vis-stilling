@@ -9,18 +9,13 @@ spec:
     image: {{ image }}
     port: 3000
     ingresses:
-        - https://www-q0.nav.no/arbeid/stilling
+        - https://dev.nav.no/arbeid/stilling
     liveness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isAlive
     readiness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isReady
-    vault:
-        enabled: true
-        paths:
-            - kvPath: /apikey/apigw/dev/rekrutteringsbistand-api/vis-stilling_q1
-              mountPath: /secret/apigw
     env:
-        - name: APIGW_URL
-          value: https://api-gw-q1.oera.no
+        - name: REKRUTTERINGSBISTAND_STILLING_API
+          value: https://rekrutteringsbistand-api.dev-fss-pub.nais.io

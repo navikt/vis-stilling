@@ -16,11 +16,6 @@ spec:
     readiness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isReady
-    vault:
-        enabled: true
-        paths:
-            - kvPath: /apikey/apigw/prod/rekrutteringsbistand-api/vis-stilling
-              mountPath: /secret/apigw
     env:
-        - name: APIGW_URL
-          value: https://api-gw.oera.no
+        - name: REKRUTTERINGSBISTAND_STILLING_API
+          value: https://rekrutteringsbistand-api.prod-fss-pub.nais.io
