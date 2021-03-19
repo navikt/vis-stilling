@@ -1,10 +1,10 @@
-const path = require('path');
-const express = require('express');
-const hentDekoratør = require('./dekoratør');
-const mustacheExpress = require('mustache-express');
-const cookieParser = require('cookie-parser');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const { getAccessToken } = require('./accessTokenClient');
+import mustacheExpress from 'mustache-express';
+import path from 'path';
+import express from 'express';
+import hentDekoratør from './dekoratør';
+import cookieParser from 'cookie-parser';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import getAccessToken from './accessTokenClient';
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
@@ -13,7 +13,9 @@ const EKSPONERT_STILLING_URL = `${process.env.REKRUTTERINGSBISTAND_STILLING_API}
 const buildPath = path.join(__dirname, '../build');
 const server = express();
 
-const startServer = async html => {
+type HTML = string;
+
+const startServer = async (indexHtml: HTML) => {
     server.use(setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL));
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
@@ -22,22 +24,26 @@ const startServer = async html => {
     server.use(BASE_PATH, express.static(buildPath, { index: false }));
 
     server.get([BASE_PATH, `${BASE_PATH}/:id`], (req, res) => {
-        res.send(html);
+        res.send(indexHtml);
     });
 
     server.listen(PORT, () => {
         console.log('Server kjører på port', PORT);
     });
 
-    const accessToken = await getAccessToken();
-    console.log(
-        `Fikk access token med ${Object.keys(accessToken).length} felter. Token har lengde ${
-            accessToken?.access_token?.length
-        }`
-    );
+    try {
+        const accessToken = await getAccessToken();
+        console.log(
+            `Fikk access token med ${Object.keys(accessToken).length} felter. Token har lengde ${
+                accessToken.access_token.length
+            }`
+        );
+    } catch (e) {
+        console.error('Klarte ikke å hente access token:', e);
+    }
 };
 
-const setupProxy = (fraPath, tilTarget) =>
+const setupProxy = (fraPath: string, tilTarget: string) =>
     createProxyMiddleware(fraPath, {
         target: tilTarget,
         changeOrigin: true,
@@ -49,7 +55,7 @@ const setupProxy = (fraPath, tilTarget) =>
         },
     });
 
-const renderAppMedDekoratør = dekoratør =>
+const renderAppMedDekoratør = (dekoratør: any): Promise<HTML> =>
     new Promise((resolve, reject) => {
         server.render('index.html', dekoratør, (err, html) => {
             if (err) {
@@ -60,7 +66,7 @@ const renderAppMedDekoratør = dekoratør =>
         });
     });
 
-const logError = feil => error => {
+const logError = (feil: string) => (error: string) => {
     console.error('> ' + feil);
     console.error('> ' + error);
 
