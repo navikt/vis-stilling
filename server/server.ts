@@ -18,7 +18,7 @@ type HTML = string;
 const startServer = async (indexHtml: HTML) => {
     server.use(
         `${BASE_PATH}/api`,
-        authenticateWithToken,
+        brukAccessToken,
         setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL)
     );
 
@@ -36,7 +36,7 @@ const startServer = async (indexHtml: HTML) => {
     });
 };
 
-const authenticateWithToken: RequestHandler = async (req, res, next) => {
+const brukAccessToken: RequestHandler = async (req, res, next) => {
     const accessToken = await getAccessToken();
 
     req.headers = {
