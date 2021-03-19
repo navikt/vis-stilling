@@ -2,7 +2,8 @@
     "name": "server",
     "version": "1.0.0",
     "scripts": {
-        "build": "npx esbuild server.ts --bundle --platform=node --target=node14 --external:express --external:jsdom --outfile=server.js"
+        "build-parcel": "parcel server.ts --out-file=server.js",
+        "build": "npx esbuild server.ts --bundle --platform=node --target=node14 --external:canvas --external:express --external:jsdom --outfile=server.js"
     },
     "dependencies": {
         "cookie-parser": "^1.4.4",

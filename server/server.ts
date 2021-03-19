@@ -10,7 +10,7 @@ const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
 const EKSPONERT_STILLING_URL = `${process.env.REKRUTTERINGSBISTAND_STILLING_API}/rekrutteringsbistand/ekstern/api/v1/stilling`;
 
-const buildPath = path.join(__dirname, './build');
+const buildPath = path.join(__dirname, '../build');
 const server = express();
 
 type HTML = string;
