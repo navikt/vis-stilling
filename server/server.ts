@@ -1,6 +1,6 @@
 import mustacheExpress from 'mustache-express';
 import path from 'path';
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import hentDekoratør from './dekoratør';
 import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -16,7 +16,11 @@ const server = express();
 type HTML = string;
 
 const startServer = async (indexHtml: HTML) => {
-    server.use(setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL));
+    server.use(
+        `${BASE_PATH}/api`,
+        authenticateWithToken,
+        setupProxy(`${BASE_PATH}/api`, EKSPONERT_STILLING_URL)
+    );
 
     server.get(`${BASE_PATH}/internal/isAlive`, (req, res) => res.sendStatus(200));
     server.get(`${BASE_PATH}/internal/isReady`, (req, res) => res.sendStatus(200));
@@ -30,20 +34,20 @@ const startServer = async (indexHtml: HTML) => {
     server.listen(PORT, () => {
         console.log('Server kjører på port', PORT);
     });
-
-    try {
-        const accessToken = await getAccessToken();
-        console.log(
-            `Fikk access token med ${Object.keys(accessToken).length} felter. Token har lengde ${
-                accessToken.access_token.length
-            }`
-        );
-    } catch (e) {
-        console.error('Klarte ikke å hente access token:', e);
-    }
 };
 
-const setupProxy = (fraPath: string, tilTarget: string) =>
+const authenticateWithToken: RequestHandler = async (req, res, next) => {
+    const accessToken = await getAccessToken();
+
+    req.headers = {
+        ...req.headers,
+        Authorization: `Bearer ${accessToken.access_token}`,
+    };
+
+    next();
+};
+
+const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
     createProxyMiddleware(fraPath, {
         target: tilTarget,
         changeOrigin: true,
