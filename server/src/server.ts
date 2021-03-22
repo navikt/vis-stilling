@@ -1,16 +1,16 @@
 import mustacheExpress from 'mustache-express';
 import path from 'path';
 import express, { RequestHandler } from 'express';
-import hentDekoratør from './dekoratør';
 import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import getAccessToken from './accessTokenClient';
+import { injectDecoratorServerSide } from '@navikt/nav-dekoratoren-moduler/ssr';
 
 const PORT = 3000;
 const BASE_PATH = '/arbeid/stilling';
 const EKSPONERT_STILLING_URL = `${process.env.REKRUTTERINGSBISTAND_STILLING_API}/rekrutteringsbistand/ekstern/api/v1/stilling`;
 
-const buildPath = path.join(__dirname, '../build');
+const buildPath = path.join(__dirname, '../../build');
 const server = express();
 
 type HTML = string;
@@ -59,16 +59,10 @@ const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
         },
     });
 
-const renderAppMedDekoratør = (dekoratør: object): Promise<HTML> =>
-    new Promise((resolve, reject) => {
-        server.render('index.html', dekoratør, (err, html) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(html);
-            }
-        });
-    });
+const renderAppMedDekoratør = (): Promise<HTML> => {
+    const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
+    return injectDecoratorServerSide({env, filePath: `${buildPath}/index.html`})
+}
 
 const logError = (feil: string) => (error: string) => {
     console.error('> ' + feil);
@@ -85,9 +79,7 @@ const initialiserServer = () => {
     server.set('views', buildPath);
     server.use(cookieParser());
 
-    hentDekoratør()
-        .catch(logError('Kunne ikke hente dekoratør!'))
-        .then(renderAppMedDekoratør, logError('Kunne ikke injisere dekoratør!'))
+    renderAppMedDekoratør()
         .then(startServer, logError('Kunne ikke rendre app!'));
 };
 
