@@ -24,6 +24,7 @@ spec:
             external:
                 - host: https://rekrutteringsbistand-api.dev-fss-pub.nais.io
                 - host: dekoratoren.dev.nav.no
+                  namespace: default
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
           value: https://rekrutteringsbistand-api.dev-fss-pub.nais.io/rekrutteringsbistand-api
