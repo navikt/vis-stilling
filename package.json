@@ -42,9 +42,10 @@
         "start": "craco start",
         "build": "craco build",
         "eject": "craco eject",
-        "server": "node server/server.js",
-        "server:watch": "npx nodemon server/server.js",
-        "mock": "REACT_APP_MOCK=true npm start"
+        "mock": "REACT_APP_MOCK=true npm start",
+        "server:install": "cd server && npm ci",
+        "server:build": "tsc -b server/tsconfig.json",
+        "server:start": "node server/build/server.js"
     },
     "eslintConfig": {
         "extends": "react-app"
