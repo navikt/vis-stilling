@@ -8,10 +8,10 @@ const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
 const rekrutteringsbistandStillingApiScope = `api://dev-fss.arbeidsgiver.rekrutteringsbistand-api/.default`;
 
 const getAccessToken = async (): Promise<AccessToken> => {
-    const formData = {
+    const formData: Record<string, string> = {
         grant_type: 'client_credentials',
-        client_secret: clientSecret,
-        client_id: clientId,
+        client_secret: clientSecret || '',
+        client_id: clientId || '',
         scope: rekrutteringsbistandStillingApiScope,
     };
 
@@ -19,7 +19,7 @@ const getAccessToken = async (): Promise<AccessToken> => {
 
     const response = await fetch(url, {
         method: 'POST',
-        body: params,
+        body: params as any,
     });
 
     if (response.ok) {

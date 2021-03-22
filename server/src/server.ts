@@ -59,7 +59,7 @@ const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
         },
     });
 
-const renderAppMedDekoratør = (dekoratør: any): Promise<HTML> =>
+const renderAppMedDekoratør = (dekoratør: object): Promise<HTML> =>
     new Promise((resolve, reject) => {
         server.render('index.html', dekoratør, (err, html) => {
             if (err) {

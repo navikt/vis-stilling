@@ -1,5 +1,5 @@
-const jsdom = require('jsdom');
-const request = require('request');
+import jsdom from 'jsdom';
+import request from 'request';
 
 const { JSDOM } = jsdom;
 
@@ -35,4 +35,4 @@ const hentDekoratør = () =>
         });
     });
 
-module.exports = hentDekoratør;
+export default hentDekoratør;
