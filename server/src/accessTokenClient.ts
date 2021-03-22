@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import NodeCache from 'node-cache';
 
 const clientId = process.env.AZURE_APP_CLIENT_ID;
 const clientSecret = process.env.AZURE_APP_CLIENT_SECRET;
@@ -7,7 +8,13 @@ const tenantId = process.env.AZURE_APP_TENANT_ID;
 const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
 const rekrutteringsbistandStillingApiScope = `api://dev-fss.arbeidsgiver.rekrutteringsbistand-api/.default`;
 
+const cacheKey = 'access-token';
+const cache = new NodeCache();
+
 const getAccessToken = async (): Promise<AccessToken> => {
+    const cachedAccessToken = cache.get<AccessToken>(cacheKey);
+    if (cachedAccessToken) return cachedAccessToken;
+
     const formData: Record<string, string> = {
         grant_type: 'client_credentials',
         client_secret: clientSecret || '',
@@ -23,7 +30,9 @@ const getAccessToken = async (): Promise<AccessToken> => {
     });
 
     if (response.ok) {
-        return await response.json();
+        const accessToken = await response.json();
+        cache.set<AccessToken>(cacheKey, accessToken, accessToken.expires_in);
+        return accessToken;
     } else {
         const tokenError: TokenError = await response.json();
         throw new Error(tokenError.error_description);
