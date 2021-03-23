@@ -1,11 +1,10 @@
 import fetch from 'node-fetch';
 import NodeCache from 'node-cache';
 
-const clientId = process.env.AZURE_APP_CLIENT_ID;
-const clientSecret = process.env.AZURE_APP_CLIENT_SECRET;
-const tenantId = process.env.AZURE_APP_TENANT_ID;
+const clientId = process.env.AZURE_APP_CLIENT_ID!;
+const clientSecret = process.env.AZURE_APP_CLIENT_SECRET!;
+const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
 
-const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
 const rekrutteringsbistandStillingApiScope = `api://dev-fss.arbeidsgiver.rekrutteringsbistand-api/.default`;
 
 const cacheKey = 'access-token';
@@ -17,14 +16,14 @@ const getAccessToken = async (): Promise<AccessToken> => {
 
     const formData: Record<string, string> = {
         grant_type: 'client_credentials',
-        client_secret: clientSecret || '',
-        client_id: clientId || '',
+        client_secret: clientSecret,
+        client_id: clientId,
         scope: rekrutteringsbistandStillingApiScope,
     };
 
     const params = new URLSearchParams(formData);
 
-    const response = await fetch(url, {
+    const response = await fetch(tokenEndpoint, {
         method: 'POST',
         body: params as any,
     });

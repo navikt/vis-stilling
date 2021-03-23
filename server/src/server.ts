@@ -69,5 +69,9 @@ const logError = (feil: string) => (error: string) => {
     process.exit(1);
 };
 
-console.log('\nInitialiserer server ...');
-renderAppMedDekoratør().then(startServer, logError('Kunne ikke rendre app!'));
+const initialiserServer = () => {
+    console.log('\nInitialiserer server ...');
+    renderAppMedDekoratør().then(startServer, logError('Kunne ikke rendre app!'));
+};
+
+initialiserServer();
