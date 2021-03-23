@@ -1,7 +1,5 @@
-import mustacheExpress from 'mustache-express';
 import path from 'path';
 import express, { RequestHandler } from 'express';
-import cookieParser from 'cookie-parser';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import getAccessToken from './accessTokenClient';
 import { injectDecoratorServerSide } from '@navikt/nav-dekoratoren-moduler/ssr';
@@ -61,8 +59,8 @@ const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
 
 const renderAppMedDekoratør = (): Promise<HTML> => {
     const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
-    return injectDecoratorServerSide({env, filePath: `${buildPath}/index.html`})
-}
+    return injectDecoratorServerSide({ env, filePath: `${buildPath}/index.html` });
+};
 
 const logError = (feil: string) => (error: string) => {
     console.error('> ' + feil);
@@ -71,16 +69,5 @@ const logError = (feil: string) => (error: string) => {
     process.exit(1);
 };
 
-const initialiserServer = () => {
-    console.log('\nInitialiserer server ...');
-
-    server.engine('html', mustacheExpress());
-    server.set('view engine', 'mustache');
-    server.set('views', buildPath);
-    server.use(cookieParser());
-
-    renderAppMedDekoratør()
-        .then(startServer, logError('Kunne ikke rendre app!'));
-};
-
-initialiserServer();
+console.log('\nInitialiserer server ...');
+renderAppMedDekoratør().then(startServer, logError('Kunne ikke rendre app!'));
