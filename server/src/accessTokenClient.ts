@@ -6,11 +6,8 @@ const clientSecret = process.env.AZURE_APP_CLIENT_SECRET!;
 const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
 const cluster = process.env.NAIS_CLUSTER_NAME;
 
-const rekrutteringsbistandStillingApiClientId =
-    cluster === 'prod-gcp'
-        ? '969f0365-c3da-451a-95ba-796b09ffaabe'
-        : '09e65bcf-fabc-4f49-8ba1-d807e2df09be';
-const rekrutteringsbistandStillingApiScope = `api://${rekrutteringsbistandStillingApiClientId}/.default`;
+const rekrutteringsbistandStillingApiCluster = cluster === 'prod-gcp' ? 'prod-fss' : 'dev-fss';
+const rekrutteringsbistandStillingApiScope = `api://${rekrutteringsbistandStillingApiCluster}.arbeidsgiver.rekrutteringsbistand-api/.default`;
 
 const cacheKey = 'access-token';
 const cache = new NodeCache();
