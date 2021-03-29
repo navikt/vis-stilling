@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
     name: vis-stilling
-    namespace: default
+    namespace: arbeidsgiver
     labels:
         team: arbeidsgiver
 spec:
@@ -16,11 +16,14 @@ spec:
     readiness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isReady
-    vault:
-        enabled: true
-        paths:
-            - kvPath: /apikey/apigw/prod/rekrutteringsbistand-api/vis-stilling
-              mountPath: /secret/apigw
+    azure:
+        application:
+            enabled: true
+    accessPolicy:
+        outbound:
+            external:
+                - host: https://rekrutteringsbistand-stilling-api.prod-fss-pub.nais.io
+                - host: dekoratoren.nav.no
     env:
-        - name: APIGW_URL
-          value: https://api-gw.oera.no
+        - name: REKRUTTERINGSBISTAND_STILLING_API
+          value: https://rekrutteringsbistand-stilling-api.prod-fss-pub.nais.io
