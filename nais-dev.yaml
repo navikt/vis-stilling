@@ -22,7 +22,7 @@ spec:
     accessPolicy:
         outbound:
             external:
-                - host: https://rekrutteringsbistand-stilling-api.dev-fss-pub.nais.io
+                - host: rekrutteringsbistand-stilling-api.dev-fss-pub.nais.io
                 - host: dekoratoren.dev.nav.no
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
