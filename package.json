@@ -42,7 +42,7 @@
         "start": "craco start",
         "build": "craco build",
         "eject": "craco eject",
-        "mock": "REACT_APP_MOCK=true npm start",
+        "start:mock": "REACT_APP_MOCK=true npm start",
         "server:install": "cd server && npm ci",
         "server:build": "tsc -b server/tsconfig.json",
         "server:start": "node server/build/server.js"

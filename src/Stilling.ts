@@ -31,7 +31,7 @@ export enum Extent {
     Deltid = 'Deltid',
 }
 
-export type Due = Date | 'Snarest';
+export type Due = string | 'Snarest';
 
 export type StartTime = Date | 'Etter avtale';
 

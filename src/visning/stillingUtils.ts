@@ -38,9 +38,20 @@ export const hentKommuneOgEllerBy = (location: Location) => {
 export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString();
 
 export const hentSøknadsfrist = (properties: Properties) =>
-    properties.applicationdue === 'Snarest'
-        ? properties.applicationdue
-        : formaterDato(properties.applicationdue);
+    konverterTilPresenterbarDato(properties.applicationdue);
+
+export const konverterTilPresenterbarDato = (datoString?: string | null): string => {
+    if (!datoString) return '';
+    if (datoString === 'Snarest') return datoString;
+
+    const presentarbarDatoString = new Date(datoString as string).toLocaleDateString('nb-NO', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    });
+
+    return presentarbarDatoString === 'Invalid Date' ? datoString : presentarbarDatoString;
+};
 
 export const hentBedriftensVisningsnavn = (stilling: Stilling) =>
     stilling.businessName ||
