@@ -1,22 +1,23 @@
 import React, { useEffect, useState, FunctionComponent, ReactNode } from 'react';
-import { Sidetittel } from 'nav-frontend-typografi';
+import { Normaltekst, Sidetittel, Undertittel } from 'nav-frontend-typografi';
 import Loading from 'nav-frontend-spinner';
 
 import { Respons, Status, hentStilling } from './api/api';
 import { Stilling } from './Stilling';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from './visning/stillingUtils';
 import Visning from './visning/Visning';
-import './App.less';
 import { logEvent } from './amplitude/amplitude';
+import './App.less';
 
-const getUuidFromPath = () => window.location.pathname.split('/')[3];
+const hentStillingsIdFraUrl = () => window.location.pathname.split('/')[3];
 
 const Feilmelding: FunctionComponent = ({ children }) => (
     <div className="app__feilmelding">{children}</div>
 );
 
 const App: FunctionComponent = () => {
-    const uuidFraUrl = getUuidFromPath();
+    const stillingsId = hentStillingsIdFraUrl();
+
     const [stilling, setStilling] = useState<Respons>({
         status: Status.IkkeLastet,
     });
@@ -30,8 +31,8 @@ const App: FunctionComponent = () => {
     };
 
     useEffect(() => {
-        hentStillingMedUuid(uuidFraUrl);
-    }, [uuidFraUrl]);
+        hentStillingMedUuid(stillingsId);
+    }, [stillingsId]);
 
     const renderStilling = (stilling: Stilling): ReactNode => {
         if (stillingInneholderPåkrevdeFelter(stilling) && stillingenErPublisert(stilling)) {
@@ -49,10 +50,22 @@ const App: FunctionComponent = () => {
     };
 
     const renderInnhold = (): ReactNode => {
+        const fantIkkeStilling =
+            stilling.status === Status.UgyldigId ||
+            (stilling.status === Status.Feil && stilling.statusKode === 404);
+
         if (stilling.status === Status.Suksess) {
             return renderStilling(stilling.data);
-        } else if (stilling.status === Status.Feil && stilling.statusKode === 404) {
-            return <Feilmelding>Fant ingen stilling med gitt id {uuidFraUrl}</Feilmelding>;
+        } else if (fantIkkeStilling) {
+            return (
+                <Feilmelding>
+                    <Undertittel className="blokk-xxs">Fant ikke stillingen</Undertittel>
+                    <Normaltekst className="blokk-s">
+                        (<code>{stillingsId}</code>)
+                    </Normaltekst>
+                    <Normaltekst>Er du sikker på at du har skrevet inn riktig URL?</Normaltekst>
+                </Feilmelding>
+            );
         } else if (stilling.status === Status.Feil) {
             return (
                 <Feilmelding>
@@ -60,7 +73,7 @@ const App: FunctionComponent = () => {
                     <p>Det skjedde dessverre en feil</p>
                 </Feilmelding>
             );
-        } else if (stilling.status === Status.UkjentFeil) {
+        } else if (stilling.status === Status.Kjøretidsfeil) {
             return (
                 <Feilmelding>
                     <p>Det skjedde en ukjent feil, vennligst prøv igjen senere</p>

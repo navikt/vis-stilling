@@ -1,4 +1,5 @@
 import { Stilling } from '../Stilling';
+import { erUuid } from '../visning/stillingUtils';
 
 if (process.env.REACT_APP_MOCK) {
     require('../mock/mock-api.ts');
@@ -11,7 +12,8 @@ export enum Status {
     LasterInn = 'LasterInn',
     Suksess = 'Suksess',
     Feil = 'Feil',
-    UkjentFeil = 'UkjentFeil',
+    Kjøretidsfeil = 'Kjøretidsfeil',
+    UgyldigId = 'UgyldigId',
 }
 
 type IkkeLastet = {
@@ -32,11 +34,15 @@ type Feil = {
     statusKode: number;
 };
 
-type UkjentFeil = {
-    status: Status.UkjentFeil;
+type Kjøretidsfeil = {
+    status: Status.Kjøretidsfeil;
 };
 
-export type Respons = IkkeLastet | LasterInn | Suksess | Feil | UkjentFeil;
+type UgyldigId = {
+    status: Status.UgyldigId;
+};
+
+export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
 const transformerTilStilling = (data: any): Stilling => {
     if (data?.properties) {
@@ -57,9 +63,15 @@ const transformerTilStilling = (data: any): Stilling => {
     return data;
 };
 
-export const hentStilling = async (uuid: string): Promise<Respons> => {
+export const hentStilling = async (stillingsId: string): Promise<Respons> => {
+    if (!erUuid(stillingsId)) {
+        return {
+            status: Status.UgyldigId,
+        };
+    }
+
     try {
-        const respons = await fetch(`${API}/${uuid}`, {
+        const respons = await fetch(`${API}/${stillingsId}`, {
             method: 'GET',
         });
 
@@ -77,7 +89,7 @@ export const hentStilling = async (uuid: string): Promise<Respons> => {
         };
     } catch (error) {
         return {
-            status: Status.UkjentFeil,
+            status: Status.Kjøretidsfeil,
         };
     }
 };
