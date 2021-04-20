@@ -60,9 +60,6 @@ const App: FunctionComponent = () => {
             return (
                 <Feilmelding>
                     <Undertittel className="blokk-xxs">Fant ikke stillingen</Undertittel>
-                    <Normaltekst className="blokk-s">
-                        (<code>{stillingsId}</code>)
-                    </Normaltekst>
                     <Normaltekst>Er du sikker på at du har skrevet inn riktig URL?</Normaltekst>
                 </Feilmelding>
             );
