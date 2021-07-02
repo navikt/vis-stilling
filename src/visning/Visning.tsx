@@ -39,7 +39,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
                             også finne på arbeidsplassen.no
                         </>
                     ) : (
-                        'Denne stillingen er meldt direkte fra en arbeidsgiver til NAV. Den er bare tilgjengelig via denne lenken.'
+                        'Dette er en stilling NAV jobber med for arbeidsgiver. Den er kun tilgjengelig her.'
                     )}
                 </AlertStripeInfo>
                 <main className="visning__main">
