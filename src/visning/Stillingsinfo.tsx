@@ -90,7 +90,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Oppstart">{stillingensOppstart}</Rad>
                 </Tabell>
             </Infopanel>
-            {kontaktinfo && (
+            {kontaktinfo && stilling.source !== 'DIR' && (
                 <Infopanel tittel="Kontaktperson for stillingen">
                     <Tabell>
                         <Rad label="Kontaktperson">{kontaktinfo.name}</Rad>
