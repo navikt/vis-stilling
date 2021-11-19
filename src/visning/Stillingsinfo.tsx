@@ -14,6 +14,7 @@ import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
 import { logEvent } from '../amplitude/amplitude';
+import { Dialog } from '@navikt/ds-icons';
 
 interface Props {
     stilling: Stilling;
@@ -90,6 +91,18 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Oppstart">{stillingensOppstart}</Rad>
                 </Tabell>
             </Infopanel>
+            {stilling.source === 'DIR' &&
+                <Infopanel framhevet tittel="Har du spørsmål om stillingen?">
+                    <div className="visning__kontakt-veileder">
+                        <Dialog
+                            aria-hidden
+                            role="img"
+                            fr=""
+                        />
+                        Kontakt veilederen din i dialogen i aktivitetsplanen.
+                    </div>
+                </Infopanel>
+            }
             {kontaktinfo && stilling.source !== 'DIR' && (
                 <Infopanel tittel="Kontaktperson for stillingen">
                     <Tabell>
