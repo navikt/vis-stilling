@@ -36,7 +36,8 @@
     "devDependencies": {
         "@types/amplitude-js": "^5.8.1",
         "fetch-mock": "^9.11.0",
-        "prettier": "^1.19.1",
+        "husky": "^7.0.4",
+        "prettier": "^2.5.0",
         "webpack": "^4.41.5"
     },
     "scripts": {
@@ -47,6 +48,11 @@
         "server:install": "cd server && npm ci",
         "server:build": "tsc -b server/tsconfig.json",
         "server:start": "node server/build/server.js"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "singleQuote": true,
+        "printWidth": 100
     },
     "eslintConfig": {
         "extends": "react-app"
