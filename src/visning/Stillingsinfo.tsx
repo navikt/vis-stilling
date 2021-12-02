@@ -6,7 +6,7 @@ import {
     hentAdresse,
     formaterDato,
     lagInnerHtml,
-    hentBedriftensVisningsnavn,
+    hentBedriftensVisningsnavn
 } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
@@ -91,18 +91,14 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Oppstart">{stillingensOppstart}</Rad>
                 </Tabell>
             </Infopanel>
-            {stilling.source === 'DIR' &&
+            {stilling.source === 'DIR' && (
                 <Infopanel framhevet tittel="Har du spørsmål om stillingen?">
                     <div className="visning__kontakt-veileder">
-                        <Dialog
-                            aria-hidden
-                            role="img"
-                            fr=""
-                        />
+                        <Dialog aria-hidden role="img" fr="" />
                         Kontakt veilederen din i dialogen i aktivitetsplanen.
                     </div>
                 </Infopanel>
-            }
+            )}
             {kontaktinfo && stilling.source !== 'DIR' && (
                 <Infopanel tittel="Kontaktperson for stillingen">
                     <Tabell>
