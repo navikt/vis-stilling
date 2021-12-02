@@ -44,6 +44,7 @@
         "start": "craco start",
         "build": "craco build",
         "eject": "craco eject",
+        "format": "prettier --write .",
         "start:mock": "REACT_APP_MOCK=true npm start",
         "server:install": "cd server && npm ci",
         "server:build": "tsc -b server/tsconfig.json",
@@ -52,6 +53,8 @@
     "prettier": {
         "tabWidth": 4,
         "singleQuote": true,
+        "trailingComma": "es5",
+        "arrowParens": "always",
         "printWidth": 100
     },
     "eslintConfig": {
