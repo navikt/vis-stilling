@@ -6,7 +6,7 @@ import {
     hentAdresse,
     formaterDato,
     lagInnerHtml,
-    hentBedriftensVisningsnavn
+    hentBedriftensVisningsnavn,
 } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
