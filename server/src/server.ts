@@ -50,7 +50,7 @@ const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
         target: tilTarget,
         changeOrigin: true,
         secure: true,
-        pathRewrite: path => {
+        pathRewrite: (path) => {
             const nyPath = path.replace(fraPath, '');
             console.log(`Proxy fra '${path}' til '${tilTarget + nyPath}'`);
             return nyPath;

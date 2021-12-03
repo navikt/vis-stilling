@@ -36,17 +36,28 @@
     "devDependencies": {
         "@types/amplitude-js": "^5.8.1",
         "fetch-mock": "^9.11.0",
-        "prettier": "^1.19.1",
+        "husky": "^7.0.0",
+        "prettier": "^2.5.0",
+        "pretty-quick": "^3.1.2",
         "webpack": "^4.41.5"
     },
     "scripts": {
         "start": "craco start",
         "build": "craco build",
         "eject": "craco eject",
+        "format": "prettier --write .",
         "start:mock": "REACT_APP_MOCK=true npm start",
         "server:install": "cd server && npm ci",
         "server:build": "tsc -b server/tsconfig.json",
-        "server:start": "node server/build/server.js"
+        "server:start": "node server/build/server.js",
+        "prepare": "husky install"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "arrowParens": "always",
+        "printWidth": 100
     },
     "eslintConfig": {
         "extends": "react-app"
