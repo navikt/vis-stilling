@@ -2,8 +2,8 @@
 
 Vis informasjon om en direktemeldt stilling (opprettet via Rekrutteringsbistand).
 
-- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/<stillingsId>
-- Prod: https://www.nav.no/arbeid/stilling/<stillingsId>
+- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/stillingsId
+- Prod: https://www.nav.no/arbeid/stilling/stillingsId
 
 ## Utvikling
 
