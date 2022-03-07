@@ -1,9 +1,16 @@
 # vis-stilling
 
-Vis informasjon om en direktemeldt stilling (TODO: Hvor vises det?) som er opprettet via [Rekrutteringsbistand](https://github.com/navikt/rekrutteringsbistand-container).
+Denne appen tilbyr et HTTP endepunkt for å vise en webside med informasjon om en gitt direktemeldt stilling som er opprettet via [Rekrutteringsbistand](https://github.com/navikt/rekrutteringsbistand-container). En URL til denne websiden deles med en Nav-bruker, på to måter (per mars 2022): 
+* lenken sendes i en SMS
+* lenken vises i et aktivitetskort i [Aktivitetsplanen](https://github.com/navikt/aktivitetsplan)
 
-- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/stillingsId
-- Prod: https://www.nav.no/arbeid/stilling/stillingsId
+
+## Manuell testing
+I nettelseren, gå til følgende adresser:
+
+- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/<stillingsId>
+- Prod: https://www.nav.no/arbeid/stilling/<stillingsId>
+
 
 ## Utvikling
 
