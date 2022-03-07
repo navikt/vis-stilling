@@ -1,30 +1,24 @@
 # vis-stilling
 
-Denne appen tilbyr et HTTP endepunkt for å vise en webside med informasjon om en gitt direktemeldt stilling som er opprettet via [Rekrutteringsbistand](https://github.com/navikt/rekrutteringsbistand-container). En URL til denne websiden deles med en Nav-bruker, på to måter (per mars 2022): 
+Denne appen viser en webside med informasjon om en gitt direktemeldt stilling som er opprettet via [Rekrutteringsbistand](https://github.com/navikt/rekrutteringsbistand-container). En URL til denne websiden deles med en Nav-bruker, på to måter (per mars 2022):
 * lenken sendes i en SMS
 * lenken vises i et aktivitetskort i [Aktivitetsplanen](https://github.com/navikt/aktivitetsplan)
 
 
-## Manuell testing
+## Manuell testing lokalt
+Fungerer ikke med Node versjon større enn 16 per mars 2023. Tips: Installer [nvm](https://github.com/nvm-sh/nvm) for lett å kunne bytte mellom ulike versjoner av Node.
+
+```sh
+npm install
+npm run start:mock
+```
+Et nettleservindu skal åpne seg. Utvid URL-en med en av stillingsID-ene fra filen `src/mock/mock-api.ts`
+
+## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:
 
 - Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/<stillingsId>
 - Prod: https://www.nav.no/arbeid/stilling/<stillingsId>
-
-
-## Utvikling
-
-```sh
-npm install
-npm run start
-```
-
-## Utvikling uten backend (mock)
-
-TODO: Virker ikke. `npm run start:mock` virket heller ikke for Are på Linux 2022-0304.
-```sh
-npm run mock
-```
 
 
 # Henvendelser
