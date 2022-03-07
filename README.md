@@ -2,6 +2,9 @@
 
 Vis informasjon om en direktemeldt stilling (TODO: Hvor vises det?) som er opprettet via [Rekrutteringsbistand](https://github.com/navikt/rekrutteringsbistand-container).
 
+- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/stillingsId
+- Prod: https://www.nav.no/arbeid/stilling/stillingsId
+
 ## Utvikling
 
 ```sh
