@@ -1,13 +1,11 @@
 import React, { FunctionComponent } from 'react';
-import { Sidetittel } from 'nav-frontend-typografi';
-import { AlertStripeInfo } from 'nav-frontend-alertstriper';
+import { Alert, Heading, Link } from '@navikt/ds-react';
 
 import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import './Visning.less';
-import Lenke from 'nav-frontend-lenker';
 
 interface Props {
     stilling: Stilling;
@@ -25,23 +23,23 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
             <header className="visning__header">
                 <div className="visning__header-inner">
                     {hvemOgHvor}
-                    <Sidetittel>
+                    <Heading size="xlarge">
                         <NaturligLinjeskift>{stilling.title}</NaturligLinjeskift>
-                    </Sidetittel>
+                    </Heading>
                 </div>
             </header>
 
             <div className="visning__container">
-                <AlertStripeInfo className="visning__advarsel">
+                <Alert variant="info" className="visning__advarsel">
                     {stilling.source !== 'DIR' ? (
                         <>
-                            <Lenke href={stillingPåArbeidsplassen}>Denne stillingen</Lenke> kan du
+                            <Link href={stillingPåArbeidsplassen}>Denne stillingen</Link> kan du
                             også finne på arbeidsplassen.no
                         </>
                     ) : (
                         'Dette er en stilling NAV jobber med for arbeidsgiver. Den er kun tilgjengelig her.'
                     )}
-                </AlertStripeInfo>
+                </Alert>
                 <main className="visning__main">
                     <article
                         className="visning__stillingstekst"

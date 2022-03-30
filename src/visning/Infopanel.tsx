@@ -1,5 +1,5 @@
+import { Heading } from '@navikt/ds-react';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { Undertittel } from 'nav-frontend-typografi';
 
 type InfopanelProps = {
     tittel: string;
@@ -14,7 +14,9 @@ const Infopanel: FunctionComponent<InfopanelProps> = ({ tittel, children, framhe
 
     return (
         <div className={cssKlasse}>
-            <Undertittel className="visning__infopaneltittel">{tittel}</Undertittel>
+            <Heading size="small" className="visning__infopaneltittel">
+                {tittel}
+            </Heading>
             {children}
         </div>
     );

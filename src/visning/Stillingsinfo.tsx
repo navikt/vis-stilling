@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import Lenke from 'nav-frontend-lenker';
+import { Dialog } from '@navikt/ds-icons';
+import { Link } from '@navikt/ds-react';
 
 import {
     hentSøknadsfrist,
@@ -14,7 +15,6 @@ import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
 import { logEvent } from '../amplitude/amplitude';
-import { Dialog } from '@navikt/ds-icons';
 
 interface Props {
     stilling: Stilling;
@@ -30,7 +30,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const bedriftensAdresse = stilling.employer.location && hentAdresse(stilling.employer.location);
 
     const bedriftensNettside = properties.employerhomepage && (
-        <Lenke href={properties.employerhomepage}>{properties.employerhomepage}</Lenke>
+        <Link href={properties.employerhomepage}>{properties.employerhomepage}</Link>
     );
 
     const bedriftsbeskrivelse = properties.employerdescription && (
@@ -42,7 +42,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     const bedriftensEpost = stilling.contactList?.[0]?.email;
     const lenkeTilBedriftensEpost = bedriftensEpost && (
-        <Lenke href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Lenke>
+        <Link href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Link>
     );
 
     const harSosialeMedier =
@@ -60,9 +60,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     <Rad label="Søknadsfrist">{hentSøknadsfrist(properties)}</Rad>
                     {!properties.applicationurl && properties.applicationemail && (
                         <Rad label="Søknad sendes til">
-                            <Lenke href={`mailto:ola.nordmann@firma.no`}>
+                            <Link href={`mailto:ola.nordmann@firma.no`}>
                                 {properties.applicationemail}
-                            </Lenke>
+                            </Link>
                         </Rad>
                     )}
                 </Tabell>
