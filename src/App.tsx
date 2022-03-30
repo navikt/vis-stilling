@@ -58,7 +58,7 @@ const App: FunctionComponent = () => {
         } else if (fantIkkeStilling) {
             return (
                 <Feilmelding>
-                    <Heading size="small" className="blokk-xxs">
+                    <Heading level="1" size="small" className="blokk-xxs">
                         Fant ikke stillingen
                     </Heading>
                     <BodyShort>Er du sikker på at du har skrevet inn riktig URL?</BodyShort>
@@ -67,7 +67,9 @@ const App: FunctionComponent = () => {
         } else if (stilling.status === Status.Feil) {
             return (
                 <Feilmelding>
-                    <Heading size="xlarge">{stilling.statusKode}</Heading>
+                    <Heading level="1" size="xlarge">
+                        {stilling.statusKode}
+                    </Heading>
                     <p>Det skjedde dessverre en feil</p>
                 </Feilmelding>
             );

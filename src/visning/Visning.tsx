@@ -23,7 +23,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
             <header className="visning__header">
                 <div className="visning__header-inner">
                     {hvemOgHvor}
-                    <Heading size="xlarge">
+                    <Heading level="1" size="xlarge">
                         <NaturligLinjeskift>{stilling.title}</NaturligLinjeskift>
                     </Heading>
                 </div>

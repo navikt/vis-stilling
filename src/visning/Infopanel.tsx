@@ -14,7 +14,7 @@ const Infopanel: FunctionComponent<InfopanelProps> = ({ tittel, children, framhe
 
     return (
         <div className={cssKlasse}>
-            <Heading size="small" className="visning__infopaneltittel">
+            <Heading level="2" size="small" className="visning__infopaneltittel">
                 {tittel}
             </Heading>
             {children}
