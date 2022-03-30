@@ -10,17 +10,14 @@ jobs:
         name: Bygg applikasjon
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v1
-            - uses: actions/setup-node@v1
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
               with:
-                  node-version: 10
-            - uses: actions/cache@v1
-              with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-
-
+                  node-version: 16
+                  cache: 'npm'
+                  cache-dependency-path: |
+                      package-lock.json
+                      server/package-lock.json
             - name: Installer avhengigheter
               run: npm ci
             - name: Bygg applikasjon
