@@ -1,9 +1,11 @@
 import React, { FunctionComponent } from 'react';
-import '../../node_modules/nav-frontend-knapper-style/src/index.less';
 
 const Lenkeknapp: FunctionComponent<React.HTMLProps<HTMLAnchorElement>> = (props) => {
     return (
-        <a {...props} className="lenkeknapp knapp knapp--hoved">
+        <a
+            {...props}
+            className="lenkeknapp navds-button navds-button--primary navds-button--medium"
+        >
             {props.children}
         </a>
     );

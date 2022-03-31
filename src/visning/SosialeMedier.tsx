@@ -1,5 +1,5 @@
+import { Link } from '@navikt/ds-react';
 import React, { FunctionComponent, Fragment } from 'react';
-import Lenke from 'nav-frontend-lenker';
 import { Properties } from '../Stilling';
 
 type Props = { properties: Properties };
@@ -24,7 +24,7 @@ const SosialeMedier: FunctionComponent<Props> = ({ properties }) => {
                 return (
                     <Fragment key={href}>
                         {skilletegn}
-                        <Lenke href={href || '#'}>{plattform}</Lenke>
+                        <Link href={href || '#'}>{plattform}</Link>
                     </Fragment>
                 );
             })}

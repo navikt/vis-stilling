@@ -1,12 +1,11 @@
 import React, { useEffect, useState, FunctionComponent, ReactNode } from 'react';
-import { Normaltekst, Sidetittel, Undertittel } from 'nav-frontend-typografi';
-import Loading from 'nav-frontend-spinner';
+import { BodyShort, Heading, Loader } from '@navikt/ds-react';
 
+import { logEvent } from './amplitude/amplitude';
 import { Respons, Status, hentStilling } from './api/api';
 import { Stilling } from './Stilling';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from './visning/stillingUtils';
 import Visning from './visning/Visning';
-import { logEvent } from './amplitude/amplitude';
 import './App.less';
 
 const hentStillingsIdFraUrl = () => window.location.pathname.split('/')[3];
@@ -59,14 +58,18 @@ const App: FunctionComponent = () => {
         } else if (fantIkkeStilling) {
             return (
                 <Feilmelding>
-                    <Undertittel className="blokk-xxs">Fant ikke stillingen</Undertittel>
-                    <Normaltekst>Er du sikker på at du har skrevet inn riktig URL?</Normaltekst>
+                    <Heading level="1" size="small" className="blokk-xxs">
+                        Fant ikke stillingen
+                    </Heading>
+                    <BodyShort>Er du sikker på at du har skrevet inn riktig URL?</BodyShort>
                 </Feilmelding>
             );
         } else if (stilling.status === Status.Feil) {
             return (
                 <Feilmelding>
-                    <Sidetittel tag="p">{stilling.statusKode}</Sidetittel>
+                    <Heading level="1" size="xlarge">
+                        {stilling.statusKode}
+                    </Heading>
                     <p>Det skjedde dessverre en feil</p>
                 </Feilmelding>
             );
@@ -78,7 +81,7 @@ const App: FunctionComponent = () => {
             );
         }
 
-        return <Loading className="app__loading" />;
+        return <Loader className="app__loading" />;
     };
 
     return <div className="app typo-normal">{renderInnhold()}</div>;
