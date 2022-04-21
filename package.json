@@ -5,7 +5,7 @@
     "homepage": "/arbeid/stilling",
     "dependencies": {
         "@craco/craco": "^6.4.3",
-        "@navikt/ds-css": "^0.16.12",
+        "@navikt/ds-css": "^0.16.13",
         "@navikt/ds-icons": "^0.8.6",
         "@navikt/ds-react": "^0.17.16",
         "@types/node": "^17.0.23",
