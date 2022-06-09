@@ -22,9 +22,11 @@ spec:
             enabled: true
     accessPolicy:
         outbound:
+            rules:
+                - application: rekrutteringsbistand-stilling-api
+                  namespace: toi
             external:
-                - host: rekrutteringsbistand-stilling-api.prod-fss-pub.nais.io
                 - host: dekoratoren.nav.no
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
-          value: https://rekrutteringsbistand-stilling-api.prod-fss-pub.nais.io
+          value: https://rekrutteringsbistand-stilling-api.intern.nav.no
