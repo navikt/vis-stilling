@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import '@navikt/ds-css';
-import './index.less';
+import './index.css';
 
 const app = document.getElementById('root');
 const root = createRoot(app!);

@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-import './Tabell.less';
+import css from './Tabell.module.css';
 
 type RadProps = {
     label: string;
@@ -12,8 +12,8 @@ export const Rad: FunctionComponent<RadProps> = ({ label, children }) => {
     if (!children) return null;
 
     return (
-        <div className="tabell__rad">
-            <dt className="tabell__label">{`${label}:`}</dt>
+        <div className={css.rad}>
+            <dt className={css.label}>{`${label}:`}</dt>
             <dd>{children}</dd>
         </div>
     );

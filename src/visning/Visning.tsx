@@ -5,7 +5,7 @@ import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from '
 import { Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
-import './Visning.less';
+import css from './Visning.module.css';
 
 interface Props {
     stilling: Stilling;
@@ -20,8 +20,8 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
 
     return (
         <>
-            <header className="visning__header">
-                <div className="visning__header-inner">
+            <header className={css.header}>
+                <div className={css.headerInner}>
                     {hvemOgHvor}
                     <Heading level="1" size="xlarge">
                         <NaturligLinjeskift>{stilling.title}</NaturligLinjeskift>
@@ -29,8 +29,8 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
                 </div>
             </header>
 
-            <div className="visning__container">
-                <Alert variant="info" className="visning__advarsel">
+            <div className={css.container}>
+                <Alert variant="info" className={css.advarsel}>
                     {stilling.source !== 'DIR' ? (
                         <>
                             <Link href={stillingPåArbeidsplassen}>Denne stillingen</Link> kan du
@@ -40,12 +40,12 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
                         'Dette er en stilling NAV jobber med for arbeidsgiver. Den er kun tilgjengelig her.'
                     )}
                 </Alert>
-                <main className="visning__main">
+                <main className={css.main}>
                     <article
-                        className="visning__stillingstekst"
+                        className={css.stillingstekst}
                         dangerouslySetInnerHTML={annonsetekst}
                     />
-                    <aside className="visning__stillingsinfo">
+                    <aside className={css.stillingsinfo}>
                         <Stillingsinfo stilling={stilling} />
                     </aside>
                 </main>

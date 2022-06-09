@@ -1,0 +1,54 @@
+.rad {
+    display: flex;
+    flex-direction: column;
+}
+
+.rad:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.rad dt,
+.rad dd {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rad dd {
+    margin-left: 0;
+}
+
+.label {
+    color: #78706a;
+    font-weight: 200;
+}
+
+@media (min-width: 36rem) {
+    .rad {
+        flex-direction: row;
+    }
+
+    .rad:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+
+    .rad dt {
+        min-width: 10rem;
+    }
+
+    .rad dd {
+        flex: 2.3;
+    }
+}
+
+@media (min-width: 64rem) {
+    .rad dt {
+        min-width: 0;
+        flex: 1;
+        flex-shrink: 0;
+    }
+
+    .rad dd {
+        flex: 1.5;
+        flex-shrink: 0;
+    }
+}

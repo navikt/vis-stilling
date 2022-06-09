@@ -15,6 +15,7 @@ import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
 import { logEvent } from '../amplitude/amplitude';
+import css from './Visning.module.css';
 
 interface Props {
     stilling: Stilling;
@@ -93,7 +94,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             </Infopanel>
             {stilling.source === 'DIR' && (
                 <Infopanel framhevet tittel="Har du spørsmål om stillingen?">
-                    <div className="visning__kontakt-veileder">
+                    <div className={css.kontaktVeileder}>
                         <Dialog aria-hidden role="img" fr="" />
                         Kontakt veilederen din i dialogen i aktivitetsplanen.
                     </div>
