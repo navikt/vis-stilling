@@ -19,7 +19,7 @@ jobs:
                       package-lock.json
                       server/package-lock.json
             - name: Installer avhengigheter
-              run: npm ci --force
+              run: npm ci
             - name: Bygg applikasjon
               run: npm run build
             - name: Installer avhengigheter for server

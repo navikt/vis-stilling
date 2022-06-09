@@ -1,6 +1,6 @@
 import { Location, Properties, Stilling, Annonsestatus } from '../Stilling';
 
-export const stillingInneholderPåkrevdeFelter = (data: any): boolean => {
+export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
     if (data.employer === null) return false;
     if (Object.keys(data.properties).length === 0) return false;
 

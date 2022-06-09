@@ -1,0 +1,9 @@
+.loading,
+.feilmelding {
+    margin: 2.5rem auto;
+    width: 100%;
+}
+
+.feilmelding {
+    text-align: center;
+}

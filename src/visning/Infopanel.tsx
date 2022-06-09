@@ -1,5 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import { Heading } from '@navikt/ds-react';
+import css from './Visning.module.css';
 
 type InfopanelProps = {
     tittel: string;
@@ -8,9 +9,11 @@ type InfopanelProps = {
 };
 
 const Infopanel: FunctionComponent<InfopanelProps> = ({ tittel, children, framhevet }) => {
-    const cssKlasse = framhevet
-        ? 'visning__infopanel visning__infopanel--blaa'
-        : 'visning__infopanel';
+    let cssKlasse = css.infopanel;
+
+    if (framhevet) {
+        cssKlasse += ' ' + css.infopanelFramhevet;
+    }
 
     return (
         <div className={cssKlasse}>
