@@ -30,11 +30,12 @@ const getAccessToken = async (): Promise<AccessToken> => {
     });
 
     if (response.ok) {
-        const accessToken = await response.json();
+        const accessToken: any = await response.json();
         cache.set<AccessToken>(cacheKey, accessToken, accessToken.expires_in);
         return accessToken;
     } else {
-        const tokenError: TokenError = await response.json();
+        const fetchTokenError: any = await response.json();
+        const tokenError: TokenError = fetchTokenError;
         throw new Error(tokenError.error_description);
     }
 };
