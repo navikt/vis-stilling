@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-const NaturligLinjeskift: FunctionComponent = ({ children }) => (
+const NaturligLinjeskift: FunctionComponent<{ children: React.ReactNode }> = ({ children }) => (
     <>
         {typeof children === 'string'
             ? children.split('/').map((snutt, index) =>
