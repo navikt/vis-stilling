@@ -1,12 +1,18 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import css from './Tabell.module.css';
 
+type TabellProps = {
+    children: ReactNode;
+};
+
 type RadProps = {
     label: string;
     children: ReactNode;
 };
 
-const Tabell: FunctionComponent = ({ children }) => <dl className="tabell">{children}</dl>;
+const Tabell: FunctionComponent<TabellProps> = ({ children }) => (
+    <dl className="tabell">{children}</dl>
+);
 
 export const Rad: FunctionComponent<RadProps> = ({ label, children }) => {
     if (!children) return null;
