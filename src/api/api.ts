@@ -44,7 +44,7 @@ type UgyldigId = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
-const transformerTilStilling = (data: any): Stilling => {
+export const transformerTilStilling = (data: any): Stilling => {
     console.log('TODO Are: Inne i transformerTilStilling');
     if (data?.properties) {
         const { workday, workhours } = data.properties;
