@@ -45,6 +45,7 @@ type UgyldigId = {
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
 const transformerTilStilling = (data: any): Stilling => {
+    console.log('TODO Are: Inne i transformerTilStilling');
     if (data?.properties) {
         const { workday, workhours } = data.properties;
 
@@ -77,6 +78,7 @@ export const hentStilling = async (stillingsId: string): Promise<Respons> => {
 
         if (respons.ok) {
             const stilling = await respons.json();
+            console.log('TODO Are: Har hentet stilling fra backend');
             return {
                 status: Status.Suksess,
                 data: transformerTilStilling(stilling),
@@ -88,6 +90,7 @@ export const hentStilling = async (stillingsId: string): Promise<Respons> => {
             statusKode: respons.status,
         };
     } catch (error) {
+        console.log('TODO Are: ' + error);
         return {
             status: Status.Kjøretidsfeil,
         };
