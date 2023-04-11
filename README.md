@@ -17,7 +17,7 @@ Et nettleservindu skal åpne seg. Utvid URL-en med en av stillingsID-ene fra fil
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:
 
-- Dev: https://vis-stilling.dev.nav.no/arbeid/stilling/<stillingsId>
+- Dev: https://vis-stilling.intern.dev.nav.no/arbeid/stilling/<stillingsId>
 - Prod: https://www.nav.no/arbeid/stilling/<stillingsId>
 
 
