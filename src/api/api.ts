@@ -44,6 +44,16 @@ type UgyldigId = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
+function toArray(s: string): string[] {
+    try {
+        return JSON.parse(s);
+    } catch (err) {
+        // "It's definitely legal to use try/catch, especially in a case like this. Otherwise, you'd need to do lots of string analysis stuff such as tokenizing / regex operations; which would have terrible performance." https://stackoverflow.com/a/52799327
+        console.log('Ares error: ' + err);
+        return [s]; // Antar at s er en enkel string a la "Lørdag" eller "Dagtid"
+    }
+}
+
 export const transformerTilStilling = (data: any): Stilling => {
     console.log('TODO Are: Inne i transformerTilStilling');
     if (data?.properties) {
@@ -54,8 +64,8 @@ export const transformerTilStilling = (data: any): Stilling => {
                 ...data,
                 properties: {
                     ...data.properties,
-                    workday: workday ? JSON.parse(workday) : undefined,
-                    workhours: workhours ? JSON.parse(workhours) : undefined,
+                    workday: workday ? toArray(workday) : undefined, // "[\"Ukedager\"]"    "Ukedager"
+                    workhours: workhours ? toArray(workhours) : undefined,
                 },
             };
         }

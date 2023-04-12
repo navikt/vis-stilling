@@ -1,16 +1,130 @@
-import { expect, test, jest, describe, beforeEach } from '@jest/globals';
+import { describe, test } from '@jest/globals';
 import { transformerTilStilling } from './api';
-import { Stilling } from '../Stilling';
-import { act } from 'react-dom/test-utils';
+import { Stilling, Workday, Workhour } from '../Stilling';
 
 describe('asdf', () => {
-    const stillingJson: string =
-        '{"id":2261329,"uuid":"40022b10-b283-4166-af57-e9dda0c342b6","updated":"2023-03-20T00:00:14.56287","contactList":[{"name":"Unni Marsteinstredet Aagedal","email":null,"phone":"95765849","title":"Direktør for Instituttstab"}],"title":"Jurist (rådgiver/seniorrådgiver) ","medium":"talentech","employer":{"contactList":[],"location":{"address":"Lovisenberggata 8","postalCode":"0456","county":"OSLO","municipal":"OSLO","municipalCode":"0301","city":"OSLO","country":"NORGE","latitude":"59.93394890465518","longitude":"10.745259443345768"},"properties":{},"name":"FOLKEHELSEINSTITUTTET AVD OSLO LINDERN","publicName":"FOLKEHELSEINSTITUTTET AVD OSLO LINDERN"},"businessName":"Juridiske tjenester, Folkehelseinstituttet FHI","status":"INACTIVE","location":{"address":"Myrens verksted 6H","postalCode":"0473","county":"OSLO","municipal":"OSLO","municipalCode":"0301","city":"OSLO","country":"NORGE","latitude":"59.93420171496874","longitude":"10.759017596892564"},"properties":{"extent":"Heltid","workhours":"Dagtid","employerhomepage":"http://www.fhi.no","applicationdue":"2023-03-19T00:00:00","workday":["Ukedager"],"jobtitle":"Jurist (rådgiver/seniorrådgiver)","positioncount":"1","engagementtype":"Fast","employerdescription":"<p><em>Folkehelseinstituttets visjon er bedre helse for alle. Vi produserer, oppsummerer og kommuniserer kunnskap for folkehelsearbeidet og helse- og omsorgstjenestene. Kjerneoppgavene er beredskap, kunnskap og infrastruktur. Infrastruktur omfatter bl.a. registre, helseundersøkelser, biobanker og laboratorievirksomhet. Folkehelseinstituttet er en etat under Helse- og omsorgsdepartementet. Vi er i dag om lag 1100 ansatte lokalisert i Oslo og Bergen.</em></p>\\n<p><em>\\nFolkehelseinstituttet  er opptatt av mangfold. Vi ønsker at kvalifiserte kandidater søker jobb hos oss uavhengig av kjønn, alder, funksjonsevne, hull i CVen, etnisk eller nasjonal bakgrunn.</em></p>","adtext":"<p>Er du interessert i forskning og ønsker å bidra til å løse viktige og aktuelle samfunnsoppdrag?  <br /><br />Folkehelseinstituttet (FHI) er en stor, spennende og sammensatt kunnskapsorganisasjon i rask utvikling. FHI har et meningsfylt og bredt samfunnsoppdrag og har en sentral rolle i den nasjonale og globale helseberedskapen og som kunnskapsprodusent i helsesystemet. Instituttet overvåker, gir råd, utfører analyser og sikrer nødvendig vaksineforsyning og vaksineberedskap. Instituttet driver omfattende forskningsaktivitet både internasjonalt og nasjonalt. Instituttet forvalter en rekke datasamlinger i form av lovbestemte nasjonale helseregistre, store helseundersøkelser og biologisk materiale. Instituttet har bred kontaktflate, og mange ulike former for kontraktsfestet samarbeid med både offentlige og private aktører. <br /><br />Vi har ledig fast stilling som jurist (rådgiver/seniorrådgiver) ved Avdeling for juridiske tjenester.  <br /><br />Avdelingen består av 8 jurister, og yter bistand til hele instituttet. Avdelingen har ansvar for å gi juridisk bistand i enkeltsaker, innenfor personvern, helseforskningsloven, helseregisterloven, smittevernloven og helseberedskapsloven. Avdelingens jurister utformer og forhandler kontrakter i forskningsprosjekter og andre typer samarbeid. Avdelingen yter intern opplæring/kurs og utarbeider interne retningslinjer/maler. Juristene har ulike hovedarbeidsområder og ansvar for egne saker, men samarbeid og erfaringsutveksling er en viktig del av arbeidet. Juristene er også deltakere i ulike utvalg og i større prosjekter.<br /><br />Vi søker etter 1 jurist med kunnskap om eller interesse for arbeid knyttet til helseforskning og helseundersøkelser, slik som\\nDen norske mor, far og barn-undersøkelsen (MoBa). Helseforskning innebærer ofte behandling av personopplysninger. Noe av arbeidet vil dermed knytte seg til personvernrettslige spørsmål. <br /></p><br />\\n<h3>Arbeidsoppgaver</h3><ul><li>Juridisk rådgivning knyttet til problemstillinger rundt helseforskningsloven, herunder bistand med utforming av søknader til REK og klager på vedtak</li><li>Juridisk bistand til forvaltning av befolkningsbaserte helseundersøkelser</li><li>Bistand til utforming og fortolkning av samtykker og informasjonsskriv</li><li>Holde kurs og opplæring </li><li>Utforme, oppdatere og vedlikeholde interne kvalitetsdokumenter</li><li>Utforme høringsuttalelser</li></ul><h3>Kvalifikasjoner</h3><ul><li>Juridisk embetseksamen/master i rettsvitenskap  <br /></li><li>Kunnskap om eller interesse for helseforskning og/eller befolkningsbaserte helseundersøkelser<br /></li><li>Interesse for personvern <br /></li><li>God skriftlig og muntlig fremstillingsevne på norsk og engelsk</li></ul><h3>Personlige egenskaper</h3><ul><li>Ansvarsbevisst, selvstendig, fleksibel, effektiv og løsningsorientert  <br /></li><li>Tydelig, tar initiativ og har høy integritet  <br /></li><li>Motivasjon og evne til  tenke helhetlig og å bidra til langsiktig faglig utvikling i juridisk team  <br /></li><li>Gode relasjons- og samarbeidsevner, også på tvers av fagområder og profesjoner</li><li>Liker å jobbe med varierte og komplekse oppgaver<br /></li></ul><h3>Vi tilbyr</h3><ul><li>Du blir en del av et sterkt fagmiljø med engasjerte og hyggelige kolleger</li><li>Du vil jobbe med viktige samfunnsoppdrag</li><li>Arbeidsoppgaver med god mulighet for faglig og personlig utvikling og med stort spenn i oppgaver</li><li>Stort kontaktnett både til FHIs fagmiljøer, støtteenheter, ledelse og eksterne</li><li>Stilling som seniorrådgiver/rådgiver og lønn vil avhenge av kvalifikasjonene dine</li><li>Gode pensjonsordninger i Statens pensjonskasse</li><li>Mulighet for å inngå avtale om delvis hjemmearbeid</li><li>I tillegg får du godene ved å være ansatt i staten, som fleksitidsordninger, sommertid og inntil 2 timer trening i arbeidstiden</li></ul><h3>Kontaktinformasjon</h3>Unni Marsteinstredet Aagedal, Direktør for Instituttstab, 95765849<br />\\nAga Zachariassen, Avdelingsdirektør, 92455352<br />\\n<h3>Arbeidssted</h3>Myrens verksted 6H<br />\\n0473 Oslo<br />\\n<h3>Nøkkelinformasjon:</h3>Arbeidsgiver: Folkehelseinstituttet FHI<br />\\n<br />\\nReferansenr.: 4618348348<br />\\nStillingsprosent: 100%<br />\\nFast<br />\\nSøknadsfrist: 19.03.2023<br />\\n<br />\\n","applicationurl":"https://candidate.webcruiter.com/cv?advertid=4618348348&language=nb&link_source_id=17","sector":"Offentlig"},"source":"IMPORTAPI"}';
+    test('simpleString', async () => {
+        const workdayString: string = JSON.stringify(Workday.Ukedager);
+        const workhourString: string = JSON.stringify(Workhour.Dagtid);
+        const s: string = stillingJson(workdayString, workhourString);
 
-    test('asdfasdfasdf', async () => {
-        const parsed = JSON.parse(stillingJson);
+        const parsed = JSON.parse(s);
         const actual: Stilling = transformerTilStilling(parsed);
 
         console.log(JSON.stringify(actual));
     });
+
+    test('arrayOneElement', async () => {
+        // const uke1 = Workday.Ukedager
+        // console.log("uke1=" + uke1)
+        // const uke2 = "[\"" + uke1 + "\"]"
+        // console.log("uke2=" + uke2)
+        // const uke3 = JSON.stringify(uke2)
+        // console.log("uke3=" + uke3)
+
+        const workdayArray: string[] = [];
+        workdayArray.push(Workday.Ukedager);
+        const workdayString: string = JSON.stringify(workdayArray);
+        console.log('workdayString=' + workdayString);
+
+        const workhoursArray: string[] = [];
+        workhoursArray.push(Workhour.Dagtid);
+        const workhoursString: string = JSON.stringify(workhoursArray);
+        console.log('workhoursString=' + workhoursString);
+
+        const s: string = stillingJson(workdayString, workhoursString);
+        const parsed = JSON.parse(s);
+
+        const actual: Stilling = transformerTilStilling(parsed);
+
+        console.log(JSON.stringify(actual));
+    });
+
+    test('arrayTwoElements', async () => {
+        const s: string = stillingJson('["Ukedager","Lørdag"]', '["Dagtid", "Natt"]');
+        const parsed = JSON.parse(s);
+
+        const actual: Stilling = transformerTilStilling(parsed);
+
+        console.log(JSON.stringify(actual));
+    });
+
+    test('objectIstedenforArray', async () => {
+        const s: string = stillingJson('{}', '{}');
+        const parsed = JSON.parse(s);
+
+        const actual: Stilling = transformerTilStilling(parsed);
+
+        console.log(JSON.stringify(actual));
+    });
+
+    function stillingJson(workdayString: string, workhoursString: string): string {
+        // const workdayString: string = JSON.stringify(workday)
+        // const workhoursString: string = JSON.stringify(workhours)
+
+        const stilling = {
+            id: 2261329,
+            uuid: '40022b10-b283-4166-af57-e9dda0c342b6',
+            updated: '2023-03-20T00:00:14.56287',
+            contactList: [
+                {
+                    name: 'Unni Marsteinstredet Aagedal',
+                    email: null,
+                    phone: '95765849',
+                    title: 'Direktør for Instituttstab',
+                },
+            ],
+            title: 'Jurist (rådgiver/seniorrådgiver) ',
+            medium: 'talentech',
+            employer: {
+                contactList: [],
+                location: {
+                    address: 'Lovisenberggata 8',
+                    postalCode: '0456',
+                    county: 'OSLO',
+                    municipal: 'OSLO',
+                    municipalCode: '0301',
+                    city: 'OSLO',
+                    country: 'NORGE',
+                    latitude: '59.93394890465518',
+                    longitude: '10.745259443345768',
+                },
+                properties: {},
+                name: 'FOLKEHELSEINSTITUTTET AVD OSLO LINDERN',
+                publicName: 'FOLKEHELSEINSTITUTTET AVD OSLO LINDERN',
+            },
+            businessName: 'Juridiske tjenester, Folkehelseinstituttet FHI',
+            status: 'INACTIVE',
+            location: {
+                address: 'Myrens verksted 6H',
+                postalCode: '0473',
+                county: 'OSLO',
+                municipal: 'OSLO',
+                municipalCode: '0301',
+                city: 'OSLO',
+                country: 'NORGE',
+                latitude: '59.93420171496874',
+                longitude: '10.759017596892564',
+            },
+            properties: {
+                extent: 'Heltid',
+                workhours: workhoursString,
+                employerhomepage: 'http://www.fhi.no',
+                applicationdue: '2023-03-19T00:00:00',
+                workday: workdayString,
+                jobtitle: 'Jurist (rådgiver/seniorrådgiver)',
+                positioncount: '1',
+                engagementtype: 'Fast',
+                employerdescription:
+                    '<p><em>Folkehelseinstituttets visjon er bedre helse for alle. Vi produserer, oppsummerer og kommuniserer kunnskap for folkehelsearbeidet og helse- og omsorgstjenestene. Kjerneoppgavene er beredskap, kunnskap og infrastruktur. Infrastruktur omfatter bl.a. registre, helseundersøkelser, biobanker og laboratorievirksomhet. Folkehelseinstituttet er en etat under Helse- og omsorgsdepartementet. Vi er i dag om lag 1100 ansatte lokalisert i Oslo og Bergen.</em></p>\\n<p><em>\\nFolkehelseinstituttet  er opptatt av mangfold. Vi ønsker at kvalifiserte kandidater søker jobb hos oss uavhengig av kjønn, alder, funksjonsevne, hull i CVen, etnisk eller nasjonal bakgrunn.</em></p>',
+                adtext: 'dummyAdText',
+                applicationurl:
+                    'https://candidate.webcruiter.com/cv?advertid=4618348348&language=nb&link_source_id=17',
+                sector: 'Offentlig',
+            },
+            source: 'IMPORTAPI',
+        };
+
+        return JSON.stringify(stilling);
+    }
 });
