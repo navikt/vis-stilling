@@ -10,7 +10,7 @@ spec:
     image: {{ image }}
     port: 3000
     ingresses:
-        - https://vis-stilling.dev.nav.no/arbeid/stilling
+        - https://vis-stilling.intern.dev.nav.no/arbeid/stilling
     liveness:
         initialDelay: 5
         path: /arbeid/stilling/internal/isAlive
@@ -29,4 +29,4 @@ spec:
                 - host: dekoratoren.dev.nav.no
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
-          value: https://rekrutteringsbistand-stilling-api.dev.intern.nav.no
+          value: http://rekrutteringsbistand-stilling-api.toi
