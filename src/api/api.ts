@@ -44,18 +44,15 @@ type UgyldigId = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
-function toArray(s: string): string[] {
+function attemptToParseJsonAsStringArray(jsonOrString: string): string[] {
     try {
-        return JSON.parse(s);
+        return JSON.parse(jsonOrString);
     } catch (err) {
-        // "It's definitely legal to use try/catch, especially in a case like this. Otherwise, you'd need to do lots of string analysis stuff such as tokenizing / regex operations; which would have terrible performance." https://stackoverflow.com/a/52799327
-        console.log('Ares error: ' + err);
-        return [s]; // Antar at s er en enkel string a la "Lørdag" eller "Dagtid"
+        return [jsonOrString]; // Antar at input er en enkel string a la "Lørdag" eller "Dagtid"
     }
 }
 
 export const transformerTilStilling = (data: any): Stilling => {
-    console.log('TODO Are: Inne i transformerTilStilling');
     if (data?.properties) {
         const { workday, workhours } = data.properties;
 
@@ -64,8 +61,8 @@ export const transformerTilStilling = (data: any): Stilling => {
                 ...data,
                 properties: {
                     ...data.properties,
-                    workday: workday ? toArray(workday) : undefined, // "[\"Ukedager\"]"    "Ukedager"
-                    workhours: workhours ? toArray(workhours) : undefined,
+                    workday: workday ? attemptToParseJsonAsStringArray(workday) : undefined,
+                    workhours: workhours ? attemptToParseJsonAsStringArray(workhours) : undefined,
                 },
             };
         }
@@ -88,7 +85,6 @@ export const hentStilling = async (stillingsId: string): Promise<Respons> => {
 
         if (respons.ok) {
             const stilling = await respons.json();
-            console.log('TODO Are: Har hentet stilling fra backend');
             return {
                 status: Status.Suksess,
                 data: transformerTilStilling(stilling),
@@ -100,7 +96,6 @@ export const hentStilling = async (stillingsId: string): Promise<Respons> => {
             statusKode: respons.status,
         };
     } catch (error) {
-        console.log('TODO Are: ' + error);
         return {
             status: Status.Kjøretidsfeil,
         };
