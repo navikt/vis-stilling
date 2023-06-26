@@ -26,7 +26,7 @@ spec:
                 - application: rekrutteringsbistand-stilling-api
                   namespace: toi
             external:
-                - host: dekoratoren.dev.nav.no
+                - host: dekoratoren.intern.dev.nav.no
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
           value: http://rekrutteringsbistand-stilling-api.toi
