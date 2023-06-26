@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/node-express:16
+FROM navikt/node-express:14-alpine
 
 WORKDIR /var
 
