@@ -59,7 +59,13 @@ const setupProxy = (fraPath: string, tilTarget: string): RequestHandler =>
 
 const renderAppMedDekoratør = (): Promise<HTML> => {
     const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
-    return injectDecoratorServerSide({ env, filePath: `${buildPath}/index.html`, chatbot: false });
+    return injectDecoratorServerSide({
+        env,
+        filePath: `${buildPath}/index.html`,
+        params: {
+            chatbot: false,
+        },
+    });
 };
 
 const logError = (feil: string) => (error: string) => {
