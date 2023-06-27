@@ -21,12 +21,12 @@ jobs:
                       server/package-lock.json
             - name: Installer avhengigheter
               run: npm ci
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
             - name: Bygg applikasjon
               run: npm run build
             - name: Installer avhengigheter for server
               run: npm run server:install
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
             - name: Bygg server
               run: npm run server:build
             - name: Logg inn til Github
