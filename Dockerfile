@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/node-express:16
+FROM gcr.io/distroless/nodejs18-debian11
 
 WORKDIR /var
 
@@ -9,5 +9,4 @@ COPY server/node_modules server/node_modules/
 WORKDIR /var/server/build
 
 EXPOSE 3000
-
-ENTRYPOINT ["node", "server.js"]
+CMD ["server.js"]

@@ -13,7 +13,8 @@ jobs:
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
               with:
-                  node-version: 16
+                  node-version: 18
+                  registry-url: 'https://npm.pkg.github.com'
                   cache: 'npm'
                   cache-dependency-path: |
                       package-lock.json
@@ -24,6 +25,8 @@ jobs:
               run: npm run build
             - name: Installer avhengigheter for server
               run: npm run server:install
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
             - name: Bygg server
               run: npm run server:build
             - name: Logg inn til Github
@@ -42,7 +45,7 @@ jobs:
     deploy-til-dev:
         name: Deploy til dev
         needs: bygg-og-push-docker-image
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/access-policy'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/oppgrader-dekoratør'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
