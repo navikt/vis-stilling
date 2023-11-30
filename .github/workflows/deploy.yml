@@ -5,6 +5,9 @@ on: [push]
 env:
     IMAGE: ghcr.io/${{ github.repository }}/vis-stilling:${{ github.sha }}
 
+permissions:
+    packages: write
+
 jobs:
     bygg-og-push-docker-image:
         name: Bygg applikasjon
