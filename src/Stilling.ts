@@ -106,4 +106,5 @@ export type Stilling = {
     status: Annonsestatus;
     source: string;
     deactivatedByExpiry?: boolean;
+    stillingskategori: 'JOBBMESSE' | string | null;
 };

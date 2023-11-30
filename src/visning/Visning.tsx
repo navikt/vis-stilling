@@ -1,11 +1,11 @@
-import React, { FunctionComponent } from 'react';
 import { Alert, Heading, Link } from '@navikt/ds-react';
+import { FunctionComponent } from 'react';
 
-import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import css from './Visning.module.css';
+import { hentBedriftensVisningsnavn, hentKommuneOgEllerBy, lagInnerHtml } from './stillingUtils';
 
 interface Props {
     stilling: Stilling;
@@ -18,13 +18,15 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
         stilling.location
     )}`;
 
+    const tittel = stilling.stillingskategori === 'JOBBMESSE' ? 'Jobbmesse' : stilling.title;
+
     return (
         <>
             <header className={css.header}>
                 <div className={css.headerInner}>
                     {hvemOgHvor}
                     <Heading level="1" size="xlarge">
-                        <NaturligLinjeskift>{stilling.title}</NaturligLinjeskift>
+                        <NaturligLinjeskift>{tittel}</NaturligLinjeskift>
                     </Heading>
                 </div>
             </header>
