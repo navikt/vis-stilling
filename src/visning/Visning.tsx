@@ -18,7 +18,8 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
         stilling.location
     )}`;
 
-    const tittel = stilling.stillingskategori === 'JOBBMESSE' ? 'Jobbmesse' : stilling.title;
+    const tittel =
+        stilling.stillingskategori === 'JOBBMESSE' ? 'Invitasjon til jobbmesse' : stilling.title;
 
     return (
         <>

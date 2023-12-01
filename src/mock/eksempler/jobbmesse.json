@@ -1,0 +1,133 @@
+{
+    "id": 582586,
+    "uuid": "2424ab59-23a0-1749-1756-1047ffff1098",
+    "created": "2020-03-16T14:55:21.314124",
+    "createdBy": "pam-rekrutteringsbistand",
+    "updated": "2020-03-16T15:02:53.140067",
+    "updatedBy": "pam-rekrutteringsbistand",
+    "mediaList": [],
+    "contactList": [
+        {
+            "name": "Joare Mangstuen Mossby",
+            "email": "joare.mangstuen.mossby@nav.no",
+            "phone": "48173919",
+            "role": null,
+            "title": "KAM"
+        }
+    ],
+    "title": "Dette er en jobbmesse, men denne tittelen skal ikke vises",
+    "status": "ACTIVE",
+    "privacy": "INTERNAL_NOT_SHOWN",
+    "source": "DIR",
+    "medium": "DIR",
+    "reference": "d328d737-1965-487b-a1bb-9f3872e1c1e7",
+    "published": "2020-03-16T14:59:46.259214",
+    "expires": "2020-03-28T02:00:00",
+    "employer": {
+        "id": 441854,
+        "uuid": "9983a5ef-e573-4ee8-b73c-7e617a1d896a",
+        "created": "2019-09-06T14:16:56.237362",
+        "createdBy": "pam-ad",
+        "updated": "2020-03-16T14:59:46.255943",
+        "updatedBy": "pam-ad",
+        "mediaList": [],
+        "contactList": [],
+        "location": {
+            "address": "Testgaten 1",
+            "postalCode": "0001",
+            "county": "VIKEN",
+            "municipal": "DRAMMEN",
+            "municipalCode": "3005",
+            "city": "DRAMMEN",
+            "country": "NORGE",
+            "latitude": "59.6",
+            "longitude": "10.1"
+        },
+        "locationList": [
+            {
+                "address": "Testgaten 1",
+                "postalCode": "3041",
+                "county": "VIKEN",
+                "municipal": "DRAMMEN",
+                "municipalCode": "3005",
+                "city": "DRAMMEN",
+                "country": "NORGE",
+                "latitude": "59.6",
+                "longitude": "10.1"
+            }
+        ],
+        "properties": {
+            "nace2": "[{\"code\":\"52.214\",\"name\":\"Jobbmesse i regi av NAV\"}]"
+        },
+        "name": "NAV kontoret",
+        "orgnr": "000000000",
+        "status": "ACTIVE",
+        "parentOrgnr": "000000000",
+        "publicName": "NAV kontoret",
+        "deactivated": null,
+        "orgform": "BEDR",
+        "employees": 0
+    },
+    "administration": {
+        "id": 1424451,
+        "status": "DONE",
+        "comments": null,
+        "reportee": "Mossby, Joare Mangstuen",
+        "remarks": [],
+        "navIdent": "A123456"
+    },
+    "location": {
+        "address": null,
+        "postalCode": null,
+        "county": "VIKEN",
+        "municipal": "DRAMMEN",
+        "municipalCode": "3005",
+        "city": null,
+        "country": "NORGE",
+        "latitude": null,
+        "longitude": null
+    },
+    "locationList": [
+        {
+            "address": null,
+            "postalCode": null,
+            "county": "VIKEN",
+            "municipal": "DRAMMEN",
+            "municipalCode": "3005",
+            "city": null,
+            "country": "NORGE",
+            "latitude": null,
+            "longitude": null
+        }
+    ],
+    "categoryList": [
+        {
+            "id": 5396,
+            "code": "8322.02",
+            "categoryType": "STYRK08NAV",
+            "name": "Drosjesjåfør",
+            "description": null,
+            "parentId": 5394
+        }
+    ],
+    "properties": {
+        "extent": "Heltid",
+        "workhours": "[\"Dagtid\",\"Kveld\",\"Natt\"]",
+        "applicationdue": "Snarest",
+        "workday": "[\"Lørdag\",\"Ukedager\"]",
+        "searchtags": "[{\"label\":\"Taxisjåfør\",\"score\":1.0},{\"label\":\"Bussjåfør\",\"score\":0.15123688},{\"label\":\"Taxi guide\",\"score\":0.15123688}]",
+        "jobtitle": "Drosjesjåfør",
+        "positioncount": "2",
+        "engagementtype": "Fast",
+        "starttime": "Etter avtale",
+        "classification_input_source": "categoryName",
+        "sector": "Privat",
+        "adtext": "<p>Jobmesse for brukere</p>"
+    },
+    "publishedByAdmin": "2020-03-16T14:59:46.259214",
+    "businessName": "NAV kontoret",
+    "firstPublished": true,
+    "deactivatedByExpiry": false,
+    "activationOnPublishingDate": false,
+    "rekruttering": null
+}
