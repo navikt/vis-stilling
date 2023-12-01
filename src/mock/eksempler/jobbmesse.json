@@ -1,6 +1,6 @@
 {
     "id": 582586,
-    "uuid": "2424ab59-23a0-1749-1756-1047ffff1098",
+    "uuid": "7b4d2a0c-8cc4-4c5b-b2a6-75992350d885",
     "created": "2020-03-16T14:55:21.314124",
     "createdBy": "pam-rekrutteringsbistand",
     "updated": "2020-03-16T15:02:53.140067",
@@ -20,6 +20,7 @@
     "privacy": "INTERNAL_NOT_SHOWN",
     "source": "DIR",
     "medium": "DIR",
+    "stillingskategori": "JOBBMESSE",
     "reference": "d328d737-1965-487b-a1bb-9f3872e1c1e7",
     "published": "2020-03-16T14:59:46.259214",
     "expires": "2020-03-28T02:00:00",
