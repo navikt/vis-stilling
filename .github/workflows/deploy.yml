@@ -33,6 +33,7 @@ jobs:
             - name: Bygg server
               run: npm run server:build
             - name: Push docker image to GAR
+              if: github.actor != 'dependabot[bot]'
               uses: nais/docker-build-push@v0
               id: docker-build-push
               with:
