@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import NodeCache from 'node-cache';
 
 const clientId = process.env.AZURE_APP_CLIENT_ID!;
@@ -30,11 +29,11 @@ const getAccessToken = async (): Promise<AccessToken> => {
     });
 
     if (response.ok) {
-        const accessToken = await response.json();
+        const accessToken = (await response.json()) as AccessToken;
         cache.set<AccessToken>(cacheKey, accessToken, accessToken.expires_in);
         return accessToken;
     } else {
-        const tokenError: TokenError = await response.json();
+        const tokenError: TokenError = (await response.json()) as TokenError;
         throw new Error(tokenError.error_description);
     }
 };
