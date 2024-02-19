@@ -2,7 +2,7 @@ FROM gcr.io/distroless/nodejs18-debian11
 
 WORKDIR /var
 
-COPY build/ build/
+COPY dist/ build/
 COPY server/build server/build/
 COPY server/node_modules server/node_modules/
 

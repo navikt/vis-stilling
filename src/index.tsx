@@ -7,4 +7,10 @@ import './index.css';
 const app = document.getElementById('root');
 const root = createRoot(app!);
 
-root.render(<App />);
+const setupMock = async () => {
+    if (import.meta.env.DEV) {
+        await import('./mock/mock-api');
+    }
+};
+
+setupMock().then(() => root.render(<App />));
