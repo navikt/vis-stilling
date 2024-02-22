@@ -1,10 +1,6 @@
 import { Stilling } from '../Stilling';
 import { erUuid } from '../visning/stillingUtils';
 
-if (process.env.REACT_APP_MOCK) {
-    require('../mock/mock-api.ts');
-}
-
 const API = '/arbeid/stilling/api';
 
 export enum Status {
