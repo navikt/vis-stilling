@@ -1,4 +1,4 @@
-import { Location, Properties, Stilling, Annonsestatus } from '../Stilling';
+import { Annonsestatus, Location, Properties, Stilling } from '../Stilling';
 
 export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
     if (data.employer === null) return false;
@@ -28,10 +28,9 @@ export const normaliserNavn = (navn: string) => {
 };
 
 export const hentKommuneOgEllerBy = (location: Location) => {
-    if (location.municipal) {
+    if (location?.municipal) {
         return normaliserNavn(location.municipal);
     }
-
     return null;
 };
 
