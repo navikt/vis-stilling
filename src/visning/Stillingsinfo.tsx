@@ -1,20 +1,21 @@
-import React, { FunctionComponent } from 'react';
 import { Dialog } from '@navikt/ds-icons';
 import { Link } from '@navikt/ds-react';
+import { FunctionComponent } from 'react';
 
-import {
-    hentSøknadsfrist,
-    hentAdresse,
-    formaterDato,
-    lagInnerHtml,
-    hentBedriftensVisningsnavn,
-} from './stillingUtils';
+import { logEvent } from '../amplitude/amplitude';
 import { Stilling } from '../Stilling';
 import Infopanel from './Infopanel';
-import Tabell, { Rad } from './tabell/Tabell';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
-import { logEvent } from '../amplitude/amplitude';
+import {
+    formaterDato,
+    hentAdresse,
+    hentAdresser,
+    hentBedriftensVisningsnavn,
+    hentSøknadsfrist,
+    lagInnerHtml,
+} from './stillingUtils';
+import Tabell, { Rad } from './tabell/Tabell';
 import css from './Visning.module.css';
 
 interface Props {
@@ -81,7 +82,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             <Infopanel tittel="Om stillingen">
                 <Tabell>
                     <Rad label="Stillingstittel">{properties.jobtitle}</Rad>
-                    <Rad label="Arbeidssted">{hentAdresse(stilling.location)}</Rad>
+                    <Rad label="Arbeidssted">{hentAdresser(stilling.locationList)}</Rad>
                     <Rad label="Ansettelsesform">{properties.engagementtype}</Rad>
                     <Rad label="Arbeidstidsordning">{properties.jobarrangement}</Rad>
                     <Rad label="Omfang">{properties.extent}</Rad>

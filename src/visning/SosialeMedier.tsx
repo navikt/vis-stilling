@@ -1,5 +1,5 @@
 import { Link } from '@navikt/ds-react';
-import React, { FunctionComponent, Fragment } from 'react';
+import { Fragment, FunctionComponent } from 'react';
 import { Properties } from '../Stilling';
 
 type Props = { properties: Properties };

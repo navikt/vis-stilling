@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react';
 import { Alert, Heading, Link } from '@navikt/ds-react';
+import { FunctionComponent } from 'react';
 
-import { hentKommuneOgEllerBy, lagInnerHtml, hentBedriftensVisningsnavn } from './stillingUtils';
 import { Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
+import { hentAdresser, hentBedriftensVisningsnavn, lagInnerHtml } from './stillingUtils';
 import css from './Visning.module.css';
 
 interface Props {
@@ -14,8 +14,8 @@ interface Props {
 const Visning: FunctionComponent<Props> = ({ stilling }) => {
     const annonsetekst = lagInnerHtml(stilling.properties.adtext);
     const stillingPåArbeidsplassen = `https://arbeidsplassen.nav.no/stillinger/stilling/${stilling.uuid}`;
-    const hvemOgHvor = `${hentBedriftensVisningsnavn(stilling)}, ${hentKommuneOgEllerBy(
-        stilling.location
+    const hvemOgHvor = `${hentBedriftensVisningsnavn(stilling)}, ${hentAdresser(
+        stilling.locationList
     )}`;
 
     return (

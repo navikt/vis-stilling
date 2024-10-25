@@ -92,7 +92,7 @@ export type Stilling = {
     properties: Properties;
 
     // Arbeidssted
-    location: Location;
+    locationList: Location[];
 
     // Fra Altinn
     employer: Employer;

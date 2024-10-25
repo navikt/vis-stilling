@@ -65,6 +65,14 @@ export const hentAdresse = (location: Location) => {
     } else return hentKommuneOgEllerBy(location);
 };
 
+export const hentAdresser = (locationList: Location[]) => {
+    if (locationList && locationList.length) {
+        return locationList.map((location) => hentAdresse(location));
+    }
+
+    return '';
+};
+
 // Hentet fra 'is-uuid': https://github.com/afram/is-uuid/blob/master/lib/is-uuid.js
 export const erUuid = (kanskjeUuid: string) => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
