@@ -58,8 +58,8 @@ export const hentBedriftensVisningsnavn = (stilling: Stilling) =>
     normaliserNavn(stilling.employer.name);
 
 export const hentAdresse = (location: Location) => {
-    if (location.address) {
-        if (location.postalCode && location.city) {
+    if (location?.address) {
+        if (location?.postalCode && location?.city) {
             return `${location.address}, ${location.postalCode} ${normaliserNavn(location.city)}`;
         }
     } else return hentKommuneOgEllerBy(location);
