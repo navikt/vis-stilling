@@ -3,9 +3,9 @@ name: Bygg og deploy
 on: [push, workflow_dispatch]
 
 permissions:
-  contents: read
-  id-token: write
-  
+    contents: read
+    id-token: write
+
 jobs:
     bygg-og-push-docker-image:
         name: Bygg applikasjon
@@ -44,7 +44,7 @@ jobs:
     deploy-til-dev:
         name: Deploy til dev
         needs: bygg-og-push-docker-image
-        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/oppgrader-dekoratør'
+        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bytt-namespace-til-toi'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
