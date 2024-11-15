@@ -40,6 +40,7 @@ jobs:
                   team: toi
                   identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
                   project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+                  tag: ${{ contains(fromJSON('["refs/heads/master", "refs/heads/main"]'), github.ref) && 'latest' || github.sha }}
 
     deploy-til-dev:
         name: Deploy til dev
@@ -66,3 +67,13 @@ jobs:
                   CLUSTER: prod-gcp
                   RESOURCE: nais-prod.yaml
                   VAR: image=${{ needs.bygg-og-push-docker-image.outputs.image }}
+
+    call-trivy-security-scan:
+      needs: bygg-og-push-docker-image
+      uses: navikt/toi-github-actions-workflows/.github/workflows/trivy-security-scan.yaml@main
+      with:
+        image: ${{ needs.bygg-og-push-docker-image.outputs.image }}
+      permissions:
+        id-token: write
+        security-events: write
+      secrets: inherit
