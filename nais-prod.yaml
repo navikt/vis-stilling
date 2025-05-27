@@ -1,32 +1,38 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: vis-stilling
-    namespace: toi
-    labels:
-        team: toi
+  name: vis-stilling
+  namespace: toi
+  labels:
+    team: toi
 spec:
-    # prettier-ignore
-    image: {{ image }}
-    port: 3000
-    ingresses:
-        - https://www.nav.no/arbeid/stilling
-    liveness:
-        initialDelay: 5
-        path: /arbeid/stilling/internal/isAlive
-    readiness:
-        initialDelay: 5
-        path: /arbeid/stilling/internal/isReady
-    azure:
-        application:
-            enabled: true
-    accessPolicy:
-        outbound:
-            rules:
-                - application: rekrutteringsbistand-stilling-api
-                  namespace: toi
-                - application: nav-dekoratoren
-                  namespace: personbruker
-    env:
-        - name: REKRUTTERINGSBISTAND_STILLING_API
-          value: http://rekrutteringsbistand-stilling-api.toi
+  # prettier-ignore
+  image: {{ image }}
+  port: 3000
+  ingresses:
+    - https://www.nav.no/arbeid/stilling
+  liveness:
+    initialDelay: 5
+    path: /arbeid/stilling/internal/isAlive
+  readiness:
+    initialDelay: 5
+    path: /arbeid/stilling/internal/isReady
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: rekrutteringsbistand-stilling-api
+          namespace: toi
+        - application: nav-dekoratoren
+          namespace: personbruker
+  env:
+    - name: REKRUTTERINGSBISTAND_STILLING_API
+      value: http://rekrutteringsbistand-stilling-api.toi
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+      enabled: true
