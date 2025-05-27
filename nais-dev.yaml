@@ -30,3 +30,9 @@ spec:
     env:
         - name: REKRUTTERINGSBISTAND_STILLING_API
           value: http://rekrutteringsbistand-stilling-api.toi
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+      enabled: true
