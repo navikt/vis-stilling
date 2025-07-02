@@ -127,7 +127,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             <Infopanel tittel="Om annonsen">
                 <Tabell>
                     <Rad label="Sist endret">{formaterDato(stilling.updated)}</Rad>
-                    <Rad label="Annonsenummer">{stilling.id}</Rad>
+                    <Rad label="Annonsenummer">{stilling.annonsenr}</Rad>
                 </Tabell>
             </Infopanel>
         </>
