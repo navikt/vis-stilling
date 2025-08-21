@@ -103,6 +103,7 @@ export type Stilling = {
 
     // Om annonsen
     id: number;
+    annonsenr: string;
     status: Annonsestatus;
     source: string;
     deactivatedByExpiry?: boolean;
