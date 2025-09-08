@@ -102,7 +102,6 @@ export type Stilling = {
     contactList: Contact[];
 
     // Om annonsen
-    id: number;
     annonsenr: string;
     status: Annonsestatus;
     source: string;
