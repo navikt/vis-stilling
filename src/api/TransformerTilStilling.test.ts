@@ -37,7 +37,6 @@ describe('parsing av workhours og workday fra stilling-API-et', () => {
 
     function stillingJson(workday: string, workhours: string): string {
         const stilling = {
-            id: 2261329,
             uuid: '40022b10-b283-4166-af57-e9dda0c342b6',
             updated: '2023-03-20T00:00:14.56287',
             contactList: [],
