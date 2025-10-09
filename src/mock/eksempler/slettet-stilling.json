@@ -1,0 +1,51 @@
+{
+    "annonsenr": "R15765",
+    "uuid": "ca7b9f8f-c260-49ea-8657-a7fe65f21e73",
+    "updated": "2025-10-08T15:39:10.76735",
+    "contactList": [
+        {
+            "name": "Test",
+            "email": "test@nav.no",
+            "phone": "",
+            "title": "test"
+        }
+    ],
+    "title": "IKT-brukbarhetstester",
+    "medium": "DIR",
+    "employer": {
+        "contactList": [],
+        "location": {
+            "address": "Nordre Kvervet",
+            "postalCode": "1410",
+            "county": "",
+            "municipal": "NORDRE FOLLO",
+            "municipalCode": "3207",
+            "city": "KOLBOTN",
+            "country": "NORGE",
+            "latitude": null,
+            "longitude": null
+        },
+        "properties": {},
+        "name": "ORDKNAPP BLOMSTRETE TIGER AS",
+        "publicName": null
+    },
+    "businessName": "ORDKNAPP BLOMSTRETE TIGER AS",
+    "status": "DELETED",
+    "location": null,
+    "properties": {
+        "extent": "Heltid",
+        "workhours": "[\"Dagtid\"]",
+        "applicationdue": "Snarest",
+        "workday": "[\"Ukedager\"]",
+        "positioncount": "1",
+        "engagementtype": "Fast",
+        "starttime": "Etter avtale",
+        "employerdescription": "<p>Om arbeidsgiver</p>",
+        "jobarrangement": "Skift",
+        "adtext": "<p>Dette er en slettet stilling</p>",
+        "applicationemail": "test@nav.no",
+        "sector": "Privat"
+    },
+    "source": "DIR",
+    "stillingskategori": "STILLING"
+}
