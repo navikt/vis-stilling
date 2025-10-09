@@ -42,7 +42,7 @@
 
 @media (min-width: 64rem) {
     .rad dt {
-        min-width: 0;
+        min-width: 11rem;
         flex: 1;
         flex-shrink: 0;
     }

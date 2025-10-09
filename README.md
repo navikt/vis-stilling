@@ -6,7 +6,6 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 
 
 ## Manuell testing lokalt
-Fungerer ikke med Node versjon større enn 16 per mars 2023. Tips: Installer [nvm](https://github.com/nvm-sh/nvm) for lett å kunne bytte mellom ulike versjoner av Node.
 
 ```sh
 npm install

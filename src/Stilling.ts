@@ -74,6 +74,7 @@ export enum Annonsestatus {
     Aktiv = 'ACTIVE',
     Inaktiv = 'INACTIVE',
     Stoppet = 'STOPPED',
+    Slettet = 'DELETED',
 }
 
 export type Employer = {

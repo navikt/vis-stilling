@@ -1,7 +1,7 @@
 import { Alert, Heading, Link } from '@navikt/ds-react';
 import { FunctionComponent } from 'react';
 
-import { Stilling } from '../Stilling';
+import { Annonsestatus, Stilling } from '../Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
 import { hentAdresser, hentBedriftensVisningsnavn, lagInnerHtml } from './stillingUtils';
@@ -37,9 +37,14 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
                             også finne på arbeidsplassen.no
                         </>
                     ) : (
-                        'Dette er en stilling NAV jobber med for arbeidsgiver. Den er kun tilgjengelig her.'
+                        'Dette er en stilling Nav jobber med for arbeidsgiver. Den er kun tilgjengelig her.'
                     )}
                 </Alert>
+                {stilling.status === Annonsestatus.Slettet && (
+                    <Alert variant="warning" className={css.advarsel}>
+                        Denne stillingen er slettet og er ikke lenger aktiv.
+                    </Alert>
+                )}
                 <main className={css.main}>
                     <article
                         className={css.stillingstekst}
