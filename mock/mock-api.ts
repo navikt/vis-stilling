@@ -9,18 +9,12 @@ import upublisertStilling from './eksempler/upublisert-stilling.json';
 const basePath = '/arbeid/stilling';
 
 const handlers = [
-    http.get(`${basePath}/api/${stilling.uuid}`, () =>
-        HttpResponse.json(stilling)
-    ),
-    http.get(`${basePath}/api/${annenStilling.uuid}`, () =>
-        HttpResponse.json(annenStilling)
-    ),
+    http.get(`${basePath}/api/${stilling.uuid}`, () => HttpResponse.json(stilling)),
+    http.get(`${basePath}/api/${annenStilling.uuid}`, () => HttpResponse.json(annenStilling)),
     http.get(`${basePath}/api/${upublisertStilling.uuid}`, () =>
         HttpResponse.json(upublisertStilling)
     ),
-    http.get(`${basePath}/api/${slettetStilling.uuid}`, () =>
-        HttpResponse.json(slettetStilling)
-    ),
+    http.get(`${basePath}/api/${slettetStilling.uuid}`, () => HttpResponse.json(slettetStilling)),
     http.get(`${basePath}/api/:rest*`, () => HttpResponse.json(annenStilling)),
 ];
 
