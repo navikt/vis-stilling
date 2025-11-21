@@ -1,3 +1,4 @@
+import { logger } from '@navikt/next-logger';
 import { requestAzureClientCredentialsToken } from '@navikt/oasis';
 import type { NextRequest } from 'next/server';
 import { readFile } from 'node:fs/promises';
@@ -9,25 +10,44 @@ export const runtime = 'nodejs';
 const upstreamBase = process.env.REKRUTTERINGSBISTAND_STILLING_API;
 const upstreamPath = 'rekrutteringsbistand/ekstern/api/v1/stilling';
 
+type LoggedError = Error & { alreadyLogged?: true };
+
+const logAndThrow = (message: string, context?: Record<string, unknown>): never => {
+    const error = new Error(message) as LoggedError;
+    error.name = 'StillingsApiError';
+    error.alreadyLogged = true;
+    logger.error({ err: error, ...context }, message);
+    throw error;
+};
+
 const buildAzureScope = () => {
     const cluster = process.env.NAIS_CLUSTER_NAME;
 
-    if (!cluster) {
-        throw new Error('Manglende NAIS_CLUSTER_NAME miljøvariabel.');
-    }
+    const resolvedCluster =
+        cluster ??
+        logAndThrow('Manglende NAIS_CLUSTER_NAME miljøvariabel.', {
+            kilde: 'buildAzureScope',
+        });
 
-    return `api://${cluster}.toi.rekrutteringsbistand-stilling-api/.default`;
+    return `api://${resolvedCluster}.toi.rekrutteringsbistand-stilling-api/.default`;
 };
 
 const getClientCredentialsToken = async () => {
-    const tokenResult = await requestAzureClientCredentialsToken(buildAzureScope());
+    const scope = buildAzureScope();
+    const tokenResult = await requestAzureClientCredentialsToken(scope);
 
     if (!tokenResult.ok) {
         const reason = tokenResult.error instanceof Error ? tokenResult.error.message : undefined;
-        throw new Error(reason ?? 'Feil ved henting av Azure klient-legitimasjonstoken.');
+        logAndThrow('Feil ved henting av Azure klient-legitimasjonstoken.', {
+            kilde: 'getClientCredentialsToken',
+            scope,
+            detaljer: reason,
+        });
     }
 
-    return tokenResult.token;
+    const { token } = tokenResult as typeof tokenResult & { ok: true; token: string };
+
+    return token;
 };
 
 type RouteParams = {
@@ -82,12 +102,15 @@ const respondWithMock = async (params: RouteParams) => {
 };
 
 const buildUpstreamUrl = (params: RouteParams, request: NextRequest) => {
-    if (!upstreamBase) {
-        throw new Error('Manglende REKRUTTERINGSBISTAND_STILLING_API miljøvariabel.');
-    }
+    const base =
+        upstreamBase ??
+        logAndThrow('Manglende REKRUTTERINGSBISTAND_STILLING_API miljøvariabel.', {
+            kilde: 'buildUpstreamUrl',
+            slug: params.slug ?? [],
+        });
 
     const identifier = params.slug?.join('/') ?? '';
-    const url = new URL(`${upstreamPath}/${identifier}`, `${upstreamBase.replace(/\/$/, '')}/`);
+    const url = new URL(`${upstreamPath}/${identifier}`, `${base.replace(/\/$/, '')}/`);
 
     const search = request.nextUrl.searchParams.toString();
     if (search) {
@@ -147,6 +170,22 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
 
         return response;
     } catch (error) {
+        const identifier = params.slug?.join('/') ?? '';
+        const errorDetails =
+            error instanceof Error
+                ? { err: error }
+                : { err: new Error(typeof error === 'string' ? error : 'Ukjent feil') };
+
+        logger.error(
+            {
+                ...errorDetails,
+                identifikator: identifier,
+                benytterMock: shouldUseDevMocks(),
+                harUpstreamBase: Boolean(upstreamBase),
+            },
+            'Feil ved kall til stillingsendepunktet'
+        );
+
         const message =
             error instanceof Error ? error.message : 'Ukjent feil ved henting av stillingsdata';
 

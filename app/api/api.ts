@@ -1,3 +1,5 @@
+import { logger } from '@navikt/next-logger';
+
 import { Stilling } from '../types/Stilling';
 
 const API = '/arbeid/stilling/api';
@@ -81,8 +83,10 @@ const buildApiUrl = (stillingsId: string, baseUrl?: string) => {
 };
 
 export const hentStilling = async (stillingsId: string, baseUrl?: string): Promise<Respons> => {
+    let apiUrl: string | undefined;
+
     try {
-        const apiUrl = buildApiUrl(stillingsId, baseUrl);
+        apiUrl = buildApiUrl(stillingsId, baseUrl);
         const respons = await fetch(apiUrl, {
             method: 'GET',
             cache: 'no-store',
@@ -96,11 +100,34 @@ export const hentStilling = async (stillingsId: string, baseUrl?: string): Promi
             };
         }
 
+        logger.error(
+            {
+                status: respons.status,
+                stillingsId,
+                url: apiUrl,
+            },
+            'Oppslag mot stillingsendepunktet returnerte feilstatus'
+        );
+
         return {
             status: Status.Feil,
             statusKode: respons.status,
         };
     } catch (error) {
+        const errorDetails =
+            error instanceof Error
+                ? { err: error }
+                : { detaljer: error, err: new Error('Ukjent feil ved henting av stilling') };
+
+        logger.error(
+            {
+                ...errorDetails,
+                stillingsId,
+                url: apiUrl,
+            },
+            'Kall mot stillingsendepunktet feilet uventet'
+        );
+
         return {
             status: Status.Kjøretidsfeil,
         };
