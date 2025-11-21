@@ -10,6 +10,8 @@ jobs:
         with:
             pnpm: true
             deploy-to-dev-if-branch-name-is: 'nextjs'
+            dev-vars-path: '.nais/dev-gcp.json'
+            prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
         permissions:
             contents: write
