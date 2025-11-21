@@ -176,12 +176,21 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
                 ? { err: error }
                 : { err: new Error(typeof error === 'string' ? error : 'Ukjent feil') };
 
+        const cause =
+            error instanceof Error && 'cause' in error
+                ? (error as Error & { cause?: unknown }).cause
+                : undefined;
+
+        const causeMessage =
+            cause instanceof Error ? cause.message : typeof cause === 'string' ? cause : undefined;
+
         logger.error(
             {
                 ...errorDetails,
                 identifikator: identifier,
                 benytterMock: shouldUseDevMocks(),
                 harUpstreamBase: Boolean(upstreamBase),
+                årsak: causeMessage,
             },
             'Feil ved kall til stillingsendepunktet'
         );

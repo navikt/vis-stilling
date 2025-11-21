@@ -119,11 +119,20 @@ export const hentStilling = async (stillingsId: string, baseUrl?: string): Promi
                 ? { err: error }
                 : { detaljer: error, err: new Error('Ukjent feil ved henting av stilling') };
 
+        const cause =
+            error instanceof Error && 'cause' in error
+                ? (error as Error & { cause?: unknown }).cause
+                : undefined;
+
+        const causeMessage =
+            cause instanceof Error ? cause.message : typeof cause === 'string' ? cause : undefined;
+
         logger.error(
             {
                 ...errorDetails,
                 stillingsId,
                 url: apiUrl,
+                årsak: causeMessage,
             },
             'Kall mot stillingsendepunktet feilet uventet'
         );
