@@ -1,0 +1,157 @@
+import { requestAzureClientCredentialsToken } from '@navikt/oasis';
+import type { NextRequest } from 'next/server';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+const upstreamBase = process.env.REKRUTTERINGSBISTAND_STILLING_API;
+const upstreamPath = 'rekrutteringsbistand/ekstern/api/v1/stilling';
+
+const buildAzureScope = () => {
+    const cluster = process.env.NAIS_CLUSTER_NAME;
+
+    if (!cluster) {
+        throw new Error('Manglende NAIS_CLUSTER_NAME miljøvariabel.');
+    }
+
+    return `api://${cluster}.toi.rekrutteringsbistand-stilling-api/.default`;
+};
+
+const getClientCredentialsToken = async () => {
+    const tokenResult = await requestAzureClientCredentialsToken(buildAzureScope());
+
+    if (!tokenResult.ok) {
+        const reason = tokenResult.error instanceof Error ? tokenResult.error.message : undefined;
+        throw new Error(reason ?? 'Feil ved henting av Azure klient-legitimasjonstoken.');
+    }
+
+    return tokenResult.token;
+};
+
+type RouteParams = {
+    slug?: string[];
+};
+
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const mockDirectory = join(process.cwd(), 'mock', 'eksempler');
+
+const devMockFileByIdentifier: Record<string, string> = {
+    stilling: 'stilling.json',
+    '9983a5ef-e573-4ee8-b73c-7e617a1d896a': 'stilling.json',
+    'annen-stilling': 'annen-stilling.json',
+    annenStilling: 'annen-stilling.json',
+    'c7ebcc88-02a1-4eec-80e1-f7a866744f0e': 'annen-stilling.json',
+    'upublisert-stilling': 'upublisert-stilling.json',
+    upublisertStilling: 'upublisert-stilling.json',
+    'slettet-stilling': 'slettet-stilling.json',
+    slettetStilling: 'slettet-stilling.json',
+};
+
+const defaultMockFile = 'annen-stilling.json';
+
+const mockCache = new Map<string, unknown>();
+
+const readMockData = async (fileName: string) => {
+    const cached = mockCache.get(fileName);
+    if (cached) {
+        return cached;
+    }
+
+    const content = await readFile(join(mockDirectory, fileName), 'utf-8');
+    const parsed = JSON.parse(content) as unknown;
+    mockCache.set(fileName, parsed);
+    return parsed;
+};
+
+const shouldUseDevMocks = () => isDevelopment && !upstreamBase;
+
+const respondWithMock = async (params: RouteParams) => {
+    const identifier = params.slug?.join('/') ?? '';
+    const file = devMockFileByIdentifier[identifier] ?? defaultMockFile;
+    const mock = await readMockData(file);
+
+    return new Response(JSON.stringify(mock), {
+        status: 200,
+        headers: {
+            'content-type': 'application/json',
+        },
+    });
+};
+
+const buildUpstreamUrl = (params: RouteParams, request: NextRequest) => {
+    if (!upstreamBase) {
+        throw new Error('Manglende REKRUTTERINGSBISTAND_STILLING_API miljøvariabel.');
+    }
+
+    const identifier = params.slug?.join('/') ?? '';
+    const url = new URL(`${upstreamPath}/${identifier}`, `${upstreamBase.replace(/\/$/, '')}/`);
+
+    const search = request.nextUrl.searchParams.toString();
+    if (search) {
+        url.search = search;
+    }
+
+    return url;
+};
+
+const copyHeaders = (source: Headers, target: Headers, keys: string[]) => {
+    keys.forEach((key) => {
+        const value = source.get(key);
+        if (value) {
+            target.set(key, value);
+        }
+    });
+};
+
+export async function GET(request: NextRequest, context: { params: Promise<RouteParams> }) {
+    const params = await context.params;
+
+    if (shouldUseDevMocks()) {
+        return respondWithMock(params);
+    }
+
+    try {
+        const url = buildUpstreamUrl(params, request);
+        const token = await getClientCredentialsToken();
+
+        const upstreamHeaders = new Headers();
+        upstreamHeaders.set('Authorization', `Bearer ${token}`);
+        const accepts = request.headers.get('accept');
+        if (accepts) {
+            upstreamHeaders.set('accept', accepts);
+        }
+
+        const upstreamResponse = await fetch(url, {
+            method: 'GET',
+            headers: upstreamHeaders,
+            cache: 'no-store',
+        });
+
+        if (!upstreamResponse.body) {
+            const text = await upstreamResponse.text();
+            return new Response(text, {
+                status: upstreamResponse.status,
+                statusText: upstreamResponse.statusText,
+            });
+        }
+
+        const response = new Response(upstreamResponse.body, {
+            status: upstreamResponse.status,
+            statusText: upstreamResponse.statusText,
+        });
+
+        copyHeaders(upstreamResponse.headers, response.headers, ['content-type', 'cache-control']);
+
+        return response;
+    } catch (error) {
+        const message =
+            error instanceof Error ? error.message : 'Ukjent feil ved henting av stillingsdata';
+
+        return new Response(message, {
+            status: 502,
+        });
+    }
+}

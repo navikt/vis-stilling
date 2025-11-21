@@ -1,0 +1,121 @@
+{
+    "activationOnPublishingDate": false,
+    "administration": {
+        "comments": null,
+        "id": 1424451,
+        "navIdent": "A123456",
+        "remarks": [],
+        "reportee": "Mossby, Joare Mangstuen",
+        "status": "DONE"
+    },
+    "businessName": "MOSSBY TAXI AS",
+    "categoryList": [
+        {
+            "categoryType": "STYRK08NAV",
+            "code": "8322.02",
+            "description": null,
+            "id": 5396,
+            "name": "Drosjesjåfør",
+            "parentId": 5394
+        }
+    ],
+    "contactList": [
+        {
+            "email": "joare.mangstuen.mossby@nav.no",
+            "name": "Joare Mangstuen Mossby",
+            "phone": "48173919",
+            "role": null,
+            "title": "KAM"
+        }
+    ],
+    "created": "2020-03-16T14:55:21.314124",
+    "createdBy": "pam-rekrutteringsbistand",
+    "deactivatedByExpiry": false,
+    "employer": {
+        "contactList": [],
+        "created": "2019-09-06T14:16:56.237362",
+        "createdBy": "pam-ad",
+        "deactivated": null,
+        "employees": 0,
+        "id": 441854,
+        "location": {
+            "address": "Testgaten 1",
+            "city": "DRAMMEN",
+            "country": "NORGE",
+            "county": "VIKEN",
+            "latitude": "59.6",
+            "longitude": "10.1",
+            "municipal": "DRAMMEN",
+            "municipalCode": "3005",
+            "postalCode": "0001"
+        },
+        "locationList": [
+            {
+                "address": "Testgaten 1",
+                "city": "DRAMMEN",
+                "country": "NORGE",
+                "county": "VIKEN",
+                "latitude": "59.6",
+                "longitude": "10.1",
+                "municipal": "DRAMMEN",
+                "municipalCode": "3005",
+                "postalCode": "3041"
+            }
+        ],
+        "mediaList": [],
+        "name": "MOSSBY TAXI AS",
+        "orgform": "BEDR",
+        "orgnr": "000000000",
+        "parentOrgnr": "000000000",
+        "properties": {
+            "nace2": "[{\"code\":\"52.214\",\"name\":\"Drift av taxisentraler og annen formidling av persontransport\"}]"
+        },
+        "publicName": "MOSSBY TAXI AS",
+        "status": "ACTIVE",
+        "updated": "2020-03-16T14:59:46.255943",
+        "updatedBy": "pam-ad",
+        "uuid": "9983a5ef-e573-4ee8-b73c-7e617a1d896a"
+    },
+    "expires": "2020-03-28T02:00:00",
+    "firstPublished": true,
+    "locationList": [
+        {
+            "address": null,
+            "city": null,
+            "country": "NORGE",
+            "county": "VIKEN",
+            "latitude": null,
+            "longitude": null,
+            "municipal": "DRAMMEN",
+            "municipalCode": "3005",
+            "postalCode": null
+        }
+    ],
+    "mediaList": [],
+    "medium": "DIR",
+    "privacy": "INTERNAL_NOT_SHOWN",
+    "properties": {
+        "adtext": "<p>Mossby Taxi trenger to sjåfører på en bil. Arbeidstider er både skolekjøring fra morgenen, dagkjøring og oppdrag kveld/helg. Kandidatene må ikke erfaring som taxisjåfør  siden full opplæring og kur gis.  Men man ønsker kandidater som har interesse og ønske å jobbe som taxisjåfør. Kjøring i Drammensdistriktet. </p><p>Oppstart: Snarest</p>",
+        "applicationdue": "Snarest",
+        "classification_input_source": "categoryName",
+        "engagementtype": "Fast",
+        "extent": "Heltid",
+        "jobtitle": "Drosjesjåfør",
+        "positioncount": "2",
+        "searchtags": "[{\"label\":\"Taxisjåfør\",\"score\":1.0},{\"label\":\"Bussjåfør\",\"score\":0.15123688},{\"label\":\"Taxi guide\",\"score\":0.15123688}]",
+        "sector": "Privat",
+        "starttime": "Etter avtale",
+        "workday": "[\"Lørdag\",\"Ukedager\"]",
+        "workhours": "[\"Dagtid\",\"Kveld\",\"Natt\"]"
+    },
+    "published": "2020-03-16T14:59:46.259214",
+    "publishedByAdmin": "2020-03-16T14:59:46.259214",
+    "reference": "d328d737-1965-487b-a1bb-9f3872e1c1e7",
+    "rekruttering": null,
+    "source": "DIR",
+    "status": "ACTIVE",
+    "title": "Jobbservice Mossby taxi søker to sjåfører. Kurs og opplæring gis. ",
+    "updated": "2020-03-16T15:02:53.140067",
+    "updatedBy": "pam-rekrutteringsbistand",
+    "uuid": "stilling"
+}
