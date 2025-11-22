@@ -51,31 +51,33 @@ type UgyldigId = {
 
 export type Respons = IkkeLastet | LasterInn | Suksess | Feil | Kjøretidsfeil | UgyldigId;
 
-function attemptToParseJsonAsStringArray(jsonOrString: string): string[] {
+const forsøkÅTolkeSomListe = (jsonEllerTekst: string): string[] => {
     try {
-        return JSON.parse(jsonOrString);
-    } catch (err) {
-        return [jsonOrString]; // Antar at input er en enkel string a la "Lørdag" eller "Dagtid"
+        return JSON.parse(jsonEllerTekst);
+    } catch {
+        return [jsonEllerTekst];
     }
-}
+};
 
 export const transformerTilStilling = (data: any): Stilling => {
-    if (data?.properties) {
-        const { workday, workhours } = data.properties;
-
-        if (workday || workhours) {
-            return {
-                ...data,
-                properties: {
-                    ...data.properties,
-                    workday: workday ? attemptToParseJsonAsStringArray(workday) : undefined,
-                    workhours: workhours ? attemptToParseJsonAsStringArray(workhours) : undefined,
-                },
-            };
-        }
+    if (!data?.properties) {
+        return data;
     }
 
-    return data;
+    const { workday, workhours } = data.properties;
+
+    if (!workday && !workhours) {
+        return data;
+    }
+
+    return {
+        ...data,
+        properties: {
+            ...data.properties,
+            workday: workday ? forsøkÅTolkeSomListe(workday) : undefined,
+            workhours: workhours ? forsøkÅTolkeSomListe(workhours) : undefined,
+        },
+    };
 };
 
 const buildApiUrl = (stillingsId: string) => `${API}/${encodeURIComponent(stillingsId)}`;

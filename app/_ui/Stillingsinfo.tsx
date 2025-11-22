@@ -1,6 +1,6 @@
 import { ChatIcon } from '@navikt/aksel-icons';
 import { Link } from '@navikt/ds-react';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 
 import { Stilling } from '../types/Stilling';
 import Infopanel from './Infopanel';
@@ -44,6 +44,13 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const lenkeTilBedriftensEpost = bedriftensEpost && (
         <Link href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Link>
     );
+
+    const kontaktRader: Array<{ label: string; innhold: ReactNode }> = [
+        { label: 'Kontaktperson', innhold: kontaktinfo?.name },
+        { label: 'Stillingstittel', innhold: kontaktinfo?.title },
+        { label: 'Telefon', innhold: kontaktinfo?.phone },
+        { label: 'E-post', innhold: lenkeTilBedriftensEpost },
+    ].filter((rad) => Boolean(rad.innhold));
 
     const harSosialeMedier =
         properties.facebookpage || properties.linkedinpage || properties.twitteraddress;
@@ -97,13 +104,14 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                     </div>
                 </Infopanel>
             )}
-            {kontaktinfo && stilling.source !== 'DIR' && (
+            {kontaktRader.length > 0 && stilling.source !== 'DIR' && (
                 <Infopanel tittel="Kontaktperson for stillingen">
                     <Tabell>
-                        <Rad label="Kontaktperson">{kontaktinfo.name}</Rad>
-                        <Rad label="Stillingstittel">{kontaktinfo.title}</Rad>
-                        <Rad label="Telefon">{kontaktinfo.phone}</Rad>
-                        <Rad label="E-post">{lenkeTilBedriftensEpost}</Rad>
+                        {kontaktRader.map((rad) => (
+                            <Rad key={rad.label} label={rad.label}>
+                                {rad.innhold}
+                            </Rad>
+                        ))}
                     </Tabell>
                 </Infopanel>
             )}
