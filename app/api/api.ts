@@ -2,9 +2,10 @@ import { logger } from '@navikt/next-logger';
 
 import { Stilling } from '../types/Stilling';
 
-const API = '/arbeid/stilling/api';
+const API = '/arbeid/stilling/api/stilling';
 
 const envBaseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const internalBaseUrl = process.env.INTERNAL_BASE_URL ?? 'http://127.0.0.1:3000';
 
 export enum Status {
     IkkeLastet = 'IkkeLastet',
@@ -71,13 +72,13 @@ export const transformerTilStilling = (data: any): Stilling => {
 };
 
 const buildApiUrl = (stillingsId: string, baseUrl?: string) => {
-    const path = `${API}/${stillingsId}`;
+    const path = `${API}/${encodeURIComponent(stillingsId)}`;
 
     if (typeof window !== 'undefined') {
         return path;
     }
 
-    const resolvedBaseUrl = baseUrl ?? envBaseUrl ?? 'http://localhost:3000';
+    const resolvedBaseUrl = internalBaseUrl ?? envBaseUrl ?? baseUrl ?? 'http://127.0.0.1:3000';
 
     return new URL(path, resolvedBaseUrl).toString();
 };
