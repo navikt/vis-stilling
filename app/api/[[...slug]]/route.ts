@@ -7,7 +7,7 @@ import { join } from 'node:path';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const upstreamBase = process.env.REKRUTTERINGSBISTAND_STILLING_API;
+const upstreamBase = process.env.STILLING_API;
 const upstreamPath = 'rekrutteringsbistand/ekstern/api/v1/stilling';
 
 type LoggedError = Error & { alreadyLogged?: true };
@@ -104,7 +104,7 @@ const respondWithMock = async (params: RouteParams) => {
 const buildUpstreamUrl = (params: RouteParams, request: NextRequest) => {
     const base =
         upstreamBase ??
-        logAndThrow('Manglende REKRUTTERINGSBISTAND_STILLING_API miljøvariabel.', {
+        logAndThrow('Manglende STILLING_API miljøvariabel.', {
             kilde: 'buildUpstreamUrl',
             slug: params.slug ?? [],
         });

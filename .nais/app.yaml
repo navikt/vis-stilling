@@ -37,7 +37,7 @@ spec:
   env:
     - name: NEXT_PUBLIC_BASE_URL
       value: {{ NEXT_PUBLIC_BASE_URL }}
-    - name: REKRUTTERINGSBISTAND_STILLING_API
+    - name: STILLING_API
       value: http://rekrutteringsbistand-stilling-api
   observability:
     autoInstrumentation:
