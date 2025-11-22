@@ -136,8 +136,11 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
         return respondWithMock(params);
     }
 
+    let upstreamUrl: string | undefined;
+
     try {
         const url = buildUpstreamUrl(params, request);
+        upstreamUrl = url.toString();
         const token = await getClientCredentialsToken();
 
         const upstreamHeaders = new Headers();
@@ -190,6 +193,7 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
                 identifikator: identifier,
                 benytterMock: shouldUseDevMocks(),
                 harUpstreamBase: Boolean(upstreamBase),
+                upstreamUrl,
                 årsak: causeMessage,
             },
             'Feil ved kall til stillingsendepunktet'
