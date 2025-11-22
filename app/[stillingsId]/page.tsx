@@ -1,5 +1,4 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -27,12 +26,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     logEvent('stilling', 'åpne');
 
-    const headersList = await headers();
-    const protocol = headersList.get('x-forwarded-proto') ?? 'http';
-    const host = headersList.get('x-forwarded-host') ?? headersList.get('host');
-    const baseUrl = host ? `${protocol}://${host}` : undefined;
-
-    const respons = await hentStilling(stillingsId, baseUrl);
+    const respons = await hentStilling(stillingsId);
 
     const fantIkkeStilling =
         respons.status === Status.UgyldigId ||
