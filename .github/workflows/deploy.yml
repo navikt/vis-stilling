@@ -6,7 +6,7 @@ on:
 jobs:
     build-and-deploy:
         name: Vis-Stilling NextJS
-        uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v5.1
+        uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v5.2
         with:
             pnpm: true
             deploy-to-dev-if-branch-name-is: 'nextjs'
