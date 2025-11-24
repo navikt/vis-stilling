@@ -1,9 +1,9 @@
 apiVersion: nais.io/v1alpha1
 kind: Alerts
 metadata:
-  name: vis-stilling
-  namespace: toi
-  labels:
-    team: toi
+    name: vis-stilling
+    namespace: toi
+    labels:
+        team: toi
 spec:
-  alerts: []
+    alerts: []
