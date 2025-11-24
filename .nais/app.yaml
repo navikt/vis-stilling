@@ -7,10 +7,6 @@ metadata:
   name: vis-stilling
   namespace: toi
 spec:
-  observability:
-    autoInstrumentation:
-      enabled: true
-      runtime: nodejs
   replicas:
     max: 4
     min: 2
