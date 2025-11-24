@@ -8,10 +8,10 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 ## Manuell testing lokalt
 
 ```sh
-npm install
-npm run start:mock
+pnpm install
+pnpm dev
 ```
-Et nettleservindu skal åpne seg. Utvid URL-en med en av stillingsID-ene fra filen `src/mock/mock-api.ts`
+Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra filen `src/mock/mock-api.ts`.
 
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:

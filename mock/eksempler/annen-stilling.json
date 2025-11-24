@@ -1,0 +1,141 @@
+{
+    "activationOnPublishingDate": false,
+    "businessName": "Tulleskolen",
+    "categoryList": [
+        {
+            "categoryType": "STYRK08NAV",
+            "code": "0000.01",
+            "description": null,
+            "id": 5,
+            "name": "Hjelpearbeider (privat/offentlig virksomhet)",
+            "parentId": 4
+        }
+    ],
+    "contactList": [
+        {
+            "email": "kontakt.kontaktus@tøys.no",
+            "name": "Kontakt Kontaktus",
+            "phone": "00000000",
+            "role": null,
+            "title": "leder"
+        }
+    ],
+    "created": "2020-03-19T08:43:48.831324",
+    "createdBy": "pam-rekrutteringsbistand",
+    "deactivatedByExpiry": false,
+    "employer": {
+        "contactList": [],
+        "created": "2019-11-18T11:42:21.042131",
+        "createdBy": "pam-ad",
+        "deactivated": null,
+        "employees": 1,
+        "id": 203480,
+        "location": {
+            "address": "Lilleakerveien 37D",
+            "city": "OSLO",
+            "country": "NORGE",
+            "county": "OSLO",
+            "latitude": "59.92172360812686",
+            "longitude": "10.637563808231683",
+            "municipal": "OSLO",
+            "municipalCode": "0301",
+            "postalCode": "0284"
+        },
+        "locationList": [
+            {
+                "address": "Lilleakerveien 37D",
+                "city": "OSLO",
+                "country": "NORGE",
+                "county": "OSLO",
+                "latitude": "59.92172360812686",
+                "longitude": "10.637563808231683",
+                "municipal": "OSLO",
+                "municipalCode": "0301",
+                "postalCode": "0284"
+            }
+        ],
+        "mediaList": [],
+        "name": "TULLEKONTORET AS",
+        "orgform": "BEDR",
+        "orgnr": "976434099",
+        "parentOrgnr": "912819973",
+        "properties": {
+            "nace2": "[{\"code\":\"90.012\",\"name\":\"Utøvende kunstnere og underholdningsvirksomhet innen scenekunst\"}]"
+        },
+        "publicName": "TULLEKONTORET AS",
+        "status": "ACTIVE",
+        "updated": "2020-03-19T08:45:32.142348",
+        "updatedBy": "pam-ad",
+        "uuid": "c7ebcc88-02a1-4eec-80e1-f7a866744f0e"
+    },
+    "expires": "2020-03-21T02:00:00",
+    "firstPublished": true,
+    "location": {
+        "address": "Tullegate 4",
+        "city": "OSLO",
+        "country": "NORGE",
+        "county": "OSLO",
+        "latitude": null,
+        "longitude": null,
+        "municipal": "OSLO",
+        "municipalCode": "0301",
+        "postalCode": "0001"
+    },
+    "locationList": [
+        {
+            "address": "Tullegate 4",
+            "city": "OSLO",
+            "country": "NORGE",
+            "county": "OSLO",
+            "latitude": null,
+            "longitude": null,
+            "municipal": "OSLO",
+            "municipalCode": "0301",
+            "postalCode": "0001"
+        },
+        {
+            "address": null,
+            "city": null,
+            "country": "NORGE",
+            "county": "OSLO",
+            "latitude": null,
+            "longitude": null,
+            "municipal": "OSLO",
+            "municipalCode": "0301",
+            "postalCode": null
+        }
+    ],
+    "mediaList": [],
+    "medium": "DIR",
+    "privacy": "INTERNAL_NOT_SHOWN",
+    "properties": {
+        "adtext": "<p>Tulleskolen søker tøysekopper! Nå har du anledning til å tøyse på fulltid!</p>",
+        "applicationdue": "2020-03-19T12:16:10.388778",
+        "applicationemail": "tull@tøys.no",
+        "applicationurl": "https://www.nrk.no",
+        "classification_input_source": "categoryName",
+        "employerdescription": "<p>Kort om bedriften</p>",
+        "employerhomepage": "https://www.vg.no",
+        "engagementtype": "Fast",
+        "extent": "Heltid",
+        "facebookpage": "https://facebook.com/tullogtoys",
+        "jobtitle": "Hjelpearbeider (privat/offentlig virksomhet)",
+        "linkedinpage": "https://linkedin.com/company/tullogtoys",
+        "positioncount": "1",
+        "searchtags": "[{\"label\":\"Siviltjenestearbeider\",\"score\":1.0},{\"label\":\"Community Services Specialist\",\"score\":0.3836871}]",
+        "sector": "Privat",
+        "starttime": "2020-03-19T12:16:10.388778",
+        "twitteraddress": "https://twitter.com/@tullogtoys",
+        "workday": "[\"Ukedager\", \"Lørdag\"]",
+        "workhours": "[\"Dagtid\"]"
+    },
+    "published": "2020-03-19T08:45:32.153448",
+    "publishedByAdmin": "2020-03-19T08:45:32.153448",
+    "reference": "e4b3531a-7728-4150-8e1d-f948497f8482",
+    "rekruttering": null,
+    "status": "ACTIVE",
+    "title": "Tulleskolen søker tøysekopper",
+    "updated": "2020-03-19T12:16:10.388778",
+    "updatedBy": "pam-rekrutteringsbistand",
+    "uuid": "annenStilling"
+}

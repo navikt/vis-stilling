@@ -1,0 +1,51 @@
+{
+    "annonsenr": "R15765",
+    "businessName": "ORDKNAPP BLOMSTRETE TIGER AS",
+    "contactList": [
+        {
+            "email": "test@nav.no",
+            "name": "Test",
+            "phone": "",
+            "title": "test"
+        }
+    ],
+    "employer": {
+        "contactList": [],
+        "location": {
+            "address": "Nordre Kvervet",
+            "city": "KOLBOTN",
+            "country": "NORGE",
+            "county": "",
+            "latitude": null,
+            "longitude": null,
+            "municipal": "NORDRE FOLLO",
+            "municipalCode": "3207",
+            "postalCode": "1410"
+        },
+        "name": "ORDKNAPP BLOMSTRETE TIGER AS",
+        "properties": {},
+        "publicName": null
+    },
+    "location": null,
+    "medium": "DIR",
+    "properties": {
+        "adtext": "<p>Dette er en slettet stilling</p>",
+        "applicationdue": "Snarest",
+        "applicationemail": "test@nav.no",
+        "employerdescription": "<p>Om arbeidsgiver</p>",
+        "engagementtype": "Fast",
+        "extent": "Heltid",
+        "jobarrangement": "Skift",
+        "positioncount": "1",
+        "sector": "Privat",
+        "starttime": "Etter avtale",
+        "workday": "[\"Ukedager\"]",
+        "workhours": "[\"Dagtid\"]"
+    },
+    "source": "DIR",
+    "status": "DELETED",
+    "stillingskategori": "STILLING",
+    "title": "IKT-brukbarhetstester",
+    "updated": "2025-10-08T15:39:10.76735",
+    "uuid": "slettetStilling"
+}

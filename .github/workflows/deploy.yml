@@ -1,77 +1,20 @@
-name: Bygg og deploy
-
-on: [push, workflow_dispatch]
-
-permissions:
-    contents: read
-    id-token: write
+name: Bygg og Deploy vis-stilling
+on:
+    push:
+    workflow_dispatch:
 
 jobs:
-    bygg-og-push-docker-image:
-        name: Bygg applikasjon
-        runs-on: ubuntu-latest
-        outputs:
-            image: ${{ steps.docker-build-push.outputs.image }}
-        steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  registry-url: 'https://npm.pkg.github.com'
-                  cache: 'npm'
-                  cache-dependency-path: |
-                      package-lock.json
-                      server/package-lock.json
-            - name: Installer avhengigheter
-              run: npm ci
-            - name: Bygg applikasjon
-              run: npm run build
-            - name: Installer avhengigheter for server
-              run: npm run server:install
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-            - name: Bygg server
-              run: npm run server:build
-            - name: Push docker image to GAR
-              if: github.actor != 'dependabot[bot]'
-              uses: nais/docker-build-push@v0
-              id: docker-build-push
-              with:
-                  team: toi
-                  tag: ${{ contains(fromJSON('["refs/heads/master", "refs/heads/main"]'), github.ref) && 'latest' || github.sha }}
-
-    deploy-til-dev:
-        name: Deploy til dev
-        needs: bygg-og-push-docker-image
-        if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/varsel-om-slettet-stilling'
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - uses: nais/deploy/actions/deploy@v2
-              env:
-                  CLUSTER: dev-gcp
-                  RESOURCE: nais-dev.yaml
-                  VAR: image=${{ needs.bygg-og-push-docker-image.outputs.image }}
-
-    deploy-to-prod:
-        name: Deploy til prod
-        needs: [bygg-og-push-docker-image, deploy-til-dev]
-        if: github.ref == 'refs/heads/master'
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - uses: nais/deploy/actions/deploy@v2
-              env:
-                  CLUSTER: prod-gcp
-                  RESOURCE: nais-prod.yaml
-                  VAR: image=${{ needs.bygg-og-push-docker-image.outputs.image }}
-
-    call-trivy-security-scan:
-        needs: bygg-og-push-docker-image
-        uses: navikt/toi-github-actions-workflows/.github/workflows/trivy-security-scan.yaml@v1
+    build-and-deploy:
+        name: Vis-Stilling NextJS
+        uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v4
         with:
-            image: ${{ needs.bygg-og-push-docker-image.outputs.image }}
+            pnpm: true
+            deploy-to-dev-if-branch-name-is: 'nextjs'
+            dev-vars-path: '.nais/dev-gcp.json'
+            prod-vars-path: '.nais/prod-gcp.json'
+        secrets: inherit
         permissions:
+            contents: write
             id-token: write
             security-events: write
-        secrets: inherit
+            pages: write
