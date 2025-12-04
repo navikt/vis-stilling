@@ -9,7 +9,7 @@ jobs:
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v5.2
         with:
             pnpm: true
-            deploy-to-dev-if-branch-name-is: 'nextjs'
+            deploy-to-dev-if-branch-name-is: 'oppdater_versjoner'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
