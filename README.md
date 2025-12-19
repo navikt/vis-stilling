@@ -5,6 +5,7 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 * lenken vises i et aktivitetskort i [Aktivitetsplanen](https://github.com/navikt/aktivitetsplan)
 
 
+
 ## Manuell testing lokalt
 
 ```sh
