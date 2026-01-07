@@ -6,10 +6,11 @@ on:
 jobs:
     build-and-deploy:
         name: Vis-Stilling NextJS
-        uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v5.2
+        uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v7.1
         with:
             pnpm: true
-            deploy-to-dev-if-branch-name-is: 'oppdater_versjoner'
+            a11y: true
+            deploy-to-dev-if-branch-name-is: 'pa11y'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit

@@ -54,7 +54,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
                         Denne stillingen er slettet og er ikke lenger aktiv.
                     </Alert>
                 )}
-                <main className={mainClass}>
+                <main id="maincontent" className={mainClass}>
                     <article className={articleClass} dangerouslySetInnerHTML={annonsetekst} />
                     <aside className={asideClass}>
                         <Stillingsinfo stilling={stilling} />

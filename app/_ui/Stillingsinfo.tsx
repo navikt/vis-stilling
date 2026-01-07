@@ -42,7 +42,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     const bedriftensEpost = stilling.contactList?.[0]?.email;
     const lenkeTilBedriftensEpost = bedriftensEpost && (
-        <Link href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Link>
+        <div data-pa11y-ignore="mailto-link">
+            <Link href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Link>
+        </div>
     );
 
     const kontaktRader: Array<{ label: string; innhold: ReactNode }> = [
