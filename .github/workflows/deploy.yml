@@ -10,6 +10,7 @@ jobs:
         with:
             pnpm: true
             a11y: true
+            playwright: false
             deploy-to-dev-if-branch-name-is: 'pa11y'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
