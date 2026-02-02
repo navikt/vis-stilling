@@ -10,7 +10,7 @@ jobs:
         with:
             pnpm: true
             a11y: true
-            deploy-to-dev-if-branch-name-is: 'pa11y'
+            deploy-to-dev-if-branch-name-is: 'playwright'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
