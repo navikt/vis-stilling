@@ -22,7 +22,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
     const headerInnerClass = 'mx-auto w-full max-w-[75rem]';
     const containerClass = 'mx-auto w-full lg:max-w-[79rem]';
     const alertClass = 'm-5';
-    const mainClass = 'flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between px-8 pb-15 py-5';
+    const mainClass = 'flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between pt-8 pb-16 py-5';
     const articleClass =
         'w-full rounded bg-white lg:max-w-[45rem] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-5 [&_*]:mb-4';
     const asideClass = 'w-full lg:max-w-[25rem] lg:px-5';
