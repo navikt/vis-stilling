@@ -24,7 +24,7 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
     const alertClass = 'my-4 sm:my-10';
     const mainClass = 'flex flex-col justify-between lg:flex-row lg:items-start';
     const articleClass =
-        'mb-4 w-full rounded bg-white p-4 sm:mb-10 sm:mr-8 sm:p-10 lg:max-w-[45rem]';
+        'mb-4 w-full rounded bg-white p-4 sm:mb-10 sm:mr-8 sm:p-10 lg:max-w-[45rem] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-5 [&_*]:mb-4';
     const asideClass = 'w-full lg:max-w-[25rem]';
 
     return (
