@@ -8,7 +8,9 @@ type InfopanelProps = {
 };
 
 const Infopanel: FunctionComponent<InfopanelProps> = ({ tittel, children, framhevet }) => {
-    const panelClass = framhevet ? 'rounded bg-[#cce1ff] pb-10' : 'rounded bg-white pb-10';
+    const panelClass = framhevet
+        ? 'rounded bg-[#cce1ff] pb-10 px-5'
+        : 'rounded bg-white pb-10 px-5';
 
     return (
         <div className={panelClass}>
