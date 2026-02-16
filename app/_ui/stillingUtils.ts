@@ -34,7 +34,7 @@ export const hentKommuneOgEllerBy = (location: Location) => {
 };
 
 export const formaterDato = (dato: Date) =>
-    new Date(dato).toLocaleDateString('nb-NO');
+    format(new Date(dato), 'dd.MM.yyyy');
 
 export const hentSøknadsfrist = (properties: Properties) =>
     konverterTilPresenterbarDato(properties.applicationdue);
@@ -43,9 +43,9 @@ export const konverterTilPresenterbarDato = (datoString?: string | null): string
     if (!datoString) return '';
     if (datoString === 'Snarest') return datoString;
 
-    const presentarbarDatoString = new Date(datoString as string).toLocaleDateString('nb-NO');
+    const presentarbarDatoString = format(new Date(datoString as string), 'dd.MM.yyyy');
 
-    return presentarbarDatoString === 'Invalid Date' ? datoString : format(presentarbarDatoString, 'dd.mm.yyyy');
+    return presentarbarDatoString === 'Invalid Date' ? datoString : presentarbarDatoString;
 };
 
 export const hentBedriftensVisningsnavn = (stilling: Stilling) =>

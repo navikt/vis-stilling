@@ -15,7 +15,6 @@ import {
     lagInnerHtml,
 } from './stillingUtils';
 import Tabell, { Rad } from './tabell/Tabell';
-import { format } from 'date-fns';
 
 interface Props {
     stilling: Stilling;
@@ -60,7 +59,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     let stillingensOppstart;
     if (starttime) {
-        stillingensOppstart = starttime === 'Etter avtale' ? starttime : format(formaterDato(starttime), 'dd.mm.yyyy');
+        stillingensOppstart = starttime === 'Etter avtale' ? starttime : formaterDato(starttime);
     }
     return (
         <div className="flex flex-col gap-10">
