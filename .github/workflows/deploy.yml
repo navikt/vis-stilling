@@ -10,7 +10,7 @@ jobs:
         with:
             pnpm: true
             a11y: false # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
-            deploy-to-dev-if-branch-name-is: 'formatering'
+            deploy-to-dev-if-branch-name-is: 'datoformatering'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
