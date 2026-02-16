@@ -34,7 +34,7 @@ export const hentKommuneOgEllerBy = (location: Location) => {
     return null;
 };
 
-export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString();
+export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString('nb-NO');
 
 export const hentSøknadsfrist = (properties: Properties) =>
     konverterTilPresenterbarDato(properties.applicationdue);
