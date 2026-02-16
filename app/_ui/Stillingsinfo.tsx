@@ -62,7 +62,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
         stillingensOppstart = starttime === 'Etter avtale' ? starttime : formaterDato(starttime);
     }
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-10">
             <Infopanel tittel="Søknad">
                 <Tabell>
                     <Rad label="Søknadsfrist">{hentSøknadsfrist(properties)}</Rad>

@@ -18,9 +18,7 @@ export const Rad: FunctionComponent<RadProps> = ({ label, children }) => {
 
     return (
         <div className="flex flex-col gap-1 sm:flex-row sm:gap-2">
-            <dt
-                className={`font-extralight text-[#78706a] sm:min-w-[10rem] sm:flex-shrink-0 lg:min-w-[11rem]`}
-            >
+            <dt className={`font-extralight text-[#49515E] sm:min-w-40 sm:shrink-0 lg:min-w-44`}>
                 {`${label}:`}
             </dt>
             <dd className="sm:flex-[2.3] lg:flex-[1.5]">{children}</dd>

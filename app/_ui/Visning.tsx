@@ -20,12 +20,12 @@ const Visning: FunctionComponent<Props> = ({ stilling }) => {
     const headerClass =
         'flex flex-col bg-[#cce1f3] border-b-[5px] border-b-[#99c2e8] px-4 py-6 sm:px-8 sm:py-10';
     const headerInnerClass = 'mx-auto w-full max-w-[75rem]';
-    const containerClass = 'mx-auto mb-14 w-full px-4 sm:px-8 lg:max-w-[79rem]';
-    const alertClass = 'my-4 sm:my-10';
-    const mainClass = 'flex flex-col justify-between lg:flex-row lg:items-start';
+    const containerClass = 'mx-auto w-full lg:max-w-[79rem]';
+    const alertClass = 'm-5';
+    const mainClass = 'flex flex-col gap-10 xl:flex-row xl:items-start xl:justify-between mx-8 mb-16 mt-5';
     const articleClass =
-        'mb-4 w-full rounded bg-white p-4 sm:mb-10 sm:mr-8 sm:p-10 lg:max-w-[45rem]';
-    const asideClass = 'w-full lg:max-w-[25rem]';
+        'w-full rounded bg-white lg:max-w-[45rem] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-5 [&_*]:mb-4';
+    const asideClass = 'w-full lg:max-w-[25rem] lg:px-5';
 
     return (
         <>
