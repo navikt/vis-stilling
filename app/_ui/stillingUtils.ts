@@ -2,9 +2,9 @@ import { Annonsestatus, Location, Properties, Stilling } from '../types/Stilling
 
 export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
     if (data.employer === null) return false;
-    if (Object.keys(data.properties).length === 0) return false;
+    return Object.keys(data.properties).length !== 0;
 
-    return true;
+
 };
 
 export const stillingenErPublisert = (stilling: Stilling) => {
@@ -12,11 +12,9 @@ export const stillingenErPublisert = (stilling: Stilling) => {
         return true;
     }
 
-    if (stilling.deactivatedByExpiry === false) {
-        return false;
-    }
+    return stilling.deactivatedByExpiry !== false;
 
-    return true;
+
 };
 
 export const normaliserNavn = (navn: string) => {
@@ -34,7 +32,7 @@ export const hentKommuneOgEllerBy = (location: Location) => {
     return null;
 };
 
-export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString();
+export const formaterDato = (dato: Date) => new Date(dato).toLocaleDateString('nb-NO');
 
 export const hentSøknadsfrist = (properties: Properties) =>
     konverterTilPresenterbarDato(properties.applicationdue);
