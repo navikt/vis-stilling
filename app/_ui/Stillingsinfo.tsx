@@ -12,9 +12,9 @@ import {
     hentBedriftensVisningsnavn,
     hentSøknadsfrist,
     lagInnerHtml,
-} from '../_utils/stillingUtils.ts';
+} from '../_utils/stillingUtils';
 import Tabell, { Rad } from './tabell/Tabell';
-import { formaterNorskDato } from '../_utils/dato.ts';
+import { formaterNorskDato } from '../_utils/dato';
 
 interface Props {
     stilling: Stilling;

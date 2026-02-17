@@ -1,5 +1,5 @@
-import { Annonsestatus, Location, Properties, Stilling } from '../types/Stilling.ts';
-import { formaterNorskDato } from './dato.ts';
+import { Annonsestatus, Location, Properties, Stilling } from '../types/Stilling';
+import { formaterNorskDato } from './dato';
 
 export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
     if (data.employer === null) return false;

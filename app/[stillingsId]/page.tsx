@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import Visning from '../_ui/Visning';
-import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils.ts';
+import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
 
