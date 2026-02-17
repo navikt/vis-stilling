@@ -1,5 +1,6 @@
 import { Annonsestatus, Location, Properties, Stilling } from '../types/Stilling';
 import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
 
 export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
     if (data.employer === null) return false;
@@ -33,8 +34,13 @@ export const hentKommuneOgEllerBy = (location: Location) => {
     return null;
 };
 
-export const formaterDato = (dato: Date) =>
-    format(new Date(dato), 'dd.MM.yyyy');
+export const formaterDato = (dato: Date) => {
+    try {
+        return format(dato, 'dd.MM.yyyy', { locale: nb });
+    } catch {
+        return '';
+    }
+};
 
 export const hentSøknadsfrist = (properties: Properties) =>
     konverterTilPresenterbarDato(properties.applicationdue);
@@ -43,9 +49,7 @@ export const konverterTilPresenterbarDato = (datoString?: string | null): string
     if (!datoString) return '';
     if (datoString === 'Snarest') return datoString;
 
-    const presentarbarDatoString = format(new Date(datoString as string), 'dd.MM.yyyy');
-
-    return presentarbarDatoString === 'Invalid Date' ? datoString : presentarbarDatoString;
+    return formaterDato(new Date(datoString));
 };
 
 export const hentBedriftensVisningsnavn = (stilling: Stilling) =>
