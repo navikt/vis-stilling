@@ -4,7 +4,7 @@ import { FunctionComponent } from 'react';
 import { Annonsestatus, Stilling } from '../types/Stilling';
 import NaturligLinjeskift from './NaturligLinjeskift';
 import Stillingsinfo from './Stillingsinfo';
-import { hentAdresser, hentBedriftensVisningsnavn, lagInnerHtml } from './stillingUtils';
+import { hentAdresser, hentBedriftensVisningsnavn, lagInnerHtml } from '../_utils/stillingUtils.ts';
 
 interface Props {
     stilling: Stilling;

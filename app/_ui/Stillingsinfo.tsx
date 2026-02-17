@@ -7,14 +7,14 @@ import Infopanel from './Infopanel';
 import Lenkeknapp from './Lenkeknapp';
 import SosialeMedier from './SosialeMedier';
 import {
-    formaterDato,
     hentAdresse,
     hentAdresser,
     hentBedriftensVisningsnavn,
     hentSøknadsfrist,
     lagInnerHtml,
-} from './stillingUtils';
+} from '../_utils/stillingUtils.ts';
 import Tabell, { Rad } from './tabell/Tabell';
+import { formaterNorskDato } from '../_utils/dato.ts';
 
 interface Props {
     stilling: Stilling;
@@ -59,7 +59,13 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     let stillingensOppstart;
     if (starttime) {
-        stillingensOppstart = starttime === 'Etter avtale' ? starttime : formaterDato(starttime);
+        stillingensOppstart =
+            starttime === 'Etter avtale'
+                ? starttime
+                : formaterNorskDato({
+                      dato: starttime,
+                      visning: 'tall',
+                  });
     }
     return (
         <div className="flex flex-col gap-10">
@@ -132,7 +138,12 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             </Infopanel>
             <Infopanel tittel="Om annonsen">
                 <Tabell>
-                    <Rad label="Sist endret">{formaterDato(stilling.updated)}</Rad>
+                    <Rad label="Sist endret">
+                        {formaterNorskDato({
+                            dato: stilling.updated,
+                            visning: 'tall',
+                        })}
+                    </Rad>
                     <Rad label="Annonsenummer">{stilling.annonsenr}</Rad>
                 </Tabell>
             </Infopanel>
