@@ -1,4 +1,4 @@
-import { format, isBefore, isValid, parse, parseISO, startOfToday } from 'date-fns';
+import { format, isValid, parse, parseISO } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
 export const NORSK_DATO_FORMAT = 'dd.MM.yyyy';
@@ -70,16 +70,4 @@ export const formaterNorskDato = (props: FormaterNorskDatoProps): string | null 
     const finalFormat = visTid ? `${baseFormat} 'kl.' HH:mm` : baseFormat;
 
     return format(parsedDato, finalFormat, { locale: nb });
-};
-
-export const formaterFraISOdato = (dato: string) => {
-    if (erNorskDatostreng(dato)) return dato;
-    return format(new Date(dato), NORSK_DATO_FORMAT);
-};
-
-
-export const datoErIFortiden = (dato?: string | null) => {
-    const parsed = tilDato(dato);
-    if (!parsed) return false;
-    return isBefore(parsed, startOfToday());
 };
