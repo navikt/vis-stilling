@@ -8,9 +8,8 @@ jobs:
         name: Vis-Stilling NextJS
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v12
         with:
-            pnpm: true
-            a11y: false # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
-            deploy-to-dev-if-branch-name-is: 'datoformatering'
+            #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
+            deploy-dev-branch: 'datoformatering'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
