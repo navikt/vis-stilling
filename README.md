@@ -20,6 +20,8 @@ I nettelseren, gå til følgende adresser:
 - Dev: https://vis-stilling.intern.dev.nav.no/arbeid/stilling/<stillingsId>
 - Prod: https://www.nav.no/arbeid/stilling/<stillingsId>
 
+## Kode generert av GitHub Copilot
+Dette repoet bruker GitHub Copilot til å generere kode.
 
 ## Henvendelser
 
