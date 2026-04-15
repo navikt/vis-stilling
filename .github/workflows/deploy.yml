@@ -9,7 +9,7 @@ jobs:
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v12
         with:
             #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
-            deploy-dev-branch: 'datoformatering'
+            deploy-dev-branch: 'oppgrader-next'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
