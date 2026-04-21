@@ -95,7 +95,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             </Infopanel>
             <Infopanel tittel="Om stillingen">
                 <Tabell>
-                    <Rad label="Stillingstittel">{properties.jobtitle || janzzTitle} </Rad>
+                    <Rad label="Stillingstittel">{properties.jobtitle || janzzTitle}</Rad>
                     <Rad label="Arbeidssted">{hentAdresser(stilling.locationList)}</Rad>
                     <Rad label="Ansettelsesform">{properties.engagementtype}</Rad>
                     <Rad label="Arbeidstidsordning">{properties.jobarrangement}</Rad>
