@@ -83,6 +83,11 @@ export type Employer = {
     location: Location;
 };
 
+export type Category = {
+    categoryType: string;
+    name: string;
+};
+
 export type Stilling = {
     // Metainformasjon
     uuid: string;
@@ -107,4 +112,7 @@ export type Stilling = {
     status: Annonsestatus;
     source: string;
     deactivatedByExpiry?: boolean;
+
+    // Janzz
+    categoryList?: Category[];
 };

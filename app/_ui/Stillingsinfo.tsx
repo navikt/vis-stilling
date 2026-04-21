@@ -67,6 +67,11 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                       visning: 'tall',
                   });
     }
+
+    const janzzTitle = stilling.categoryList?.find((category) =>
+        category.categoryType === 'JANZZ'
+    )?.name;
+
     return (
         <div className="flex flex-col gap-10">
             <Infopanel tittel="Søknad">
@@ -92,7 +97,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             </Infopanel>
             <Infopanel tittel="Om stillingen">
                 <Tabell>
-                    <Rad label="Stillingstittel">{properties.jobtitle}</Rad>
+                    <Rad label="Stillingstittel">{properties.jobtitle || janzzTitle}</Rad>
                     <Rad label="Arbeidssted">{hentAdresser(stilling.locationList)}</Rad>
                     <Rad label="Ansettelsesform">{properties.engagementtype}</Rad>
                     <Rad label="Arbeidstidsordning">{properties.jobarrangement}</Rad>
