@@ -68,7 +68,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                   });
     }
 
-    const janzzTitle = stilling.categoryList?.filter((category) => category.categoryType === 'JANZZ').map((category) => category.name)[0];
+    const janzzTitle = stilling.categoryList?.find((category) =>
+        category.categoryType === 'JANZZ'
+    )?.name;
 
     return (
         <div className="flex flex-col gap-10">
