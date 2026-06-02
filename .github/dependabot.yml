@@ -1,0 +1,69 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 3
+    versioning-strategy: "auto"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "pnpm"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    registries:
+      - navikt-npm
+    groups:
+      # Group patch updates
+      patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+      # Group NAV packages
+      nav-packages:
+        patterns:
+          - "@navikt/*"
+      # Group dev dependencies
+      dev-dependencies:
+        dependency-type: "development"
+    ignore:
+      # Ignore major version updates for Node.js LTS
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
+      # Add other packages to ignore if needed
+      # - dependency-name: "example-package"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 3
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+# Define the registry
+registries:
+  navikt-npm:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{ secrets.READER_TOKEN }}
