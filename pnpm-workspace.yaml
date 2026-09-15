@@ -1,3 +1,5 @@
+packages:
+    - '.'
 minimumReleaseAge: 4320 # minutter (3 dager)
 minimumReleaseAgeExclude:
     - '@navikt/*'
