@@ -2,10 +2,10 @@ import { BodyShort, Heading } from '@navikt/ds-react';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
-import Visning from '../_ui/Visning';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
+import VisStilling from '../_ui/VisStilling.tsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +34,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     if (respons.status === Status.Suksess) {
         if (stillingInneholderPåkrevdeFelter(respons.data) && stillingenErPublisert(respons.data)) {
-            return <Visning stilling={respons.data} />;
+            return <VisStilling stilling={respons.data} />;
         }
 
         return (

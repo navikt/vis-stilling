@@ -21,6 +21,8 @@ interface RootLayoutProps {
 const RootLayout = async ({ children }: RootLayoutProps) => {
     const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
 
+    // TODO her skal det velges hvilken dekoratør som skal vises modia eller nav-dekoratør
+
     const Decorator = await fetchDecoratorReact({
         env: env,
         params: {

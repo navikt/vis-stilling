@@ -1,0 +1,7 @@
+{
+    "NEXT_PUBLIC_BASE_URL": "https://vis-stilling-veileder.intern.dev.nav.no/arbeid/stilling",
+    "adGruppeModiaOppfolging": "b9bc6348-d25c-450d-85c2-044c0955fbe3",
+    "decoratorSrc": "https://cdn.nav.no/personoversikt/internarbeidsflate-decorator-v3/prod/latest/dist/bundle.js",
+    "modia_dekorator_scope": "api://prod-gcp.personoversikt.modiacontextholder/.default",
+    "login_url": "https://login.nav.no/oauth2/login"
+}

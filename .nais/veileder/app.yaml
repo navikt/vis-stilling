@@ -4,7 +4,7 @@ kind: Application
 metadata:
   labels:
     team: toi
-  name: vis-stilling
+  name: vis-stilling-veileder
   namespace: toi
 spec:
   replicas:
@@ -12,7 +12,7 @@ spec:
     min: 2
   image: {{ image }}
   ingresses:
-     - {{ NEXT_PUBLIC_BASE_URL }}
+    - {{ NEXT_PUBLIC_BASE_URL }}
   port: 3000
   liveness:
     initialDelay: 5
@@ -23,28 +23,38 @@ spec:
   azure:
     application:
       enabled: true
-  tokenx:
-    enabled: true
-  idporten:
-    enabled: true
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: {{ adGruppeModiaOppfolgg }}
+        extra:
+          - NAVident
     sidecar:
       enabled: true
-      level: Level3
+      autoLogin: true
+  tokenx:
+    enabled: true
   accessPolicy:
     outbound:
       rules:
         - application: rekrutteringsbistand-stilling-api
           namespace: toi
         - application: toi-deling-av-cv-api
-        - application: nav-dekoratoren
-          namespace: personbruker
+        - application: modiacontextholder
+          namespace: personoversikt
   env:
+    - name: ER_VEILEDER
+      value: "true"
     - name: NEXT_PUBLIC_BASE_URL
       value: {{ NEXT_PUBLIC_BASE_URL }}
     - name: STILLING_API
       value: http://rekrutteringsbistand-stilling-api
     - name: TOI_DELING_AV_CV_API
       value: http://toi-deling-av-cv-api
+    - name: MODIA_CONTEXT_HOLDER_API
+      value: http://modiacontextholder.personoversikt
+    - name: NEXT_PUBLIC_DECORATOR_SRC
+      value: {{ decoratorSrc }}
   observability:
     autoInstrumentation:
       enabled: true
@@ -53,4 +63,4 @@ spec:
       destinations:
         - id: loki
         - id: elastic
-      enabled: true      
+      enabled: true

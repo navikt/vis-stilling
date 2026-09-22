@@ -111,6 +111,7 @@ export type Stilling = {
     annonsenr: string;
     status: Annonsestatus;
     source: string;
+    medium?: string;
     deactivatedByExpiry?: boolean;
 
     // Janzz
