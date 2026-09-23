@@ -1,5 +1,12 @@
 import { logger } from '@navikt/next-logger';
-import { getToken, requestAzureOboToken, requestTokenxOboToken, TokenResult, validateToken } from '@navikt/oasis';
+import {
+    getToken,
+    requestAzureOboToken,
+    requestTokenxOboToken,
+    TokenResult, validateAzureToken,
+    validateToken, validateTokenxToken,
+    ValidationResult,
+} from '@navikt/oasis';
 import { erVeileder, skalMocke } from '../_utils/util.ts';
 
 interface hentOboTokenProps {
@@ -17,7 +24,15 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
     }
 
     if (!skalMocke) {
-        const validation = await validateToken(token);
+        let validation: ValidationResult;
+        if (erVeileder) {
+            logger.info("Validerer token for veileder");
+            validation = await validateAzureToken(token);
+        } else {
+            logger.info("Validerer token for personbruker");
+            validation = await validateTokenxToken(token);
+        }
+
         if (!validation.ok) {
             logger.info(`Token-validering feilet — bruker blir redirectet til login: ${validation.error}`);
             return {
