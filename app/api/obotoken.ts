@@ -41,11 +41,19 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
         }
 
         return obo;
-    } catch {
-        logger.info('Kunne ikke hente OBO-token — bruker blir redirectet til login');
-        return {
-            ok: false,
-            error: new Error('Kunne ikke hente OBO-token'),
-        };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            logger.error(error, 'Kunne ikke hente OBO-token');
+            return {
+                ok: false,
+                error: new Error('Kunne ikke hente OBO-token'),
+            };
+        } else {
+            logger.error(error, 'Ukjent feil ved henting av OBO-token');
+            return {
+                ok: false,
+                error: new Error('Ukjent feil ved henting av OBO-token'),
+            };
+        }
     }
 };
