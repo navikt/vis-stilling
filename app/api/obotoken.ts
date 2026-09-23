@@ -1,5 +1,5 @@
 import { logger } from '@navikt/next-logger';
-import { getToken, requestAzureOboToken, requestOboToken, requestTokenxOboToken, TokenResult, validateToken } from '@navikt/oasis';
+import { getToken, requestAzureOboToken, requestTokenxOboToken, TokenResult, validateToken } from '@navikt/oasis';
 import { erVeileder, skalMocke } from '../_utils/util.ts';
 
 interface hentOboTokenProps {
