@@ -19,7 +19,7 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
     if (!skalMocke) {
         const validation = await validateToken(token);
         if (!validation.ok) {
-            logger.info('Token-validering feilet — bruker blir redirectet til login');
+            logger.info(`Token-validering feilet — bruker blir redirectet til login: ${validation.error}`);
             return {
                 ok: false,
                 error: new Error('Token-validering feilet'),
