@@ -29,11 +29,15 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
 
     let obo: TokenResult;
     try {
-        obo = skalMocke
-            ? ({ ok: true, token: 'DEV' } as TokenResult)
-            : erVeileder
-              ? await requestAzureOboToken(token, props.scope)
-              : await requestTokenxOboToken(token, props.scope);
+        if (skalMocke) {
+            obo = ({ ok: true, token: 'DEV' } as TokenResult);
+        } else if (erVeileder) {
+            logger.info("Henter token for azure");
+            obo = await requestAzureOboToken(token, props.scope);
+        } else {
+            logger.info("Henter token for tokenx");
+            obo = await requestTokenxOboToken(token, props.scope);
+        }
 
         if (!obo.ok || !obo.token) {
             return {
