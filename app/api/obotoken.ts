@@ -3,9 +3,7 @@ import {
     getToken,
     requestAzureOboToken,
     requestTokenxOboToken,
-    TokenResult, validateAzureToken,
-    validateTokenxToken,
-    ValidationResult,
+    TokenResult
 } from '@navikt/oasis';
 import { erVeileder, skalMocke } from '../_utils/util.ts';
 
