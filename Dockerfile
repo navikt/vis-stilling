@@ -1,4 +1,5 @@
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+ARG BASEIMAGE
+FROM ${BASEIMAGE}
 ENV NODE_ENV=production
 
 # Set cache directory to writable location

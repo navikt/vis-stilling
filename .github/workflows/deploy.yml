@@ -2,18 +2,22 @@ name: Bygg og Deploy vis-stilling
 on:
     push:
     workflow_dispatch:
+    schedule:
+        - cron: '0 6 * * *'
 
 jobs:
     build-and-deploy:
-        name: Vis-Stilling NextJS
-        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v2.1
+        name: 🤖
+        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.1
         with:
+            baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
             #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
             deploy-dev-branch: 'sept-update'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
         permissions:
+            actions: write
             contents: write
             id-token: write
             security-events: write
