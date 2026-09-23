@@ -5,4 +5,5 @@ import {
 
 export const skalMocke = pakkeSkalMocke();
 export const isLocal = erLokalt();
+export const erVeileder = process.env.ER_VEILEDER === 'true';
 

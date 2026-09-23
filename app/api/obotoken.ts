@@ -1,6 +1,6 @@
 import { logger } from '@navikt/next-logger';
-import { getToken, requestOboToken, TokenResult, validateToken } from '@navikt/oasis';
-import { skalMocke } from '../_utils/util.ts';
+import { getToken, requestAzureOboToken, requestOboToken, requestTokenxOboToken, TokenResult, validateToken } from '@navikt/oasis';
+import { erVeileder, skalMocke } from '../_utils/util.ts';
 
 interface hentOboTokenProps {
     headers: Headers;
@@ -31,7 +31,9 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
     try {
         obo = skalMocke
             ? ({ ok: true, token: 'DEV' } as TokenResult)
-            : await requestOboToken(token, props.scope);
+            : erVeileder
+              ? await requestAzureOboToken(token, props.scope)
+              : await requestTokenxOboToken(token, props.scope);
 
         if (!obo.ok || !obo.token) {
             return {
