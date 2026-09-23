@@ -1,4 +1,4 @@
-import { Samtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
+import type { Samtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 
 export interface Samtykkestatus {
     harSamtykket: boolean;
@@ -19,9 +19,7 @@ export const lesSamtykkestatus = (samtykke: Samtykke | undefined): Samtykkestatu
     if (samtykke) {
         if (samtykke.trukket) {
             status.harTrukketSamtykke = true;
-        }
-
-        if (samtykke.svar) {
+        } else if (samtykke.svar) {
             if (samtykke.svar.harSvartJa) {
                 status.harSamtykket = true;
             } else {
@@ -32,8 +30,6 @@ export const lesSamtykkestatus = (samtykke: Samtykke | undefined): Samtykkestatu
         } else {
             status.harUbesvartForespørsel = true;
         }
-    } else {
-        // Har ikke forespørsel
     }
 
     return status;

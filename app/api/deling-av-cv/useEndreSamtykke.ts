@@ -1,22 +1,28 @@
 'use client';
 
 import { createFetcher } from '@navikt/toi-next-frontend/api';
-import { DelingAvCv } from '../api-routes-with-obo.ts';
+import useSWRMutation from 'swr/mutation';
+import { samtykkeEndepunkt } from './samtykkeEndepunkt.ts';
 
-const trekkSamtykkeEndepunkt = (stillingsId: string) =>
-    `${DelingAvCv.internUrl}/rest/cv/samtykker/${stillingsId}`;
-
-const giSamtykkeEndepunkt = (stillingsId: string, svar: string) =>
-    `${DelingAvCv.internUrl}/rest/cv/samtykker/${stillingsId}/${svar}`;
+type Samtykkesvar = 'JA' | 'NEI';
+type Samtykkehandling = Samtykkesvar | 'TREKK';
 
 const fetcher = createFetcher();
 
+export const useEndreSamtykke = (stillingsId: string) => {
+    const { trigger, isMutating, error } = useSWRMutation<void, Error, string, Samtykkehandling>(
+        samtykkeEndepunkt(stillingsId),
+        (endepunkt, { arg }) =>
+            arg === 'TREKK'
+                ? fetcher.delete<void>(endepunkt)
+                : fetcher.put<void>(`${endepunkt}/${arg}`),
+        { throwOnError: false }
+    );
 
-export const useEndreSamtykke = async (samtykket: boolean | undefined) => {
-  if (samtykket) {
-      return fetcher.delete(trekkSamtykkeEndepunkt(samtykket.toString()));
-  } else {
-      return fetcher.put()
-
-  }
+    return {
+        endreSamtykke: (svar: Samtykkesvar) => trigger(svar),
+        trekkSamtykke: () => trigger('TREKK'),
+        isMutating,
+        error,
+    };
 };

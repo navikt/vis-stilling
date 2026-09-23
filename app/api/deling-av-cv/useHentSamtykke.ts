@@ -1,14 +1,21 @@
 'use client';
 
 import { createFetcher } from '@navikt/toi-next-frontend/api';
-import { DelingAvCv } from '../api-routes-with-obo.ts';
 import { z } from 'zod';
 import { useSWRGet } from '@navikt/toi-next-frontend/swr';
+import { samtykkeEndepunkt } from './samtykkeEndepunkt.ts';
 
-const samtykkeEndepeunkt = (stillingsId: string) =>
-    `${DelingAvCv.internUrl}/rest/cv/samtykker/${stillingsId}`;
-
-const tilstandSchema = z.enum(['OPPRETTET', 'KAN_IKKE_OPPRETTE', 'PROVER_VARSLING', 'HAR_VARSLET', 'KAN_IKKE_VARSLE', 'HAR_SVART', 'AVBRUTT', 'SVARFRIST_UTLOPT']);
+const tilstandSchema = z.enum([
+    'OPPRETTET',
+    'KAN_IKKE_OPPRETTE',
+    'PROVER_VARSLING',
+    'HAR_VARSLET',
+    'KAN_IKKE_VARSLE',
+    'HAR_SVART',
+    'AVBRUTT',
+    'SVARFRIST_UTLOPT',
+]);
+const datoSchema = z.string().pipe(z.coerce.date());
 
 const identSchema = z.object({
     ident: z.string(),
@@ -17,18 +24,18 @@ const identSchema = z.object({
 
 const svarSchema = z.object({
     harSvartJa: z.boolean(),
-    svarTidspunkt: z.date(),
+    svarTidspunkt: datoSchema,
     svartAv: identSchema,
 });
 
 const samtykkeSchema = z.object({
     stillingsId: z.string(),
-    deltTidspunkt: z.date(),
-    svarfrist: z.date(),
+    deltTidspunkt: datoSchema,
+    svarfrist: datoSchema,
     tilstand: tilstandSchema.nullable(),
     svar: svarSchema.nullable(),
     trukket: z.boolean(),
-    trukketTidspunkt: z.date().nullable(),
+    trukketTidspunkt: datoSchema.nullable(),
 });
 
 const samtykkeListeSchema = z.array(samtykkeSchema);
@@ -49,7 +56,7 @@ const fetcher = createFetcher();
 
 export const useHentSamtykke = (stillingsId: string) => {
     const result = useSWRGet(
-        stillingsId ? samtykkeEndepeunkt(stillingsId) : null,
+        stillingsId ? samtykkeEndepunkt(stillingsId) : null,
         samtykkeListeSchema,
         ({ endpoint, schema }) => fetcher.getMedSchema(schema, endpoint)
     );

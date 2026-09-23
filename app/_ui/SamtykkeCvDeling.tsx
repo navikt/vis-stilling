@@ -1,6 +1,6 @@
 'use client';
 
-import { BodyLong, Box, Button, Heading, ReadMore, VStack } from '@navikt/ds-react';
+import { BodyLong, Box, Button, ErrorMessage, Heading, ReadMore, VStack } from '@navikt/ds-react';
 
 import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import { lesSamtykkestatus, Samtykkestatus } from '../_types/Samtykkesvar.ts';
@@ -14,11 +14,14 @@ const samtykketekst = (svar: Samtykkestatus | undefined): string => {
     if (!svar) {
         return 'Her kan du gi eller trekke samtykke til at Nav deler CV-en din med arbeidsgiver.';
     }
-    // if (!svar.innlogget) {
-    //     return 'Logg inn med knappen øverst på siden for å gi eller trekke samtykke til at Nav deler CV-en din med arbeidsgiver.';
-    // }
+    if (svar.harTrukketSamtykke) {
+        return 'Du har trukket samtykket til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+    }
     if (svar.harSamtykket) {
         return 'Du har sagt ja til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+    }
+    if (svar.harSvartNei) {
+        return 'Du har sagt nei til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
     }
     if (svar.harUbesvartForespørsel) {
         return 'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
@@ -27,10 +30,21 @@ const samtykketekst = (svar: Samtykkestatus | undefined): string => {
 };
 
 const Samtykkeboks = ({ stillingsId }: Props) => {
-    const samtykke = useHentSamtykke(stillingsId).data;
+    const {
+        data: samtykke,
+        isLoading,
+        isValidating,
+        error: hentFeil,
+        mutate,
+    } = useHentSamtykke(stillingsId);
+    const {
+        endreSamtykke,
+        trekkSamtykke,
+        isMutating,
+        error: lagreFeil,
+    } = useEndreSamtykke(stillingsId);
     const samtykkesvar = lesSamtykkestatus(samtykke);
-
-    const samtykket = samtykke?.svar?.harSvartJa;
+    const venter = isMutating || isValidating;
 
     return (
         <Box
@@ -47,7 +61,12 @@ const Samtykkeboks = ({ stillingsId }: Props) => {
                     Vil du dele CV-en din med arbeidsgiver?
                 </Heading>
                 <div aria-live="polite">
-                    <BodyLong>{samtykketekst(samtykkesvar)}</BodyLong>
+                    {isLoading ? (
+                        <BodyLong>Henter samtykkestatus...</BodyLong>
+                    ) : hentFeil ? null : (
+                        <BodyLong>{samtykketekst(samtykkesvar)}</BodyLong>
+                    )}
+                    {isMutating && <BodyLong>Lagrer endringen...</BodyLong>}
                 </div>
                 <ReadMore header="Hva innebærer det å dele CV-en?">
                     <BodyLong>
@@ -56,13 +75,58 @@ const Samtykkeboks = ({ stillingsId }: Props) => {
                         samtykket ditt igjen.
                     </BodyLong>
                 </ReadMore>
-                {/*Ikke last inn knappen før samtykke er hentet ferdig*/}
-                {/*{svar?.innlogget && (*/}
-                <Button type="button" variant={samtykket ? 'secondary' : 'primary'} onClick={async () => {
-                    await useEndreSamtykke(samtykket)
-                }}>
-                    {samtykket ? 'Trekk samtykke' : 'Gi samtykke'}
-                </Button>
+                {hentFeil ? (
+                    <>
+                        <ErrorMessage showIcon role="alert">
+                            Vi kunne ikke hente samtykkestatusen din. Prøv igjen.
+                        </ErrorMessage>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            disabled={venter}
+                            onClick={() => void mutate()}
+                        >
+                            Prøv igjen
+                        </Button>
+                    </>
+                ) : (
+                    !isLoading &&
+                    (samtykkesvar.harSamtykket ? (
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            disabled={venter}
+                            onClick={() => void trekkSamtykke()}
+                        >
+                            Trekk samtykke
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                type="button"
+                                variant="primary"
+                                disabled={venter}
+                                onClick={() => void endreSamtykke('JA')}
+                            >
+                                Ja, jeg samtykker til at CV-en min kan deles med arbeidsgiver
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                disabled={venter}
+                                onClick={() => void endreSamtykke('NEI')}
+                            >
+                                Nei, jeg samtykker ikke til at Nav kan dele CV-en min med
+                                arbeidsgiver
+                            </Button>
+                        </>
+                    ))
+                )}
+                {lagreFeil && (
+                    <ErrorMessage showIcon role="alert">
+                        Vi kunne ikke lagre endringen. Prøv igjen.
+                    </ErrorMessage>
+                )}
             </VStack>
         </Box>
     );
