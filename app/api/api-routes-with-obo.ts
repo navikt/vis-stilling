@@ -8,7 +8,7 @@ export interface Iroute {
 }
 
 export const DelingAvCv: Iroute = {
-    api_route: '/api',
+    api_route: '',
     api_url: process.env.TOI_DELING_AV_CV_API ?? '',
     internUrl: '/arbeid/stilling/api/deling-av-cv',
     scope: `${miljø}:toi:toi-deling-av-cv-api`,
