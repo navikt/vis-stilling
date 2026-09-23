@@ -2,6 +2,11 @@ name: Bygg og Deploy vis-stilling
 on:
     push:
     workflow_dispatch:
+        inputs:
+            kjor-chainguard-sjekk:
+                description: Kjør Chainguard-sjekk (som schedule)
+                type: boolean
+                default: false
     schedule:
         - cron: '0 6 * * *'
 
