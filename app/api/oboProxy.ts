@@ -1,5 +1,5 @@
 import { opprettOboProxy, type Oborute } from '@navikt/toi-next-frontend/next';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest} from 'next/server';
 import { Iroute } from './api-routes-with-obo.ts';
 import { skalMocke } from '../_utils/util.ts';
 import { hentOboToken } from './obotoken.ts';
