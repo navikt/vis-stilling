@@ -23,8 +23,6 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
             error: new Error('Kunne ikke hente token'),
         };
     }
-    // TODO Fjern denne etter sjekk i dev
-    logger.info(`Token hentet: ${token}`);
 
     if (!skalMocke) {
         let validation: ValidationResult;
