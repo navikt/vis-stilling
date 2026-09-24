@@ -9,6 +9,7 @@ const tilOborute = (proxy: Iroute): Oborute => ({
     apiUrl: proxy.api_url || (skalMocke ? 'http://mock-api' : ''),
     apiRute: proxy.api_route,
     internUrl: proxy.internUrl,
+    internUrlWithoutBaseUrl: proxy.internUrlWithoutBaseUrl,
     scope: proxy.scope,
 });
 
@@ -25,6 +26,15 @@ export const proxyWithOBO = async (
                 scope: proxy.scope,
             });
             return obo.ok ? obo.token : undefined;
+        },
+        byggMålUrl: (rute, forespørsel, overstyrtRute) => {
+            const replaceUrl: string = rute.internUrlWithoutBaseUrl ? rute.internUrlWithoutBaseUrl : rute.internUrl;
+
+            const originalUrl = new URL(forespørsel.url);
+            const sti =
+                overstyrtRute ??
+                `${rute.apiRute}${originalUrl.pathname.replace(replaceUrl, '')}`;
+            return `${rute.apiUrl}${sti}${originalUrl.search}`;
         },
     });
 
