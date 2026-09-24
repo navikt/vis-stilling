@@ -23,6 +23,8 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
             error: new Error('Kunne ikke hente token'),
         };
     }
+    // TODO Fjern denne etter sjekk i dev
+    logger.info(`Token hentet: ${token}`);
 
     if (!skalMocke) {
         let validation: ValidationResult;
@@ -35,7 +37,7 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
         }
 
         if (!validation.ok) {
-            logger.info(`Token-validering feilet — bruker blir redirectet til login: ${validation.error}`);
+            logger.info(`Token-validering feilet: ${validation.error} og ${validation.errorType}`);
             return {
                 ok: false,
                 error: new Error('Token-validering feilet'),
