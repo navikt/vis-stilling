@@ -3,7 +3,10 @@ import {
     getToken,
     requestAzureOboToken,
     requestTokenxOboToken,
-    TokenResult
+    TokenResult,
+    validateAzureToken,
+    validateTokenxToken,
+    ValidationResult,
 } from '@navikt/oasis';
 import { erVeileder, skalMocke } from '../_utils/util.ts';
 
@@ -21,24 +24,24 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
         };
     }
 
-    // if (!skalMocke) {
-    //     let validation: ValidationResult;
-    //     if (erVeileder) {
-    //         logger.info("Validerer token for veileder");
-    //         validation = await validateAzureToken(token);
-    //     } else {
-    //         logger.info("Validerer token for personbruker");
-    //         validation = await validateTokenxToken(token);
-    //     }
-    //
-    //     if (!validation.ok) {
-    //         logger.info(`Token-validering feilet — bruker blir redirectet til login: ${validation.error}`);
-    //         return {
-    //             ok: false,
-    //             error: new Error('Token-validering feilet'),
-    //         };
-    //     }
-    // }
+    if (!skalMocke) {
+        let validation: ValidationResult;
+        if (erVeileder) {
+            logger.info("Validerer token for veileder");
+            validation = await validateAzureToken(token);
+        } else {
+            logger.info("Validerer token for personbruker");
+            validation = await validateTokenxToken(token);
+        }
+
+        if (!validation.ok) {
+            logger.info(`Token-validering feilet — bruker blir redirectet til login: ${validation.error}`);
+            return {
+                ok: false,
+                error: new Error('Token-validering feilet'),
+            };
+        }
+    }
 
     let obo: TokenResult;
     try {

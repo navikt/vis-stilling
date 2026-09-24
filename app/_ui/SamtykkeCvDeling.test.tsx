@@ -49,11 +49,11 @@ let container: HTMLDivElement;
 let root: Root;
 let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
 
-const render = () => {
+const render = (innlogget = true) => {
     act(() => {
         root.render(
             <SWRConfig value={{ provider: () => new Map(), shouldRetryOnError: false }}>
-                <SamtykkeCvDeling stillingsId={STILLINGS_ID} />
+                <SamtykkeCvDeling stillingsId={STILLINGS_ID} innlogget={innlogget} />
             </SWRConfig>
         );
     });
@@ -87,6 +87,108 @@ afterEach(async () => {
 });
 
 describe('SamtykkeCvDeling', () => {
+    it('viser innloggingsveiledning uten å hente samtykke for utloggede', async () => {
+        render(false);
+        await flush();
+
+        expect(fetchMock).not.toHaveBeenCalled();
+        expect(
+            container.querySelector('section[aria-label="Samtykke til deling av CV"]')
+        ).not.toBeNull();
+        expect(tekstInneholder('Har du mottatt en forespørsel om å dele CV-en din')).toBe(true);
+        expect(tekstInneholder('Logg inn for å svare.')).toBe(true);
+        expect(tekstInneholder('Henter samtykkestatus')).toBe(false);
+        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Trekk samtykke')).toBeUndefined();
+        expect(knapp('Prøv igjen')).toBeUndefined();
+    });
+
+    it('henter samtykke først når brukeren er innlogget', async () => {
+        fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke()]));
+        render(false);
+        await flush();
+        expect(fetchMock).not.toHaveBeenCalled();
+
+        render(true);
+        await flush();
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledWith(
+            ENDEPUNKT,
+            expect.objectContaining({ method: 'GET' })
+        );
+        expect(knapp('Ja, jeg samtykker')).toBeDefined();
+        expect(tekstInneholder('Logg inn for å svare.')).toBe(false);
+    });
+
+    it('skjuler bufret samtykke og handlinger når brukeren blir utlogget', async () => {
+        fetchMock.mockResolvedValueOnce(
+            jsonRespons([
+                lagSamtykke({
+                    svar: {
+                        harSvartJa: true,
+                        svarTidspunkt: '2024-01-02T10:00:00.000Z',
+                        svartAv: { ident: 'syntetisk-aktor', identType: 'AKTOR_ID' },
+                    },
+                }),
+            ])
+        );
+        render();
+        await flush();
+        expect(tekstInneholder('Du har sagt ja')).toBe(true);
+
+        render(false);
+        await flush();
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(tekstInneholder('Du har sagt ja')).toBe(false);
+        expect(tekstInneholder('Logg inn for å svare.')).toBe(true);
+        expect(knapp('Trekk samtykke')).toBeUndefined();
+        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Prøv igjen')).toBeUndefined();
+    });
+
+    it('viser ikke svarknapper når den nyeste forespørselen er trukket', async () => {
+        fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke({ trukket: true })]));
+        render();
+        await flush();
+
+        expect(tekstInneholder('Du har trukket samtykket')).toBe(true);
+        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Trekk samtykke')).toBeUndefined();
+    });
+
+    it('lar brukeren svare på en nyere forespørsel selv om en eldre er trukket', async () => {
+        const eldre = lagSamtykke({ trukket: true });
+        const nyere = lagSamtykke({
+            deltTidspunkt: '2024-03-01T10:00:00.000Z',
+            svarfrist: '2100-03-08T10:00:00.000Z',
+            tilstand: 'HAR_VARSLET',
+        });
+        fetchMock
+            .mockResolvedValueOnce(jsonRespons([nyere, eldre]))
+            .mockResolvedValueOnce(tomRespons())
+            .mockResolvedValueOnce(jsonRespons([nyere, eldre]));
+        render();
+        await flush();
+
+        expect(tekstInneholder('Du har fått en forespørsel')).toBe(true);
+        expect(tekstInneholder('Du har trukket samtykket')).toBe(false);
+        expect(knapp('Ja, jeg samtykker')?.disabled).toBe(false);
+        expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(false);
+
+        await klikk(knapp('Ja, jeg samtykker')!);
+        await flush();
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            `${ENDEPUNKT}/JA`,
+            expect.objectContaining({ method: 'PUT' })
+        );
+    });
+
     it('viser ingen mutasjonsknapper under initial henting', async () => {
         let løsGet!: (r: Response) => void;
         fetchMock.mockImplementation(() => new Promise<Response>((resolve) => (løsGet = resolve)));
@@ -193,7 +295,8 @@ describe('SamtykkeCvDeling', () => {
         expect(tekstInneholder('Du har trukket samtykket')).toBe(true);
         // trukket:true skal overstyre harSvartJa:true - ikke vis "Trekk"-knapp som aktivt samtykke
         expect(knapp('Trekk samtykke')).toBeUndefined();
-        expect(knapp('Ja, jeg samtykker')).toBeDefined();
+        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
     });
 
     it('sperrer begge knappene under forsinket mutasjon og revalidering', async () => {

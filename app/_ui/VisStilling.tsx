@@ -8,9 +8,10 @@ import SamtykkeCvDeling from './SamtykkeCvDeling';
 
 interface Props {
     stilling: Stilling;
+    innlogget: boolean;
 }
 
-const VisStilling: FunctionComponent<Props> = ({ stilling }) => {
+const VisStilling: FunctionComponent<Props> = ({ stilling, innlogget }) => {
     const stillingDTO = konverterStilling(stilling);
 
     // søknadSlot vises som egen boks til høyre på desktop, og rett under
@@ -23,6 +24,7 @@ const VisStilling: FunctionComponent<Props> = ({ stilling }) => {
                     <SamtykkeCvDeling
                         key={stilling.uuid}
                         stillingsId={stilling.uuid}
+                        innlogget={innlogget}
                     />
                 }
             />

@@ -8,6 +8,7 @@ import { useEndreSamtykke } from '../api/deling-av-cv/useEndreSamtykke.ts';
 
 interface Props {
     stillingsId: string;
+    innlogget: boolean;
 }
 
 const samtykketekst = (svar: Samtykkestatus | undefined): string => {
@@ -29,14 +30,14 @@ const samtykketekst = (svar: Samtykkestatus | undefined): string => {
     return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
 };
 
-const Samtykkeboks = ({ stillingsId }: Props) => {
+const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
     const {
         data: samtykke,
         isLoading,
         isValidating,
         error: hentFeil,
         mutate,
-    } = useHentSamtykke(stillingsId);
+    } = useHentSamtykke(stillingsId, innlogget);
     const {
         endreSamtykke,
         trekkSamtykke,
@@ -61,12 +62,17 @@ const Samtykkeboks = ({ stillingsId }: Props) => {
                     Vil du dele CV-en din med arbeidsgiver?
                 </Heading>
                 <div aria-live="polite">
-                    {isLoading ? (
+                    {!innlogget ? (
+                        <BodyLong>
+                            Har du mottatt en forespørsel om å dele CV-en din med arbeidsgiveren for
+                            denne stillingen? Logg inn for å svare.
+                        </BodyLong>
+                    ) : isLoading ? (
                         <BodyLong>Henter samtykkestatus...</BodyLong>
                     ) : hentFeil ? null : (
                         <BodyLong>{samtykketekst(samtykkesvar)}</BodyLong>
                     )}
-                    {isMutating && <BodyLong>Lagrer endringen...</BodyLong>}
+                    {innlogget && isMutating && <BodyLong>Lagrer endringen...</BodyLong>}
                 </div>
                 <ReadMore header="Hva innebærer det å dele CV-en?">
                     <BodyLong>
@@ -75,54 +81,56 @@ const Samtykkeboks = ({ stillingsId }: Props) => {
                         samtykket ditt igjen.
                     </BodyLong>
                 </ReadMore>
-                {hentFeil ? (
-                    <>
-                        <ErrorMessage showIcon role="alert">
-                            Vi kunne ikke hente samtykkestatusen din. Prøv igjen.
-                        </ErrorMessage>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            disabled={venter}
-                            onClick={() => void mutate()}
-                        >
-                            Prøv igjen
-                        </Button>
-                    </>
-                ) : (
-                    !isLoading &&
-                    (samtykkesvar.harSamtykket ? (
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            disabled={venter}
-                            onClick={() => void trekkSamtykke()}
-                        >
-                            Trekk samtykke
-                        </Button>
-                    ) : (
+                {innlogget &&
+                    (hentFeil ? (
                         <>
-                            <Button
-                                type="button"
-                                variant="primary"
-                                disabled={venter}
-                                onClick={() => void endreSamtykke('JA')}
-                            >
-                                Ja, jeg samtykker til at CV-en min kan deles med arbeidsgiver
-                            </Button>
+                            <ErrorMessage showIcon role="alert">
+                                Vi kunne ikke hente samtykkestatusen din. Prøv igjen.
+                            </ErrorMessage>
                             <Button
                                 type="button"
                                 variant="secondary"
                                 disabled={venter}
-                                onClick={() => void endreSamtykke('NEI')}
+                                onClick={() => void mutate()}
                             >
-                                Nei, jeg samtykker ikke til at Nav kan dele CV-en min med
-                                arbeidsgiver
+                                Prøv igjen
                             </Button>
                         </>
-                    ))
-                )}
-                {lagreFeil && (
+                    ) : (
+                        !isLoading &&
+                        !samtykkesvar.harTrukketSamtykke &&
+                        (samtykkesvar.harSamtykket ? (
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                disabled={venter}
+                                onClick={() => void trekkSamtykke()}
+                            >
+                                Trekk samtykke
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    disabled={venter}
+                                    onClick={() => void endreSamtykke('JA')}
+                                >
+                                    Ja, jeg samtykker til at CV-en min kan deles med arbeidsgiver
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    disabled={venter}
+                                    onClick={() => void endreSamtykke('NEI')}
+                                >
+                                    Nei, jeg samtykker ikke til at Nav kan dele CV-en min med
+                                    arbeidsgiver
+                                </Button>
+                            </>
+                        ))
+                    ))}
+                {innlogget && lagreFeil && (
                     <ErrorMessage showIcon role="alert">
                         Vi kunne ikke lagre endringen. Prøv igjen.
                     </ErrorMessage>
@@ -132,8 +140,8 @@ const Samtykkeboks = ({ stillingsId }: Props) => {
     );
 };
 
-const SamtykkeCvDeling = ({ stillingsId }: Props) => {
-    return <Samtykkeboks stillingsId={stillingsId} />;
+const SamtykkeCvDeling = ({ stillingsId, innlogget }: Props) => {
+    return <Samtykkeboks stillingsId={stillingsId} innlogget={innlogget} />;
 };
 
 export default SamtykkeCvDeling;

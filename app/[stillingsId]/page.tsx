@@ -1,4 +1,6 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
+import { getToken } from '@navikt/oasis';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
@@ -34,7 +36,8 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     if (respons.status === Status.Suksess) {
         if (stillingInneholderPåkrevdeFelter(respons.data) && stillingenErPublisert(respons.data)) {
-            return <VisStilling stilling={respons.data} />;
+            const innlogget = Boolean(getToken(await headers()));
+            return <VisStilling stilling={respons.data} innlogget={innlogget} />;
         }
 
         return (

@@ -54,15 +54,15 @@ export const hentSisteSamtykke = (samtykker: readonly Samtykke[]): Samtykke | un
 
 const fetcher = createFetcher();
 
-export const useHentSamtykke = (stillingsId: string) => {
+export const useHentSamtykke = (stillingsId: string, innlogget: boolean) => {
     const result = useSWRGet(
-        stillingsId ? samtykkeEndepunkt(stillingsId) : null,
+        innlogget && stillingsId ? samtykkeEndepunkt(stillingsId) : null,
         samtykkeListeSchema,
         ({ endpoint, schema }) => fetcher.getMedSchema(schema, endpoint)
     );
 
     return {
         ...result,
-        data: result.data ? hentSisteSamtykke(result.data) : undefined,
+        data: innlogget && result.data ? hentSisteSamtykke(result.data) : undefined,
     };
 };
