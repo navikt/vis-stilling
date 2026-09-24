@@ -5,7 +5,7 @@ import {
     requestTokenxOboToken,
     TokenResult,
     validateAzureToken,
-    validateTokenxToken,
+    validateIdportenToken,
     ValidationResult,
 } from '@navikt/oasis';
 import { erVeileder, skalMocke } from '../_utils/util.ts';
@@ -31,7 +31,7 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
             validation = await validateAzureToken(token);
         } else {
             logger.info("Validerer token for personbruker");
-            validation = await validateTokenxToken(token);
+            validation = await validateIdportenToken(token);
         }
 
         if (!validation.ok) {
