@@ -26,6 +26,7 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
     const Decorator = await fetchDecoratorReact({
         env: env,
         params: {
+            redirectToApp: true,
             chatbot: false,
         },
     });
