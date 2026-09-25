@@ -1,0 +1,17 @@
+name: Dependabot pnpm-lockfile
+
+on:
+    pull_request:
+        branches: [main]
+        paths:
+            - '**/package.json'
+            - 'pnpm-lock.yaml'
+
+jobs:
+    lockfile:
+        name: 🤖
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        uses: navikt/toi-frontend-workflows/.github/workflows/dependabot-pnpm.yaml@v3.2
+        secrets: inherit
+        permissions:
+            contents: write
