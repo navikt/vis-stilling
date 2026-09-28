@@ -5,10 +5,13 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
+      time: "06:00"
       timezone: "Europe/Oslo"
+    # Samme som minimumReleaseAge i pnpm-workspace.yaml
     cooldown:
       default-days: 3
+      exclude:
+        - "@navikt/*"
     versioning-strategy: "auto"
     open-pull-requests-limit: 10
     labels:
@@ -20,32 +23,24 @@ updates:
     registries:
       - navikt-npm
     groups:
-      # Group patch updates
-      patch-updates:
+      minor-og-patch:
         patterns:
           - "*"
         update-types:
+          - "minor"
           - "patch"
-      # Group NAV packages
-      nav-packages:
+      major:
         patterns:
-          - "@navikt/*"
-      # Group dev dependencies
-      dev-dependencies:
-        dependency-type: "development"
-    ignore:
-      # Ignore major version updates for Node.js LTS
-      - dependency-name: "node"
-        update-types: ["version-update:semver-major"]
-      # Add other packages to ignore if needed
-      # - dependency-name: "example-package"
+          - "*"
+        update-types:
+          - "major"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
+      time: "06:00"
       timezone: "Europe/Oslo"
     cooldown:
       default-days: 3

@@ -1,0 +1,16 @@
+name: Sjekk base-image
+on:
+    schedule:
+        - cron: '0 6 * * *'
+    workflow_dispatch:
+
+jobs:
+    sjekk:
+        name: 🤖
+        uses: navikt/toi-frontend-workflows/.github/workflows/sjekk-base-image.yaml@v3.2
+        with:
+            deploy-workflow: deploy.yml
+        permissions:
+            actions: write
+            contents: read
+            id-token: write
