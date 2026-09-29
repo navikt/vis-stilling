@@ -68,6 +68,17 @@ const klikk = async (b: HTMLButtonElement) => {
     });
 };
 
+const dialogknapp = (tekst: string) =>
+    Array.from(document.querySelectorAll<HTMLButtonElement>('[role="alertdialog"] button')).find(
+        (b) => b.textContent?.startsWith(tekst)
+    );
+
+const bekreft = async () => {
+    const knapp = dialogknapp('Bekreft');
+    expect(knapp).toBeDefined();
+    await klikk(knapp!);
+};
+
 const tekstInneholder = (tekst: string) => container.textContent?.includes(tekst) ?? false;
 
 beforeEach(() => {
@@ -81,12 +92,105 @@ beforeEach(() => {
 
 afterEach(async () => {
     await act(async () => root.unmount());
+    await flush();
     container.remove();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
 });
 
 describe('SamtykkeCvDeling', () => {
+    it.each([
+        ['Ja, jeg samtykker', 'Vil du gi samtykke?', false],
+        ['Nei, jeg samtykker ikke', 'Vil du svare nei?', false],
+        ['Trekk samtykke', 'Vil du trekke samtykket?', true],
+    ])(
+        'åpner bekreftelse for "%s" og lar brukeren avbryte uten API-kall',
+        async (knappetekst, tittel, harSamtykket) => {
+            fetchMock.mockResolvedValueOnce(
+                jsonRespons([
+                    lagSamtykke({
+                        svar: harSamtykket
+                            ? {
+                                  harSvartJa: true,
+                                  svarTidspunkt: '2024-01-02T10:00:00.000Z',
+                                  svartAv: { ident: 'syntetisk-aktor', identType: 'AKTOR_ID' },
+                              }
+                            : null,
+                    }),
+                ])
+            );
+            render();
+            await flush();
+
+            const utløser = knapp(knappetekst)!;
+            await klikk(utløser);
+            await flush();
+
+            const dialog = document.querySelector('[role="alertdialog"]');
+            expect(dialog).not.toBeNull();
+            expect(dialog?.textContent).toContain(tittel);
+            const tittelId = dialog?.getAttribute('aria-labelledby');
+            expect(document.getElementById(tittelId!)?.textContent).toBe(tittel);
+            const beskrivelseId = dialog?.getAttribute('aria-describedby');
+            expect(document.getElementById(beskrivelseId!)?.textContent).toContain(
+                'CV-en din med arbeidsgiveren for denne stillingen'
+            );
+            await act(async () => {
+                await vi.waitFor(() => expect(document.activeElement).toBe(dialogknapp('Avbryt')));
+            });
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            await klikk(dialogknapp('Avbryt')!);
+            await flush();
+
+            expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+            expect(document.activeElement).toBe(utløser);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        }
+    );
+
+    it.each(['Escape', 'Lukk'])(
+        'lukker dialogen med %s uten å sende samtykkesvar',
+        async (måte) => {
+            fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke()]));
+            render();
+            await flush();
+            await klikk(knapp('Ja, jeg samtykker')!);
+            await flush();
+
+            if (måte === 'Escape') {
+                act(() => {
+                    document.activeElement?.dispatchEvent(
+                        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+                    );
+                });
+            } else {
+                const lukk = dialogknapp('Lukk');
+                expect(lukk).toBeDefined();
+                await klikk(lukk!);
+            }
+            await flush();
+
+            expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        }
+    );
+
+    it('fjerner en åpen bekreftelse ved utlogging uten å sende svaret', async () => {
+        fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke()]));
+        render();
+        await flush();
+        await klikk(knapp('Ja, jeg samtykker')!);
+        await flush();
+        expect(document.querySelector('[role="alertdialog"]')).not.toBeNull();
+
+        render(false);
+        await flush();
+
+        expect(document.querySelector('[role="alertdialog"]')).toBeNull();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
     it('viser innloggingsveiledning uten å hente samtykke for utloggede', async () => {
         render(false);
         await flush();
@@ -181,6 +285,7 @@ describe('SamtykkeCvDeling', () => {
         expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(false);
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
 
         expect(fetchMock).toHaveBeenCalledWith(
@@ -227,6 +332,8 @@ describe('SamtykkeCvDeling', () => {
         const jaKnapp = knapp('Ja, jeg samtykker');
         expect(jaKnapp).toBeDefined();
         await klikk(jaKnapp!);
+        expect(fetchMock.mock.calls.some((c) => c[1]?.method === 'PUT')).toBe(false);
+        await bekreft();
         await flush();
 
         const putKall = fetchMock.mock.calls.find((c) => c[1]?.method === 'PUT');
@@ -257,6 +364,8 @@ describe('SamtykkeCvDeling', () => {
 
         const neiKnapp = knapp('Nei, jeg samtykker ikke');
         await klikk(neiKnapp!);
+        expect(fetchMock.mock.calls.some((c) => c[1]?.method === 'PUT')).toBe(false);
+        await bekreft();
         await flush();
 
         const putKall = fetchMock.mock.calls.find((c) => c[1]?.method === 'PUT');
@@ -284,6 +393,8 @@ describe('SamtykkeCvDeling', () => {
         const trekkKnapp = knapp('Trekk samtykke');
         expect(trekkKnapp).toBeDefined();
         await klikk(trekkKnapp!);
+        expect(fetchMock.mock.calls.some((c) => c[1]?.method === 'DELETE')).toBe(false);
+        await bekreft();
         await flush();
 
         const deleteKall = fetchMock.mock.calls.filter((c) => c[1]?.method === 'DELETE');
@@ -318,6 +429,7 @@ describe('SamtykkeCvDeling', () => {
         const jaKnapp = knapp('Ja, jeg samtykker')!;
         const neiKnapp = knapp('Nei, jeg samtykker ikke')!;
         await klikk(jaKnapp);
+        await bekreft();
         await flush();
 
         expect(tekstInneholder('Lagrer endringen')).toBe(true);
@@ -356,11 +468,13 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke lagre endringen. Prøv igjen.')).toBe(true);
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
 
         expect(putForsøk).toBe(2);
@@ -382,11 +496,13 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke lagre endringen. Prøv igjen.')).toBe(true);
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
         expect(putForsøk).toBe(2);
         expect(tekstInneholder('Vi kunne ikke lagre endringen. Prøv igjen.')).toBe(false);
@@ -429,6 +545,7 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         await klikk(knapp('Ja, jeg samtykker')!);
+        await bekreft();
         await flush();
 
         // Revalideringen feilet - vi skal ikke late som JA ble bekreftet

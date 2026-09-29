@@ -5,6 +5,7 @@ import { BodyLong, Box, Button, ErrorMessage, Heading, ReadMore, VStack } from '
 import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import { lesSamtykkestatus, Samtykkestatus } from '../_types/Samtykkesvar.ts';
 import { useEndreSamtykke } from '../api/deling-av-cv/useEndreSamtykke.ts';
+import BekreftSamtykkeKnapp from './BekreftSamtykkeKnapp.tsx';
 
 interface Props {
     stillingsId: string;
@@ -100,33 +101,23 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
                         !isLoading &&
                         !samtykkesvar.harTrukketSamtykke &&
                         (samtykkesvar.harSamtykket ? (
-                            <Button
-                                type="button"
-                                variant="secondary"
+                            <BekreftSamtykkeKnapp
+                                handling="TREKK"
                                 disabled={venter}
-                                onClick={() => void trekkSamtykke()}
-                            >
-                                Trekk samtykke
-                            </Button>
+                                onBekreft={trekkSamtykke}
+                            />
                         ) : (
                             <>
-                                <Button
-                                    type="button"
-                                    variant="primary"
+                                <BekreftSamtykkeKnapp
+                                    handling="JA"
                                     disabled={venter}
-                                    onClick={() => void endreSamtykke('JA')}
-                                >
-                                    Ja, jeg samtykker til at CV-en min kan deles med arbeidsgiver
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="secondary"
+                                    onBekreft={() => endreSamtykke('JA')}
+                                />
+                                <BekreftSamtykkeKnapp
+                                    handling="NEI"
                                     disabled={venter}
-                                    onClick={() => void endreSamtykke('NEI')}
-                                >
-                                    Nei, jeg samtykker ikke til at Nav kan dele CV-en min med
-                                    arbeidsgiver
-                                </Button>
+                                    onBekreft={() => endreSamtykke('NEI')}
+                                />
                             </>
                         ))
                     ))}
