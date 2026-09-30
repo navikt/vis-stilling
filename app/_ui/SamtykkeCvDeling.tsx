@@ -108,6 +108,9 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
                             />
                         ) : (
                             <>
+                                <BodyLong>
+                                    Ønsker du at Nav kan dele CV-en din med denne arbeidsgiveren for denne stillingen?
+                                </BodyLong>
                                 <BekreftSamtykkeKnapp
                                     handling="JA"
                                     disabled={venter}

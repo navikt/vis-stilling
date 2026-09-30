@@ -5,14 +5,14 @@ import { useId, useRef } from 'react';
 
 const handlinger = {
     JA: {
-        knappetekst: 'Ja, jeg samtykker til at CV-en min kan deles med arbeidsgiver',
+        knappetekst: 'Gi samtykke',
         tittel: 'Vil du gi samtykke?',
         beskrivelse:
             'Du gir Nav samtykke til å dele CV-en din med arbeidsgiveren for denne stillingen.',
         bekreftTekst: 'Bekreft samtykke',
     },
     NEI: {
-        knappetekst: 'Nei, jeg samtykker ikke til at Nav kan dele CV-en min med arbeidsgiver',
+        knappetekst: 'Avvis samtykke',
         tittel: 'Vil du svare nei?',
         beskrivelse:
             'Du svarer nei til at Nav kan dele CV-en din med arbeidsgiveren for denne stillingen.',
