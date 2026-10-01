@@ -26,7 +26,8 @@ const samtykketekst = (svar: Samtykkestatus | undefined): string => {
         return 'Du har sagt nei til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
     }
     if (svar.harUbesvartForespørsel) {
-        return 'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+        return 'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
+            'kan du når som helst trekke samtykket ditt.';
     }
     return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
 };
@@ -48,6 +49,8 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
     const samtykkesvar = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
 
+    const headingTekst = innlogget ? 'Vil du dele CV-en din med arbeidsgiver?' : 'Har du spørsmål om stillingen';
+
     return (
         <Box
             as="section"
@@ -60,13 +63,12 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
         >
             <VStack gap="space-16">
                 <Heading level="2" size="small">
-                    Vil du dele CV-en din med arbeidsgiver?
+                    {headingTekst}
                 </Heading>
                 <div aria-live="polite">
                     {!innlogget ? (
                         <BodyLong>
-                            Har du mottatt en forespørsel om å dele CV-en din med arbeidsgiveren for
-                            denne stillingen? Logg inn for å svare.
+                            Kontakt veilederen din i dialogen i aktivitetsplanen.
                         </BodyLong>
                     ) : isLoading ? (
                         <BodyLong>Henter samtykkestatus...</BodyLong>
@@ -109,7 +111,8 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
                         ) : (
                             <>
                                 <BodyLong>
-                                    Ønsker du at Nav kan dele CV-en din med denne arbeidsgiveren for denne stillingen?
+                                    Ønsker du at Nav kan dele CV-en din med denne arbeidsgiveren for
+                                    denne stillingen?
                                 </BodyLong>
                                 <BekreftSamtykkeKnapp
                                     handling="JA"
