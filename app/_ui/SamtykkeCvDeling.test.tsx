@@ -5,9 +5,12 @@ import { SWRConfig } from 'swr';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import SamtykkeCvDeling from './SamtykkeCvDeling.tsx';
+import { hentPersonvernlenke } from '../_utils/util.ts';
 
 const STILLINGS_ID = 'stilling-syntetisk-1';
 const ENDEPUNKT = `/arbeid/stilling/api/deling-av-cv/samtykker/${STILLINGS_ID}`;
+const PERSONVERNLENKE = 'https://personvern.example/#deling';
+const LENKETEKST = 'Her kan du lese mer om å dele CV-en med arbeidsgiver';
 
 type Samtykkefixture = {
     stillingsId: string;
@@ -53,7 +56,11 @@ const render = (innlogget = true) => {
     act(() => {
         root.render(
             <SWRConfig value={{ provider: () => new Map(), shouldRetryOnError: false }}>
-                <SamtykkeCvDeling stillingsId={STILLINGS_ID} innlogget={innlogget} />
+                <SamtykkeCvDeling
+                    stillingsId={STILLINGS_ID}
+                    innlogget={innlogget}
+                    personvernlenke={PERSONVERNLENKE}
+                />
             </SWRConfig>
         );
     });
@@ -98,10 +105,76 @@ afterEach(async () => {
     vi.restoreAllMocks();
 });
 
+describe('personvernlenke', () => {
+    it('bruker nav.no i prod og ansatt.dev.nav.no ellers', () => {
+        expect(hentPersonvernlenke('prod-gcp')).toBe(
+            'https://www.nav.no/min-cv/personvern#deling-av-cv-med-arbeidsgivere'
+        );
+        expect(hentPersonvernlenke('dev-gcp')).toBe(
+            'https://www.ansatt.dev.nav.no/min-cv/personvern#deling-av-cv-med-arbeidsgivere'
+        );
+    });
+
+    const personvernlenke = () =>
+        Array.from(container.querySelectorAll('a')).find((a) => a.textContent === LENKETEKST);
+
+    it('vises for innlogget bruker med aktiv forespørsel', async () => {
+        fetchMock.mockResolvedValueOnce(
+            jsonRespons([lagSamtykke({ svarfrist: '2100-01-08T10:00:00.000Z' })])
+        );
+        render();
+        await flush();
+
+        expect(personvernlenke()?.getAttribute('href')).toBe(PERSONVERNLENKE);
+    });
+
+    it.each([
+        ['utløpt', {}],
+        [
+            'besvart',
+            {
+                svarfrist: '2100-01-08T10:00:00.000Z',
+                svar: {
+                    harSvartJa: true,
+                    svarTidspunkt: '2024-01-02T10:00:00.000Z',
+                    svartAv: { ident: 'syntetisk-aktor', identType: 'AKTOR_ID' },
+                },
+            },
+        ],
+        ['trukket', { svarfrist: '2100-01-08T10:00:00.000Z', trukket: true }],
+    ] as const)('vises ikke når forespørselen er %s', async (_, overrides) => {
+        fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke(overrides)]));
+        render();
+        await flush();
+
+        expect(personvernlenke()).toBeUndefined();
+    });
+
+    it('vises ikke uten forespørsel, ved feil eller for utloggede', async () => {
+        fetchMock.mockResolvedValueOnce(jsonRespons([]));
+        render();
+        await flush();
+        expect(personvernlenke()).toBeUndefined();
+
+        render(false);
+        await flush();
+        expect(personvernlenke()).toBeUndefined();
+    });
+
+    it('vises ikke når henting feiler', async () => {
+        fetchMock.mockResolvedValueOnce(jsonRespons({}, 500));
+        render();
+        await flush();
+
+        expect(knapp('Prøv igjen')).toBeDefined();
+        expect(personvernlenke()).toBeUndefined();
+    });
+});
+
 describe('SamtykkeCvDeling', () => {
     it.each([
-        ['Ja, jeg samtykker', 'Vil du gi samtykke?', false],
-        ['Nei, jeg samtykker ikke', 'Vil du svare nei?', false],
+        ['Gi samtykke', 'Vil du gi samtykke?', false],
+        ['Avvis samtykke', 'Vil du svare nei?', false],
         ['Trekk samtykke', 'Vil du trekke samtykket?', true],
     ])(
         'åpner bekreftelse for "%s" og lar brukeren avbryte uten API-kall',
@@ -155,7 +228,7 @@ describe('SamtykkeCvDeling', () => {
             fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke()]));
             render();
             await flush();
-            await klikk(knapp('Ja, jeg samtykker')!);
+            await klikk(knapp('Gi samtykke')!);
             await flush();
 
             if (måte === 'Escape') {
@@ -180,7 +253,7 @@ describe('SamtykkeCvDeling', () => {
         fetchMock.mockResolvedValueOnce(jsonRespons([lagSamtykke()]));
         render();
         await flush();
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await flush();
         expect(document.querySelector('[role="alertdialog"]')).not.toBeNull();
 
@@ -199,11 +272,11 @@ describe('SamtykkeCvDeling', () => {
         expect(
             container.querySelector('section[aria-label="Samtykke til deling av CV"]')
         ).not.toBeNull();
-        expect(tekstInneholder('Har du mottatt en forespørsel om å dele CV-en din')).toBe(true);
-        expect(tekstInneholder('Logg inn for å svare.')).toBe(true);
+        expect(tekstInneholder('Har du spørsmål om stillingen')).toBe(true);
+        expect(tekstInneholder('Kontakt veilederen din i dialogen i aktivitetsplanen.')).toBe(true);
         expect(tekstInneholder('Henter samtykkestatus')).toBe(false);
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
-        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
+        expect(knapp('Avvis samtykke')).toBeUndefined();
         expect(knapp('Trekk samtykke')).toBeUndefined();
         expect(knapp('Prøv igjen')).toBeUndefined();
     });
@@ -222,8 +295,10 @@ describe('SamtykkeCvDeling', () => {
             ENDEPUNKT,
             expect.objectContaining({ method: 'GET' })
         );
-        expect(knapp('Ja, jeg samtykker')).toBeDefined();
-        expect(tekstInneholder('Logg inn for å svare.')).toBe(false);
+        expect(knapp('Gi samtykke')).toBeDefined();
+        expect(tekstInneholder('Kontakt veilederen din i dialogen i aktivitetsplanen.')).toBe(
+            false
+        );
     });
 
     it('skjuler bufret samtykke og handlinger når brukeren blir utlogget', async () => {
@@ -247,10 +322,10 @@ describe('SamtykkeCvDeling', () => {
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(tekstInneholder('Du har sagt ja')).toBe(false);
-        expect(tekstInneholder('Logg inn for å svare.')).toBe(true);
+        expect(tekstInneholder('Kontakt veilederen din i dialogen i aktivitetsplanen.')).toBe(true);
         expect(knapp('Trekk samtykke')).toBeUndefined();
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
-        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
+        expect(knapp('Avvis samtykke')).toBeUndefined();
         expect(knapp('Prøv igjen')).toBeUndefined();
     });
 
@@ -260,8 +335,8 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         expect(tekstInneholder('Du har trukket samtykket')).toBe(true);
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
-        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
+        expect(knapp('Avvis samtykke')).toBeUndefined();
         expect(knapp('Trekk samtykke')).toBeUndefined();
     });
 
@@ -281,10 +356,10 @@ describe('SamtykkeCvDeling', () => {
 
         expect(tekstInneholder('Du har fått en forespørsel')).toBe(true);
         expect(tekstInneholder('Du har trukket samtykket')).toBe(false);
-        expect(knapp('Ja, jeg samtykker')?.disabled).toBe(false);
-        expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(false);
+        expect(knapp('Gi samtykke')?.disabled).toBe(false);
+        expect(knapp('Avvis samtykke')?.disabled).toBe(false);
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
 
@@ -301,12 +376,12 @@ describe('SamtykkeCvDeling', () => {
 
         expect(tekstInneholder('Henter samtykkestatus')).toBe(true);
         expect(knapp('Trekk samtykke')).toBeUndefined();
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
 
         løsGet(jsonRespons([lagSamtykke()]));
         await flush();
 
-        expect(knapp('Nei, jeg samtykker ikke')).toBeDefined();
+        expect(knapp('Avvis samtykke')).toBeDefined();
     });
 
     it('sender JA med PUT uten body og viser oppdatert status etter revalidering', async () => {
@@ -329,7 +404,7 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        const jaKnapp = knapp('Ja, jeg samtykker');
+        const jaKnapp = knapp('Gi samtykke');
         expect(jaKnapp).toBeDefined();
         await klikk(jaKnapp!);
         expect(fetchMock.mock.calls.some((c) => c[1]?.method === 'PUT')).toBe(false);
@@ -362,7 +437,7 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        const neiKnapp = knapp('Nei, jeg samtykker ikke');
+        const neiKnapp = knapp('Avvis samtykke');
         await klikk(neiKnapp!);
         expect(fetchMock.mock.calls.some((c) => c[1]?.method === 'PUT')).toBe(false);
         await bekreft();
@@ -406,8 +481,8 @@ describe('SamtykkeCvDeling', () => {
         expect(tekstInneholder('Du har trukket samtykket')).toBe(true);
         // trukket:true skal overstyre harSvartJa:true - ikke vis "Trekk"-knapp som aktivt samtykke
         expect(knapp('Trekk samtykke')).toBeUndefined();
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
-        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
+        expect(knapp('Avvis samtykke')).toBeUndefined();
     });
 
     it('sperrer begge knappene under forsinket mutasjon og revalidering', async () => {
@@ -426,28 +501,28 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        const jaKnapp = knapp('Ja, jeg samtykker')!;
-        const neiKnapp = knapp('Nei, jeg samtykker ikke')!;
+        const jaKnapp = knapp('Gi samtykke')!;
+        const neiKnapp = knapp('Avvis samtykke')!;
         await klikk(jaKnapp);
         await bekreft();
         await flush();
 
         expect(tekstInneholder('Lagrer endringen')).toBe(true);
-        expect(knapp('Ja, jeg samtykker')?.disabled).toBe(true);
-        expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(true);
+        expect(knapp('Gi samtykke')?.disabled).toBe(true);
+        expect(knapp('Avvis samtykke')?.disabled).toBe(true);
         await klikk(neiKnapp);
         expect(fetchMock.mock.calls.filter((c) => c[1]?.method === 'PUT')).toHaveLength(1);
 
         løsPut(tomRespons());
         await flush();
 
-        expect(knapp('Ja, jeg samtykker')?.disabled).toBe(true);
-        expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(true);
+        expect(knapp('Gi samtykke')?.disabled).toBe(true);
+        expect(knapp('Avvis samtykke')?.disabled).toBe(true);
 
         løsGet(jsonRespons([lagSamtykke()]));
         await flush();
-        expect(knapp('Ja, jeg samtykker')?.disabled).toBe(false);
-        expect(knapp('Nei, jeg samtykker ikke')?.disabled).toBe(false);
+        expect(knapp('Gi samtykke')?.disabled).toBe(false);
+        expect(knapp('Avvis samtykke')?.disabled).toBe(false);
     });
 
     it('viser mutasjonsfeil ved HTTP-feil og tillater nytt forsøk', async () => {
@@ -467,13 +542,13 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke lagre endringen. Prøv igjen.')).toBe(true);
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
 
@@ -495,13 +570,13 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke lagre endringen. Prøv igjen.')).toBe(true);
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
         expect(putForsøk).toBe(2);
@@ -517,7 +592,7 @@ describe('SamtykkeCvDeling', () => {
 
         expect(tekstInneholder('Vi kunne ikke hente samtykkestatusen din. Prøv igjen.')).toBe(true);
         expect(tekstInneholder('Du har sagt ja')).toBe(false);
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
         expect(knapp('Trekk samtykke')).toBeUndefined();
 
         const prøvIgjen = knapp('Prøv igjen');
@@ -528,7 +603,7 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke hente samtykkestatusen din')).toBe(false);
-        expect(knapp('Nei, jeg samtykker ikke')).toBeDefined();
+        expect(knapp('Avvis samtykke')).toBeDefined();
     });
 
     it('mislykket revalidering etter mutasjon påstår ikke suksess og tillater nytt forsøk', async () => {
@@ -544,7 +619,7 @@ describe('SamtykkeCvDeling', () => {
         render();
         await flush();
 
-        await klikk(knapp('Ja, jeg samtykker')!);
+        await klikk(knapp('Gi samtykke')!);
         await bekreft();
         await flush();
 
@@ -569,8 +644,8 @@ describe('SamtykkeCvDeling', () => {
         await flush();
 
         expect(tekstInneholder('Vi kunne ikke hente samtykkestatusen din')).toBe(true);
-        expect(knapp('Ja, jeg samtykker')).toBeUndefined();
-        expect(knapp('Nei, jeg samtykker ikke')).toBeUndefined();
+        expect(knapp('Gi samtykke')).toBeUndefined();
+        expect(knapp('Avvis samtykke')).toBeUndefined();
     });
 
     it('parser datoer fra JSON og velger nyeste samtykke i usortert liste', async () => {

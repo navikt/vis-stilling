@@ -8,6 +8,7 @@ import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_ut
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
 import VisStilling from '../_ui/VisStilling.tsx';
+import { hentPersonvernlenke } from '../_utils/util.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +38,13 @@ const StillingPage = async ({ params }: StillingPageProps) => {
     if (respons.status === Status.Suksess) {
         if (stillingInneholderPåkrevdeFelter(respons.data) && stillingenErPublisert(respons.data)) {
             const innlogget = Boolean(getToken(await headers()));
-            return <VisStilling stilling={respons.data} innlogget={innlogget} />;
+            return (
+                <VisStilling
+                    stilling={respons.data}
+                    innlogget={innlogget}
+                    personvernlenke={hentPersonvernlenke()}
+                />
+            );
         }
 
         return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { BodyLong, Box, Button, ErrorMessage, Heading, ReadMore, VStack } from '@navikt/ds-react';
+import { BodyLong, Box, Button, ErrorMessage, Heading, Link, VStack } from '@navikt/ds-react';
 
 import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import { lesSamtykkestatus, Samtykkestatus } from '../_types/Samtykkesvar.ts';
@@ -10,6 +10,7 @@ import BekreftSamtykkeKnapp from './BekreftSamtykkeKnapp.tsx';
 interface Props {
     stillingsId: string;
     innlogget: boolean;
+    personvernlenke: string;
 }
 
 const samtykketekst = (svar: Samtykkestatus | undefined): string => {
@@ -26,13 +27,15 @@ const samtykketekst = (svar: Samtykkestatus | undefined): string => {
         return 'Du har sagt nei til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
     }
     if (svar.harUbesvartForespørsel) {
-        return 'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
-            'kan du når som helst trekke samtykket ditt.';
+        return (
+            'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
+            'kan du når som helst trekke samtykket ditt.'
+        );
     }
     return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
 };
 
-const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
+const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
     const {
         data: samtykke,
         isLoading,
@@ -48,8 +51,12 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
     } = useEndreSamtykke(stillingsId);
     const samtykkesvar = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
+    const harAktivForespørsel =
+        innlogget && !isLoading && !hentFeil && samtykkesvar.harUbesvartForespørsel;
 
-    const headingTekst = innlogget ? 'Vil du dele CV-en din med arbeidsgiver?' : 'Har du spørsmål om stillingen';
+    const headingTekst = innlogget
+        ? 'Vil du dele CV-en din med arbeidsgiver?'
+        : 'Har du spørsmål om stillingen';
 
     return (
         <Box
@@ -67,9 +74,7 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
                 </Heading>
                 <div aria-live="polite">
                     {!innlogget ? (
-                        <BodyLong>
-                            Kontakt veilederen din i dialogen i aktivitetsplanen.
-                        </BodyLong>
+                        <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
                     ) : isLoading ? (
                         <BodyLong>Henter samtykkestatus...</BodyLong>
                     ) : hentFeil ? null : (
@@ -77,13 +82,13 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
                     )}
                     {innlogget && isMutating && <BodyLong>Lagrer endringen...</BodyLong>}
                 </div>
-                <ReadMore header="Hva innebærer det å dele CV-en?">
+                {harAktivForespørsel && (
                     <BodyLong>
-                        Dette er en midlertidig tekst. Her skal det stå hvilke opplysninger som
-                        deles, hvem som får se dem, hvor lenge de lagres, og hvordan du kan trekke
-                        samtykket ditt igjen.
+                        <Link href={personvernlenke}>
+                            Her kan du lese mer om å dele CV-en med arbeidsgiver
+                        </Link>
                     </BodyLong>
-                </ReadMore>
+                )}
                 {innlogget &&
                     (hentFeil ? (
                         <>
@@ -137,8 +142,14 @@ const Samtykkeboks = ({ stillingsId, innlogget }: Props) => {
     );
 };
 
-const SamtykkeCvDeling = ({ stillingsId, innlogget }: Props) => {
-    return <Samtykkeboks stillingsId={stillingsId} innlogget={innlogget} />;
+const SamtykkeCvDeling = ({ stillingsId, innlogget, personvernlenke }: Props) => {
+    return (
+        <Samtykkeboks
+            stillingsId={stillingsId}
+            innlogget={innlogget}
+            personvernlenke={personvernlenke}
+        />
+    );
 };
 
 export default SamtykkeCvDeling;
