@@ -4,11 +4,11 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import VisStilling from '../_ui/VisStilling.tsx';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
+import { hentPersonvernlenke, skalMocke } from '../_utils/util.ts';
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
-import VisStilling from '../_ui/VisStilling.tsx';
-import { hentPersonvernlenke } from '../_utils/util.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +37,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     if (respons.status === Status.Suksess) {
         if (stillingInneholderPåkrevdeFelter(respons.data) && stillingenErPublisert(respons.data)) {
-            const innlogget = Boolean(getToken(await headers()));
+            const innlogget = skalMocke || Boolean(getToken(await headers()));
             return (
                 <VisStilling
                     stilling={respons.data}

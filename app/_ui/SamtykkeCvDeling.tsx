@@ -2,9 +2,9 @@
 
 import { BodyLong, Box, Button, ErrorMessage, Heading, Link, VStack } from '@navikt/ds-react';
 
-import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import { lesSamtykkestatus, Samtykkestatus } from '../_types/Samtykkesvar.ts';
 import { useEndreSamtykke } from '../api/deling-av-cv/useEndreSamtykke.ts';
+import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import BekreftSamtykkeKnapp from './BekreftSamtykkeKnapp.tsx';
 
 interface Props {
@@ -13,26 +13,24 @@ interface Props {
     personvernlenke: string;
 }
 
-const samtykketekst = (svar: Samtykkestatus | undefined): string => {
-    if (!svar) {
-        return 'Her kan du gi eller trekke samtykke til at Nav deler CV-en din med arbeidsgiver.';
+const samtykketekst = (status: Samtykkestatus): string => {
+    switch (status) {
+        case 'TRUKKET':
+            return 'Du har trukket samtykket til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+        case 'SAMTYKKET':
+            return 'Du har sagt ja til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+        case 'SVART_NEI':
+            return 'Du har sagt nei til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+        case 'UBESVART':
+            return (
+                'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
+                'kan du når som helst trekke samtykket ditt.'
+            );
+        case 'UTLØPT':
+            return 'Svarfristen for forespørselen har gått ut. Hvis du ønsker at Nav skal dele CV-en din med arbeidsgiveren, kan du kontakte veilederen din i dialogen i aktivitetsplanen.';
+        case 'INGEN_FORESPØRSEL':
+            return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
     }
-    if (svar.harTrukketSamtykke) {
-        return 'Du har trukket samtykket til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
-    }
-    if (svar.harSamtykket) {
-        return 'Du har sagt ja til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
-    }
-    if (svar.harSvartNei) {
-        return 'Du har sagt nei til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
-    }
-    if (svar.harUbesvartForespørsel) {
-        return (
-            'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
-            'kan du når som helst trekke samtykket ditt.'
-        );
-    }
-    return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
 };
 
 const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
@@ -49,14 +47,14 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
         isMutating,
         error: lagreFeil,
     } = useEndreSamtykke(stillingsId);
-    const samtykkesvar = lesSamtykkestatus(samtykke);
+    const status = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
-    const harAktivForespørsel =
-        innlogget && !isLoading && !hentFeil && samtykkesvar.harUbesvartForespørsel;
+    const harAktivForespørsel = innlogget && !isLoading && !hentFeil && status === 'UBESVART';
+    const visSpørsmål = !innlogget || (!isLoading && !hentFeil && status === 'INGEN_FORESPØRSEL');
 
-    const headingTekst = innlogget
-        ? 'Vil du dele CV-en din med arbeidsgiver?'
-        : 'Har du spørsmål om stillingen';
+    const headingTekst = visSpørsmål
+        ? 'Har du spørsmål om stillingen'
+        : 'Vil du dele CV-en din med arbeidsgiver?';
 
     return (
         <Box
@@ -73,12 +71,12 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                     {headingTekst}
                 </Heading>
                 <div aria-live="polite">
-                    {!innlogget ? (
+                    {visSpørsmål ? (
                         <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
                     ) : isLoading ? (
                         <BodyLong>Henter samtykkestatus...</BodyLong>
                     ) : hentFeil ? null : (
-                        <BodyLong>{samtykketekst(samtykkesvar)}</BodyLong>
+                        <BodyLong>{samtykketekst(status)}</BodyLong>
                     )}
                     {innlogget && isMutating && <BodyLong>Lagrer endringen...</BodyLong>}
                 </div>
@@ -89,7 +87,7 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                         </Link>
                     </BodyLong>
                 )}
-                {innlogget &&
+                {!visSpørsmål &&
                     (hentFeil ? (
                         <>
                             <ErrorMessage showIcon role="alert">
@@ -106,14 +104,13 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                         </>
                     ) : (
                         !isLoading &&
-                        !samtykkesvar.harTrukketSamtykke &&
-                        (samtykkesvar.harSamtykket ? (
+                        (status === 'SAMTYKKET' ? (
                             <BekreftSamtykkeKnapp
                                 handling="TREKK"
                                 disabled={venter}
                                 onBekreft={trekkSamtykke}
                             />
-                        ) : (
+                        ) : status === 'UBESVART' ? (
                             <>
                                 <BodyLong>
                                     Ønsker du at Nav kan dele CV-en din med denne arbeidsgiveren for
@@ -130,7 +127,7 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                                     onBekreft={() => endreSamtykke('NEI')}
                                 />
                             </>
-                        ))
+                        ) : null)
                     ))}
                 {innlogget && lagreFeil && (
                     <ErrorMessage showIcon role="alert">

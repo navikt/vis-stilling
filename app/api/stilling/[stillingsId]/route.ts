@@ -1,13 +1,12 @@
 import { logger } from '@navikt/next-logger';
 import type { NextRequest } from 'next/server';
 
+import { readMockData, shouldUseDevMocks } from '../../../../mock/stilling';
 import {
     buildUpstreamUrl,
     copyHeaders,
     getClientCredentialsToken,
     getUpstreamBase,
-    readMockData,
-    shouldUseDevMocks,
 } from '../helpers';
 
 export const dynamic = 'force-dynamic';

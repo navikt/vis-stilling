@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 
 import type { ReactNode } from 'react';
+import { dekoratorMockScript } from '../mock/dekorator.ts';
+import { skalMocke } from './_utils/util.ts';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -34,6 +36,7 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
     return (
         <html lang="no">
             <head>
+                {skalMocke && <script dangerouslySetInnerHTML={{ __html: dekoratorMockScript }} />}
                 <Decorator.HeadAssets />
             </head>
             <body>

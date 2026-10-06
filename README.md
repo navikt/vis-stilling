@@ -12,7 +12,7 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 pnpm install
 pnpm dev
 ```
-Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra filen `src/mock/mock-api.ts`.
+Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra filen `mock/stilling.ts`, eller en av samtykke-scenarioene i `mock/samtykke-handlers.ts` (f.eks. `samtykke-ja`).
 
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:

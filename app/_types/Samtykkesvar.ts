@@ -1,36 +1,11 @@
 import type { Samtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 
-export interface Samtykkestatus {
-    harSamtykket: boolean;
-    harUbesvartForespørsel: boolean;
-    harUtløptForespørsel: boolean;
-    harSvartNei: boolean;
-    harTrukketSamtykke: boolean;
-}
+export type Samtykkestatus =
+    'INGEN_FORESPØRSEL' | 'UBESVART' | 'UTLØPT' | 'SAMTYKKET' | 'SVART_NEI' | 'TRUKKET';
 
 export const lesSamtykkestatus = (samtykke: Samtykke | undefined): Samtykkestatus => {
-    const status: Samtykkestatus = {
-        harSamtykket: false,
-        harUbesvartForespørsel: false,
-        harUtløptForespørsel: false,
-        harSvartNei: false,
-        harTrukketSamtykke: false,
-    };
-    if (samtykke) {
-        if (samtykke.trukket) {
-            status.harTrukketSamtykke = true;
-        } else if (samtykke.svar) {
-            if (samtykke.svar.harSvartJa) {
-                status.harSamtykket = true;
-            } else {
-                status.harSvartNei = true;
-            }
-        } else if (new Date(samtykke.svarfrist).getTime() < Date.now()) {
-            status.harUtløptForespørsel = true;
-        } else {
-            status.harUbesvartForespørsel = true;
-        }
-    }
-
-    return status;
+    if (!samtykke) return 'INGEN_FORESPØRSEL';
+    if (samtykke.trukket) return 'TRUKKET';
+    if (samtykke.svar) return samtykke.svar.harSvartJa ? 'SAMTYKKET' : 'SVART_NEI';
+    return samtykke.svarfrist.getTime() < Date.now() ? 'UTLØPT' : 'UBESVART';
 };
