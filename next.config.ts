@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     serverExternalPackages: ['@navikt/next-logger'],
     reactStrictMode: true,
     basePath: '/arbeid/stilling',
+    assetPrefix: process.env.CDN_ASSET_PREFIX,
+    crossOrigin: 'anonymous',
+    productionBrowserSourceMaps: true,
     distDir: '.next',
 };
 
