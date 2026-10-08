@@ -11,7 +11,7 @@ jobs:
             cdn-upload: true
             baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
             #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
-            deploy-dev-branch: 'oppdater_nav_dekorator'
+            deploy-dev-branch: 'cdn'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
