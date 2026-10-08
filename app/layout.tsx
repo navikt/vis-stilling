@@ -1,16 +1,30 @@
+import { versionFromImage } from '@nais/apm';
 import { fetchDecoratorReact } from '@navikt/nav-dekoratoren-moduler/ssr';
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import { connection } from 'next/server';
 
 import type { ReactNode } from 'react';
 import { dekoratorMockScript } from '../mock/dekorator.ts';
 import { skalMocke } from './_utils/util.ts';
 import './globals.css';
 
-export const metadata: Metadata = {
-    title: 'Se stilling',
-    description: 'Visning av en arbeidsstilling',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    await connection();
+    return {
+        title: 'Se stilling',
+        description: 'Visning av en arbeidsstilling',
+        other: {
+            'nais-app': process.env.NAIS_APP_NAME ?? 'vis-stilling',
+            'nais-team': 'toi',
+            'nais-cluster': process.env.NAIS_CLUSTER_NAME ?? 'local',
+            'nais-version': versionFromImage(process.env.NAIS_APP_IMAGE) ?? 'local',
+            ...(process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL && {
+                'nais-telemetry-url': process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL,
+            }),
+        },
+    };
+}
 
 export const viewport: Viewport = {
     themeColor: '#000000',
