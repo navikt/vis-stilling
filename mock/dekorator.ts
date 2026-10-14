@@ -36,6 +36,22 @@ const mockDekoratorFetch = () => {
             );
         }
 
+        if (env?.APP_URL) {
+            const endepunkt = new URL(url, window.location.href);
+            if (endepunkt.href.split('?')[0] === `${env.APP_URL}/main-menu`) {
+                return Promise.resolve(
+                    new Response('<a href="https://www.nav.no/">Til nav.no</a>', {
+                        status: 200,
+                        headers: { 'Content-Type': 'text/html' },
+                    })
+                );
+            }
+
+            if (endepunkt.href.split('?')[0] === `${env.APP_URL}/ops-messages`) {
+                return Promise.resolve(json([]));
+            }
+        }
+
         return originalFetch(input, init);
     };
 };
