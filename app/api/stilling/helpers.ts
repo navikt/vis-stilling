@@ -26,7 +26,8 @@ const mockCache = new Map<string, unknown>();
 
 export const getUpstreamBase = () => envUpstreamBase;
 
-export const shouldUseDevMocks = () => isDevelopment && !envUpstreamBase;
+export const shouldUseDevMocks = () =>
+    process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true' || (isDevelopment && !envUpstreamBase);
 
 export const readMockData = async (stillingsId: string) => {
     const file = devMockFileByIdentifier[stillingsId] ?? defaultMockFile;
