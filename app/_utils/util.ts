@@ -1,10 +1,6 @@
-import {
-    erLokalt,
-    skalMocke as pakkeSkalMocke,
-} from '@navikt/toi-next-frontend/miljo';
+import { skalMocke as pakkeSkalMocke } from '@navikt/toi-next-frontend/miljo';
 
 export const skalMocke = pakkeSkalMocke();
-export const isLocal = erLokalt();
 export const erVeileder = process.env.ER_VEILEDER === 'true';
 
 const PERSONVERN_PROD = 'https://www.nav.no/min-cv/personvern#deling-av-cv-med-arbeidsgivere';

@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 
-import { Annonsestatus, Location, Properties, Stilling } from '../types/Stilling';
-import { formaterNorskDato, tilDato } from './dato';
+import { Annonsestatus, Location, Stilling } from '../types/Stilling';
+import { tilDato } from './dato';
 import { StillingDTO } from '@navikt/stilling-react';
 
 export const stillingInneholderPåkrevdeFelter = (data: Stilling): boolean => {
@@ -32,20 +32,6 @@ export const hentKommuneOgEllerBy = (location: Location) => {
     return null;
 };
 
-export const hentSøknadsfrist = (properties: Properties) =>
-    konverterTilPresenterbarDato(properties.applicationdue);
-
-export const konverterTilPresenterbarDato = (datoString?: string | null): string => {
-    if (!datoString) return '';
-    if (datoString === 'Snarest') return datoString;
-    const presenterbarDato = formaterNorskDato({
-        dato: datoString,
-        visning: 'tall',
-    });
-    if (presenterbarDato) return presenterbarDato;
-    else return '';
-};
-
 export const hentBedriftensVisningsnavn = (stilling: Stilling) =>
     stilling.businessName ||
     normaliserNavn(stilling.employer.publicName) ||
@@ -66,10 +52,6 @@ export const hentAdresser = (locationList: Location[]) => {
 
     return '';
 };
-
-export const lagInnerHtml = (markup: string) => ({
-    __html: markup,
-});
 
 const ISO_DATO_FORMAT = 'yyyy-MM-dd';
 

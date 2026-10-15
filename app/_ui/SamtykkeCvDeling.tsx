@@ -6,6 +6,7 @@ import { lesSamtykkestatus, Samtykkestatus } from '../_types/Samtykkesvar.ts';
 import { useEndreSamtykke } from '../api/deling-av-cv/useEndreSamtykke.ts';
 import { useHentSamtykke } from '../api/deling-av-cv/useHentSamtykke.ts';
 import BekreftSamtykkeKnapp from './BekreftSamtykkeKnapp.tsx';
+import { ChatIcon } from '@navikt/aksel-icons';
 
 interface Props {
     stillingsId: string;
@@ -63,7 +64,8 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
     } = useEndreSamtykke(stillingsId);
     const status = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
-    const harAktivForespørsel = innlogget && !isLoading && !hentFeil && status !== 'INGEN_FORESPØRSEL';
+    const harAktivForespørsel =
+        innlogget && !isLoading && !hentFeil && status !== 'INGEN_FORESPØRSEL';
     const visSpørsmål = !innlogget || (!isLoading && !hentFeil && status === 'INGEN_FORESPØRSEL');
 
     return (
@@ -82,7 +84,10 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                 </Heading>
                 <div aria-live="polite">
                     {visSpørsmål ? (
-                        <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
+                        <div className="flex items-center gap-3">
+                            <ChatIcon aria-hidden className="text-2xl" />
+                            <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
+                        </div>
                     ) : isLoading ? (
                         <BodyLong>Henter status...</BodyLong>
                     ) : hentFeil ? null : (

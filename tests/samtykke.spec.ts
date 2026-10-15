@@ -1,4 +1,4 @@
-import { expect, test, type Page, type Route } from '@playwright/test';
+import { expect, test, type Locator, type Page, type Route } from '@playwright/test';
 
 const lenketekst = 'Her kan du lese mer om å dele CV-en med arbeidsgiver';
 const personvernUrl =
@@ -74,11 +74,36 @@ const gåTilStilling = async (page: Page, stillingsId: string) => page.goto(stil
 const kallMedMetode = (requests: RegistrertForespørsel[], method: string) =>
     requests.filter((request) => request.method === method);
 
-const bekreft = async (page: Page, knappetekst: string) => {
-    await page.getByRole('button', { name: knappetekst, exact: true }).click();
+// Dialog.Trigger veksler åpen/lukket, og knappen er deaktivert under revalidering. Et klikk kan
+// derfor gå tapt eller lukke dialogen igjen når nettleseren er presset, så vi prøver til den er åpen.
+const åpneDialog = async (page: Page, knappetekst: string) => {
     const dialog = page.getByRole('alertdialog');
-    await expect(dialog).toBeVisible();
+    const utløser = page.getByRole('button', { name: knappetekst, exact: true });
+    await expect(async () => {
+        if (!(await dialog.isVisible())) {
+            await utløser.click({ timeout: 2_000 });
+        }
+        await expect(dialog.getByRole('button', { name: 'Avbryt', exact: true })).toBeFocused({
+            timeout: 2_000,
+        });
+    }).toPass();
     return dialog;
+};
+
+const bekreftHandling = async (page: Page, knappetekst: string, bekreftelse: string) => {
+    const dialog = await åpneDialog(page, knappetekst);
+    await dialog.getByRole('button', { name: bekreftelse }).click();
+};
+
+// SWR prøver automatisk på nytt etter feil, og «Prøv igjen» er deaktivert mens det pågår.
+const prøvIgjen = async (region: Locator) => {
+    const knapp = region.getByRole('button', { name: 'Prøv igjen' });
+    await expect(async () => {
+        if (await knapp.isVisible()) {
+            await knapp.click({ timeout: 2_000 });
+        }
+        await expect(region.getByRole('alert')).toHaveCount(0, { timeout: 2_000 });
+    }).toPass();
 };
 
 test.describe('Personvernlenke', () => {
@@ -135,15 +160,24 @@ test.describe('Personvernlenke', () => {
     });
 
     test('viser ikke personvernlenken ved hentefeil og tilbyr nytt forsøk', async ({ page }) => {
-        await mockSamtykkeApi(page, (route, requests) =>
-            requests.filter((request) => request.method === 'GET').length === 1
-                ? route.fulfill({ status: 503, body: 'utilgjengelig' })
-                : svarJson(route, [lagSamtykke()])
+        let hentingVirker = false;
+        await mockSamtykkeApi(page, (route) =>
+            hentingVirker
+                ? svarJson(route, [lagSamtykke()])
+                : route.fulfill({ status: 503, body: 'utilgjengelig' })
         );
         await gåTilStilling(page, 'samtykke-lenke-hentefeil');
 
-        await expect(page.getByRole('button', { name: 'Prøv igjen' })).toBeVisible();
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await expect(region.getByRole('button', { name: 'Prøv igjen' })).toBeVisible();
         await expect(page.getByRole('link', { name: lenketekst })).toHaveCount(0);
+
+        hentingVirker = true;
+        await prøvIgjen(region);
+        await expect(page.getByRole('link', { name: lenketekst })).toHaveAttribute(
+            'href',
+            personvernUrl
+        );
     });
 });
 
@@ -185,15 +219,11 @@ test.describe('Samtykkedialoger', () => {
             await gåTilStilling(page, `samtykke-dialog-${scenario.knapp.replace(/ /g, '-')}`);
 
             const utløser = page.getByRole('button', { name: scenario.knapp, exact: true });
-            await utløser.click();
-            const dialog = page.getByRole('alertdialog');
-            await expect(dialog).toBeVisible();
+            const dialog = await åpneDialog(page, scenario.knapp);
             await expect(dialog.getByRole('heading', { name: scenario.tittel })).toBeVisible();
             await expect(dialog).toContainText(scenario.beskrivelse);
 
-            const avbryt = dialog.getByRole('button', { name: 'Avbryt', exact: true });
-            await expect(avbryt).toBeFocused();
-            await avbryt.click();
+            await dialog.getByRole('button', { name: 'Avbryt', exact: true }).click();
 
             await expect(dialog).toBeHidden();
             await expect(utløser).toBeFocused();
@@ -205,9 +235,7 @@ test.describe('Samtykkedialoger', () => {
     test('lukker dialogen med Escape uten å sende samtykkesvar', async ({ page }) => {
         const requests = await mockSamtykkeApi(page, (route) => svarJson(route, [lagSamtykke()]));
         await gåTilStilling(page, 'samtykke-dialog-escape');
-        await page.getByRole('button', { name: 'Gi samtykke', exact: true }).click();
-        const dialog = page.getByRole('alertdialog');
-        await expect(dialog.getByRole('button', { name: 'Avbryt', exact: true })).toBeFocused();
+        const dialog = await åpneDialog(page, 'Gi samtykke');
 
         await page.keyboard.press('Escape');
         await expect(dialog).toBeHidden();
@@ -217,9 +245,7 @@ test.describe('Samtykkedialoger', () => {
     test('lukker dialogen med Lukk-knappen uten å sende samtykkesvar', async ({ page }) => {
         const requests = await mockSamtykkeApi(page, (route) => svarJson(route, [lagSamtykke()]));
         await gåTilStilling(page, 'samtykke-dialog-lukk');
-        await page.getByRole('button', { name: 'Gi samtykke', exact: true }).click();
-        const dialog = page.getByRole('alertdialog');
-        await expect(dialog).toBeVisible();
+        const dialog = await åpneDialog(page, 'Gi samtykke');
 
         await dialog.getByRole('button', { name: 'Lukk' }).click();
         await expect(dialog).toBeHidden();
@@ -269,11 +295,7 @@ test.describe('Samtykkestatus og endringer', () => {
         await expect(region.getByText(/Du har trukket samtykket/)).toHaveCount(0);
         await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeEnabled();
         await expect(region.getByRole('button', { name: 'Avvis samtykke' })).toBeEnabled();
-        await bekreft(page, 'Gi samtykke');
-        await page
-            .getByRole('alertdialog')
-            .getByRole('button', { name: 'Bekreft samtykke' })
-            .click();
+        await bekreftHandling(page, 'Gi samtykke', 'Bekreft samtykke');
 
         await expect.poll(() => kallMedMetode(requests, 'PUT').length).toBe(1);
         expect(requests.find((request) => request.method === 'PUT')?.url).toContain(
@@ -324,13 +346,10 @@ test.describe('Samtykkestatus og endringer', () => {
             await gåTilStilling(page, id);
 
             const utløsernavn = svar === 'JA' ? 'Gi samtykke' : 'Avvis samtykke';
-            await page.getByRole('button', { name: utløsernavn, exact: true }).click();
+            const dialog = await åpneDialog(page, utløsernavn);
             expect(kallMedMetode(requests, 'PUT')).toHaveLength(0);
             const bekreftelsesnavn = svar === 'JA' ? 'Bekreft samtykke' : 'Bekreft nei';
-            await page
-                .getByRole('alertdialog')
-                .getByRole('button', { name: bekreftelsesnavn })
-                .click();
+            await dialog.getByRole('button', { name: bekreftelsesnavn }).click();
 
             await expect.poll(() => kallMedMetode(requests, 'PUT').length).toBe(1);
             const put = requests.find((request) => request.method === 'PUT')!;
@@ -364,12 +383,9 @@ test.describe('Samtykkestatus og endringer', () => {
             await svarJson(route, [sisteSamtykke]);
         });
         await gåTilStilling(page, id);
-        await page.getByRole('button', { name: 'Trekk samtykke', exact: true }).click();
+        const dialog = await åpneDialog(page, 'Trekk samtykke');
         expect(kallMedMetode(requests, 'DELETE')).toHaveLength(0);
-        await page
-            .getByRole('alertdialog')
-            .getByRole('button', { name: 'Bekreft tilbaketrekking' })
-            .click();
+        await dialog.getByRole('button', { name: 'Bekreft tilbaketrekking' }).click();
 
         await expect.poll(() => kallMedMetode(requests, 'DELETE').length).toBe(1);
         const slett = requests.find((request) => request.method === 'DELETE')!;
@@ -412,11 +428,7 @@ test.describe('Samtykkestatus og endringer', () => {
         const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
         const ja = region.getByRole('button', { name: 'Gi samtykke' });
         const nei = region.getByRole('button', { name: 'Avvis samtykke' });
-        await ja.click();
-        await page
-            .getByRole('alertdialog')
-            .getByRole('button', { name: 'Bekreft samtykke' })
-            .click();
+        await bekreftHandling(page, 'Gi samtykke', 'Bekreft samtykke');
         await expect(region.getByText('Lagrer endringen...')).toBeVisible();
         await expect(ja).toBeDisabled();
         await expect(nei).toBeDisabled();
@@ -457,13 +469,7 @@ test.describe('Feilhåndtering', () => {
             await gåTilStilling(page, `samtykke-lagre-${feiltype.replace(/ /g, '-')}`);
 
             const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
-            const utførSvar = async () => {
-                await region.getByRole('button', { name: 'Gi samtykke', exact: true }).click();
-                await page
-                    .getByRole('alertdialog')
-                    .getByRole('button', { name: 'Bekreft samtykke' })
-                    .click();
-            };
+            const utførSvar = () => bekreftHandling(page, 'Gi samtykke', 'Bekreft samtykke');
             await utførSvar();
             await expect(
                 region.getByRole('alert').getByText('Vi kunne ikke lagre endringen. Prøv igjen.')
@@ -478,10 +484,11 @@ test.describe('Feilhåndtering', () => {
     }
 
     test('henter på nytt etter GET-feil og viser svarmuligheter', async ({ page }) => {
-        const requests = await mockSamtykkeApi(page, (route, calls) =>
-            kallMedMetode(calls, 'GET').length === 1
-                ? route.fulfill({ status: 503, body: 'utilgjengelig' })
-                : svarJson(route, [lagSamtykke()])
+        let hentingVirker = false;
+        const requests = await mockSamtykkeApi(page, (route) =>
+            hentingVirker
+                ? svarJson(route, [lagSamtykke()])
+                : route.fulfill({ status: 503, body: 'utilgjengelig' })
         );
         await gåTilStilling(page, 'samtykke-get-feil');
 
@@ -493,35 +500,32 @@ test.describe('Feilhåndtering', () => {
         ).toBeVisible();
         await expect(region.getByRole('button', { name: 'Gi samtykke' })).toHaveCount(0);
         await expect(region.getByRole('button', { name: 'Trekk samtykke' })).toHaveCount(0);
-        await region.getByRole('button', { name: 'Prøv igjen' }).click();
 
-        await expect(region.getByRole('alert')).toHaveCount(0);
+        hentingVirker = true;
+        await prøvIgjen(region);
         await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeVisible();
-        expect(kallMedMetode(requests, 'GET')).toHaveLength(2);
+        expect(kallMedMetode(requests, 'GET').length).toBeGreaterThanOrEqual(2);
     });
 
     test('viser hentefeil etter mislykket revalidering uten å påstå at JA er bekreftet', async ({
         page,
     }) => {
         let getKall = 0;
+        let hentingVirker = false;
         const requests = await mockSamtykkeApi(page, async (route) => {
             if (route.request().method() === 'PUT') {
                 await route.fulfill({ status: 204 });
                 return;
             }
             getKall += 1;
-            if (getKall === 2) {
+            if (getKall > 1 && !hentingVirker) {
                 await route.fulfill({ status: 500, body: 'feil' });
                 return;
             }
             await svarJson(route, [lagSamtykke()]);
         });
         await gåTilStilling(page, 'samtykke-revalidering-feil');
-        await page.getByRole('button', { name: 'Gi samtykke', exact: true }).click();
-        await page
-            .getByRole('alertdialog')
-            .getByRole('button', { name: 'Bekreft samtykke' })
-            .click();
+        await bekreftHandling(page, 'Gi samtykke', 'Bekreft samtykke');
 
         const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
         await expect(
@@ -530,9 +534,9 @@ test.describe('Feilhåndtering', () => {
                 .getByText('Vi kunne ikke hente samtykkestatusen din. Prøv igjen.')
         ).toBeVisible();
         await expect(region.getByText(/Du har sagt ja til/)).toHaveCount(0);
-        await region.getByRole('button', { name: 'Prøv igjen' }).click();
 
-        await expect(region.getByRole('alert')).toHaveCount(0);
+        hentingVirker = true;
+        await prøvIgjen(region);
         await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeVisible();
         expect(kallMedMetode(requests, 'PUT')).toHaveLength(1);
     });

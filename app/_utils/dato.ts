@@ -1,4 +1,4 @@
-import { format, isValid, parse, parseISO } from 'date-fns';
+import { isValid, parse, parseISO } from 'date-fns';
 import { nb } from 'date-fns/locale';
 
 export const NORSK_DATO_FORMAT = 'dd.MM.yyyy';
@@ -36,38 +36,4 @@ export const tilDato = (dateString: string | Date | undefined | null): Date | nu
     }
 
     return null;
-};
-
-type FormaterNorskDatoProps = {
-    dato: string | Date | undefined | null;
-    visning?: 'kortMåned' | 'tall';
-    visTid?: boolean;
-};
-
-export const formaterNorskDato = (props: FormaterNorskDatoProps): string | null => {
-    const { dato, visning, visTid } = props;
-    const parsedDato = tilDato(dato);
-
-    if (!parsedDato && typeof dato === 'string') {
-        return dato;
-    }
-
-    if (!parsedDato) {
-        return null;
-    }
-
-    const getBaseDateFormat = () => {
-        if (visning === 'kortMåned') {
-            return 'd. MMM yyyy';
-        }
-        if (visning === 'tall') {
-            return NORSK_DATO_FORMAT;
-        }
-        return 'd. MMMM yyyy';
-    };
-
-    const baseFormat = getBaseDateFormat();
-    const finalFormat = visTid ? `${baseFormat} 'kl.' HH:mm` : baseFormat;
-
-    return format(parsedDato, finalFormat, { locale: nb });
 };
