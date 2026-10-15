@@ -9,6 +9,8 @@
 /coverage
 /playwright-report
 /test-results
+/blob-report
+*.tsbuildinfo
 
 # production
 /build
@@ -31,9 +33,6 @@ next-env.d.ts
 # IDEs
 .vscode
 .idea
-
-# TypeScript
-*.tsbuildinfo
 
 #AI
 AGENTS.md

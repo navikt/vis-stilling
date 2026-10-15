@@ -28,6 +28,8 @@
     "include": [
         "./app",
         "./mock",
+        "./tests",
+        "./playwright.config.ts",
         "./next-env.d.ts",
         ".next/types/**/*.ts",
         ".next/dev/types/**/*.ts",

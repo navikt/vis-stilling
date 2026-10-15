@@ -10,6 +10,10 @@ jobs:
         with:
             cdn-upload: true
             baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
+            playwright-command: >-
+                pnpm exec playwright install --with-deps firefox webkit &&
+                pnpm run test
+            playwright-shards: 4
             #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
             deploy-dev-branch: 'ny_stillingsvisning'
             dev-vars-path: '.nais/dev-gcp.json'

@@ -43,7 +43,9 @@
     },
     "scripts": {
         "dev": "next dev | pino-pretty --messageKey=message",
-        "test-dev": "next dev -p 1337",
+        "test": "playwright test",
+        "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
+        "test-build": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next build",
         "build": "next build",
         "start": "next start",
         "format": "prettier --write .",

@@ -12,7 +12,27 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 pnpm install
 pnpm dev
 ```
-Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra filen `mock/stilling.ts`, eller en av samtykke-scenarioene i `mock/samtykke-handlers.ts` (f.eks. `samtykke-ja`).
+Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra `app/api/stilling/helpers.ts`, for eksempel `stilling`, eller en av samtykke-scenarioene i `mock/samtykke-handlers.ts` (f.eks. `samtykke-ja`).
+
+## Playwright
+
+Testene kjøres i desktop Chromium, Firefox og WebKit, samt mobilvisning med
+Pixel 7 (Chromium) og iPhone 13 (WebKit). Mobilprosjektene emulerer nettleser,
+skjermstørrelse og touch; de er ikke tester på fysiske enheter.
+CI kjører med fire shards og 100 % workers per shard.
+
+```sh
+pnpm exec playwright install chromium firefox webkit
+pnpm test
+pnpm run test --project=chromium-mobile
+```
+
+Playwright starter testserveren automatisk lokalt. Bruk `PLAYWRIGHT_PORT` for å
+overstyre standardporten 1337 når flere apper testes samtidig.
+
+CI bygger med `pnpm test-build` og tester standalone-serveren. Testbygget bruker
+eksisterende mockdata fra `mock/eksempler` via `NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true`.
+Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:

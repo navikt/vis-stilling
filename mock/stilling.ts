@@ -21,7 +21,9 @@ const devMockFileByIdentifier: Record<string, string> = {
 const defaultMockFile = 'annen-stilling.json';
 const mockCache = new Map<string, unknown>();
 
-export const shouldUseDevMocks = () => isDevelopment && !process.env.STILLING_API;
+export const shouldUseDevMocks = () =>
+    process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true' ||
+    (isDevelopment && !process.env.STILLING_API);
 
 export const readMockData = async (stillingsId: string) => {
     const kjentFil = devMockFileByIdentifier[stillingsId];
