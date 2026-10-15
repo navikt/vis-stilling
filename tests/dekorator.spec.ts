@@ -11,7 +11,7 @@ type DekoratørData = {
     };
 };
 
-type MockWindow = Window & {
+type MockWindow = typeof window & {
     __DECORATOR_DATA__?: DekoratørData;
     __dekoratorMockKall: Array<[string, RequestInit | undefined]>;
     __dekoratorOriginalResponse?: Response;
@@ -31,7 +31,11 @@ const settOppDekoratørMock = async (page: Page, medMiljø = true) => {
             vindu.__dekoratorMockKall = [];
             window.fetch = ((input: RequestInfo | URL, init?: RequestInit) => {
                 const url =
-                    typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+                    typeof input === 'string'
+                        ? input
+                        : input instanceof URL
+                          ? input.href
+                          : input.url;
                 vindu.__dekoratorMockKall.push([url, init]);
                 const respons = new Response('original');
                 vindu.__dekoratorOriginalResponse = respons;
@@ -66,17 +70,20 @@ test.describe('dekoratørmock', () => {
     for (const { type, tittel } of hovedmenyInput) {
         test(`returnerer HTML for hovedmenyen med input ${tittel} (${type})`, async ({ page }) => {
             await settOppDekoratørMock(page);
-            const resultat = await page.evaluate(async ({ type, url }) => {
-                const input =
-                    type === 'URL' ? new URL(url) : type === 'Request' ? new Request(url) : url;
-                const respons = await window.fetch(input);
-                return {
-                    status: respons.status,
-                    contentType: respons.headers.get('Content-Type'),
-                    body: await respons.text(),
-                    antallGjennomslipp: (window as MockWindow).__dekoratorMockKall.length,
-                };
-            }, { type, url: `${APP_URL}/main-menu?context=privatperson&language=nb` });
+            const resultat = await page.evaluate(
+                async ({ type, url }) => {
+                    const input =
+                        type === 'URL' ? new URL(url) : type === 'Request' ? new Request(url) : url;
+                    const respons = await window.fetch(input);
+                    return {
+                        status: respons.status,
+                        contentType: respons.headers.get('Content-Type'),
+                        body: await respons.text(),
+                        antallGjennomslipp: (window as MockWindow).__dekoratorMockKall.length,
+                    };
+                },
+                { type, url: `${APP_URL}/main-menu?context=privatperson&language=nb` }
+            );
 
             expect(resultat.status).toBe(200);
             expect(resultat.contentType).toBe('text/html');
@@ -105,15 +112,18 @@ test.describe('dekoratørmock', () => {
 
     test('beholder innloggings- og sesjonsmockene', async ({ page }) => {
         await settOppDekoratørMock(page);
-        const resultat = await page.evaluate(async ({ appUrl, sessionUrl }) => {
-            const auth = await window.fetch(`${appUrl}/auth`);
-            const sesjon = await window.fetch(sessionUrl);
-            return {
-                auth: await auth.json(),
-                sesjon: await sesjon.json(),
-                antallGjennomslipp: (window as MockWindow).__dekoratorMockKall.length,
-            };
-        }, { appUrl: APP_URL, sessionUrl: LOGIN_SESSION_API_URL });
+        const resultat = await page.evaluate(
+            async ({ appUrl, sessionUrl }) => {
+                const auth = await window.fetch(`${appUrl}/auth`);
+                const sesjon = await window.fetch(sessionUrl);
+                return {
+                    auth: await auth.json(),
+                    sesjon: await sesjon.json(),
+                    antallGjennomslipp: (window as MockWindow).__dekoratorMockKall.length,
+                };
+            },
+            { appUrl: APP_URL, sessionUrl: LOGIN_SESSION_API_URL }
+        );
 
         expect(resultat.auth.auth.authenticated).toBe(true);
         expect(resultat.sesjon.session.active).toBe(true);
