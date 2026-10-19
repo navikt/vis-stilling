@@ -6,15 +6,15 @@ on:
 jobs:
     build-and-deploy:
         name: 🤖
-        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.3
+        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.4
         with:
             cdn-upload: true
             baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
             playwright-command: >-
                 pnpm exec playwright install --with-deps firefox webkit &&
-                pnpm run test
+                pnpm run test --grep-invert @a11y
             playwright-shards: 4
-            #a11y-command: 'pnpm a11y' # TODO: pa11y klager på kontrastfeil som ikke er der. Undersøk problemet og slå på pa11y igjen når vi har tid
+            a11y-command: 'pnpm run test:a11y'
             deploy-dev-branch: 'cdn'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'

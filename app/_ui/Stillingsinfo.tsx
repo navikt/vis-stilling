@@ -42,7 +42,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
 
     const bedriftensEpost = stilling.contactList?.[0]?.email;
     const lenkeTilBedriftensEpost = bedriftensEpost && (
-        <div data-pa11y-ignore="mailto-link">
+        <div>
             <Link href={`mailto:${bedriftensEpost}`}>{bedriftensEpost}</Link>
         </div>
     );
