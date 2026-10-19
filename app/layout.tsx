@@ -49,11 +49,11 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
             </head>
             <body>
                 <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
-                <div data-pa11y-ignore="decorator-header">
+                <div data-axe-ignore>
                     <Decorator.Header />
                 </div>
                 {children}
-                <div data-pa11y-ignore="decorator-footer">
+                <div data-axe-ignore>
                     <Decorator.Footer />
                 </div>
                 <Decorator.Scripts loader={Script} />
