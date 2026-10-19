@@ -3,9 +3,6 @@ import { nb } from 'date-fns/locale';
 
 export const NORSK_DATO_FORMAT = 'dd.MM.yyyy';
 
-export const erNorskDatostreng = (verdi: string | null | undefined): boolean =>
-    typeof verdi === 'string' && /^\d{2}\.\d{2}\.\d{4}$/.test(verdi);
-
 export const tilDato = (dateString: string | Date | undefined | null): Date | null => {
     if (!dateString) return null;
 
