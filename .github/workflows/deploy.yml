@@ -12,9 +12,8 @@ jobs:
             baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
             playwright-command: >-
                 pnpm exec playwright install --with-deps firefox webkit &&
-                pnpm run test --grep-invert @a11y
+                pnpm run test
             playwright-shards: 4
-            a11y-command: 'pnpm run test:a11y'
             deploy-dev-branch: 'cdn'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
