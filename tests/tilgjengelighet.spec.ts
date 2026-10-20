@@ -26,6 +26,6 @@ for (const { stillingsId, erKlar } of sider) {
             await expect(erKlar(page)).toBeVisible();
         });
 
-        tilgjengelighetstest(test, { reflow: true });
+        tilgjengelighetstest(test, { utvidet: true, reflow: true });
     });
 }
