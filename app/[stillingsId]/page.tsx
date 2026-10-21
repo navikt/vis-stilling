@@ -14,7 +14,9 @@ type StillingPageProps = {
 };
 
 const Feilmelding = ({ children }: { children: ReactNode }) => (
-    <div className="mx-auto my-10 w-full text-center">{children}</div>
+    <main id="maincontent" className="mx-auto my-10 w-full text-center">
+        {children}
+    </main>
 );
 
 const StillingPage = async ({ params }: StillingPageProps) => {
