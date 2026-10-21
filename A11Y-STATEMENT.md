@@ -2,7 +2,7 @@
 
 Vis stilling skal oppfylle alle A- og AA-krav i WCAG 2.1. Denne guiden viser hvordan du tester hvert kriterium i tilgjengelighetserklæringen for appen på [a11y-statement.nav.no](https://a11y-statement.nav.no), og hva Playwright-testene allerede sjekker automatisk.
 
-Vis stilling er en åpen side på nav.no som viser én stilling for jobbsøkere. Den har ingen innlogging og ingen skjemaer. Derfor er flere kriterier ikke aktuelle.
+Vis stilling viser én stilling som en veileder har delt med en jobbsøker, enten i en SMS eller i aktivitetsplanen. Siden krever ikke innlogging og har ingen skjemaer. Derfor er flere kriterier ikke aktuelle.
 
 ## Slik svarer du i erklæringen
 
@@ -58,7 +58,7 @@ Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port.
 
 ### Legg til en ny variant
 
-Legg til stillingen i listen `sider` i `tests/tilgjengelighet.spec.ts`, med en mock-stilling og en locator som viser at siden er ferdig lastet.
+Legg mock-stillingen i `mock/eksempler`, registrer id-en i `devMockFileByIdentifier` i `app/api/stilling/helpers.ts`, og legg den til i listen `sider` i `tests/tilgjengelighet.spec.ts` med en locator som viser at siden er ferdig lastet. Ukjente id-er faller tilbake til `annen-stilling.json`, så uten registreringen kan testen bli grønn uten å teste den nye varianten.
 
 ## Verktøy for manuell testing
 
@@ -78,7 +78,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | Kriterium | Testes automatisk | Slik tester du manuelt |
 |---|---|---|
 | 1.1.1 Ikke-tekstlig innhold | axe: `image-alt`, `svg-img-alt`, `role-img-alt`, `input-image-alt`, `object-alt` | Gå gjennom siden med VoiceOver. Bilder og ikoner som betyr noe, skal ha en tekst som beskriver formålet. Pynteikoner skal ha `aria-hidden`. |
-| 1.2.1 Bare lyd og bare video | axe: `video-caption` | Ikke aktuelt så lenge siden ikke har lyd eller video. |
+| 1.2.1 Bare lyd og bare video | Ingen | Ikke aktuelt så lenge siden ikke har lyd eller video. |
 | 1.2.2 Teksting | axe: `video-caption` | Ikke aktuelt så lenge siden ikke har video. |
 | 1.2.3 Synstolking eller mediealternativ | Ingen | Ikke aktuelt så lenge siden ikke har video. |
 | 1.2.5 Synstolking | Ingen | Ikke aktuelt så lenge siden ikke har video. |
@@ -95,7 +95,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 1.4.10 Dynamisk tilpasning (reflow) | Reflow i hovedtesten | Sett vinduet til 1280 px og zoom til 400 %. Siden skal ikke rulle horisontalt. Test med lange ord og lenker i annonseteksten. |
 | 1.4.11 Kontrast for ikke-tekstlig innhold | Ingen | Ikoner som betyr noe og fokusmarkering skal ha 3:1 mot bakgrunnen. |
 | 1.4.12 Tekstavstand | Utvidet sjekk: tekstavstand, axe: `avoid-inline-spacing` | Bruk bokmerket for tekstavstand på lange annonser. Ingen tekst skal bli kuttet av. |
-| 1.4.13 Pekerfølsomt innhold | Ingen | Innhold som vises ved hover eller fokus, skal kunne lukkes med Esc og bli værende til du flytter fokus eller musen. |
+| 1.4.13 Pekerfølsomt innhold | Ingen | Flytt musen fra utløseren og over på hjelpeteksten eller popoveren. Innholdet skal bli værende til du flytter musen eller fokus bort, eller lukker det. Dekker innholdet annet innhold, skal det kunne lukkes med Esc uten å flytte musen eller fokus. Feilmeldinger fra validering er unntatt. |
 
 ### 2 Mulig å betjene
 
@@ -105,16 +105,16 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.1.2 Ingen tastaturfelle | Utvidet sjekk: tastatur | Tab gjennom hele siden og tilbake. Fokus skal aldri stå fast. |
 | 2.1.4 Hurtigtaster som består av ett tegn | Ingen | Ikke aktuelt så lenge appen ikke har hurtigtaster. |
 | 2.2.1 Justerbar hastighet | axe: `meta-refresh` | Ikke aktuelt: siden har ingen innlogging eller tidsfrister. |
-| 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee` | Innhold som beveger seg eller oppdateres automatisk i mer enn 5 sekunder, skal kunne pauses. |
+| 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee` | Innhold som beveger seg, blinker eller ruller, starter automatisk, varer mer enn 5 sekunder og vises sammen med annet innhold, skal kunne pauses, stoppes eller skjules. Innhold som oppdateres automatisk og vises sammen med annet innhold, skal kunne pauses, stoppes, skjules eller få justert hvor ofte det oppdateres, uansett hvor lenge det varer. Unntaket gjelder bare når bevegelsen eller oppdateringen er nødvendig, for eksempel en lasteindikator mens brukeren ikke kan gjøre noe annet. |
 | 2.3.1 Terskelverdi på maksimalt tre glimt | Ingen | Ikke aktuelt så lenge ingenting blinker. |
 | 2.4.1 Hoppe over blokker | axe: `bypass` | Trykk Tab på siden. Dekoratørens «Hopp til hovedinnhold» skal flytte fokus til `<main id="maincontent">` i `app/_ui/Visning.tsx`. |
 | 2.4.2 Sidetitler | axe: `document-title` sjekker bare at tittelen finnes | Tittelen i fanen skal beskrive siden. Den settes i `generateMetadata` i `app/layout.tsx`. Vurder om tittelen bør inneholde stillingstittelen. |
 | 2.4.3 Fokusrekkefølge | Delvis: vedlegget `fokusrekkefølge.txt` | Tab gjennom siden. Rekkefølgen skal følge det visuelle, også på mobil. |
 | 2.4.4 Formål med lenke (i kontekst) | axe: `link-name` | Åpne lenkelisten i VoiceOver-rotoren. Hver lenke, sammen med setningen den står i, skal forklare hvor den går. Lenker som åpner en ekstern side, bør si det. |
-| 2.4.5 Flere måter | Ingen | Stillingen skal kunne nås på minst to måter, for eksempel fra stillingssøket og søket på nav.no. |
+| 2.4.5 Flere måter | Ingen | Kriteriet gjelder sider i et sett av nettsider. Avklar hvilke innganger siden har: lenken i SMS-en, aktivitetskortet i aktivitetsplanen og, for stillinger som ikke er direktemeldte, arbeidsplassen.no. Direktemeldte stillinger finnes bare her. Vurder om siden er et resultat av eller et steg i en prosess, og beskriv vurderingen i erklæringen. |
 | 2.4.6 Overskrifter og ledetekster | Ingen | Les overskriftene for seg. De skal beskrive innholdet under dem. |
 | 2.4.7 Synlig fokus | Utvidet sjekk: tastatur | Tab gjennom siden. Fokusmarkeringen skal være tydelig. |
-| 2.5.1 Pekerbevegelser | Ingen | Ikke aktuelt så lenge ingenting krever dra og slipp eller bevegelser med flere fingre. |
+| 2.5.1 Pekerbevegelser | Ingen | Ikke aktuelt så lenge ingenting krever bevegelser med flere fingre, som å knipe, eller bevegelser som må følge en bestemt bane, som å sveipe i et mønster. Vanlig dra og slipp hører ikke til dette kriteriet. |
 | 2.5.2 Pekeravbrytelse | Ingen | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. |
 | 2.5.3 Ledetekst i navn | axe: `label-content-name-mismatch` | Når en lenke eller knapp har `aria-label`, skal den inneholde den synlige teksten, helst først. |
 | 2.5.4 Bevegelsesaktivering | Ingen | Ikke aktuelt så lenge siden ikke bruker bevegelsessensorer. |
