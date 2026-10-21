@@ -15,6 +15,7 @@ import {
 } from '../_utils/stillingUtils';
 import Tabell, { Rad } from './tabell/Tabell';
 import { formaterNorskDato } from '../_utils/dato';
+import { lagEksternLenke } from '../_utils/lenke';
 
 interface Props {
     stilling: Stilling;
@@ -29,9 +30,14 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
     const bedriftensNavn = hentBedriftensVisningsnavn(stilling);
     const bedriftensAdresse = stilling.employer.location && hentAdresse(stilling.employer.location);
 
-    const bedriftensNettside = properties.employerhomepage && (
-        <Link href={properties.employerhomepage}>{properties.employerhomepage}</Link>
+    const lenkeTilBedriftensNettside = lagEksternLenke(properties.employerhomepage);
+    const bedriftensNettside = lenkeTilBedriftensNettside ? (
+        <Link href={lenkeTilBedriftensNettside}>{properties.employerhomepage}</Link>
+    ) : (
+        properties.employerhomepage
     );
+
+    const søknadslenke = lagEksternLenke(properties.applicationurl);
 
     const bedriftsbeskrivelse = properties.employerdescription && (
         <div
@@ -54,8 +60,11 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
         { label: 'E-post', innhold: lenkeTilBedriftensEpost },
     ].filter((rad) => Boolean(rad.innhold));
 
-    const harSosialeMedier =
-        properties.facebookpage || properties.linkedinpage || properties.twitteraddress;
+    const harSosialeMedier = [
+        properties.facebookpage,
+        properties.linkedinpage,
+        properties.twitteraddress,
+    ].some((lenke) => lagEksternLenke(lenke));
 
     let stillingensOppstart;
     if (starttime) {
@@ -68,8 +77,8 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                   });
     }
 
-    const janzzTitle = stilling.categoryList?.find((category) =>
-        category.categoryType === 'JANZZ'
+    const janzzTitle = stilling.categoryList?.find(
+        (category) => category.categoryType === 'JANZZ'
     )?.name;
 
     return (
@@ -77,7 +86,7 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
             <Infopanel tittel="Søknad">
                 <Tabell>
                     <Rad label="Søknadsfrist">{hentSøknadsfrist(properties)}</Rad>
-                    {!properties.applicationurl && properties.applicationemail && (
+                    {!søknadslenke && properties.applicationemail && (
                         <Rad label="Søknad sendes til">
                             <Link href={`mailto:${properties.applicationemail}`}>
                                 {properties.applicationemail}
@@ -85,9 +94,9 @@ const Stillingsinfo: FunctionComponent<Props> = ({ stilling }) => {
                         </Rad>
                     )}
                 </Tabell>
-                {properties.applicationurl && (
+                {søknadslenke && (
                     <Lenkeknapp
-                        href={properties.applicationurl}
+                        href={søknadslenke}
                         logEventOmråde="søkeknapp"
                         logEventHendelse="klikk"
                     >
