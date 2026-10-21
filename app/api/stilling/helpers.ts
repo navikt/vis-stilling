@@ -29,6 +29,10 @@ export const getUpstreamBase = () => envUpstreamBase;
 export const shouldUseDevMocks = () =>
     process.env.NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE === 'true' || (isDevelopment && !envUpstreamBase);
 
+export const erMockStillingsId = (stillingsId: string) =>
+    shouldUseDevMocks() &&
+    Object.prototype.hasOwnProperty.call(devMockFileByIdentifier, stillingsId);
+
 export const readMockData = async (stillingsId: string) => {
     const file = devMockFileByIdentifier[stillingsId] ?? defaultMockFile;
     const cached = mockCache.get(file);
