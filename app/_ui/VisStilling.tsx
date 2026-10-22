@@ -10,9 +10,15 @@ interface Props {
     stilling: Stilling;
     innlogget: boolean;
     personvernlenke: string;
+    visSamtykke: boolean;
 }
 
-const VisStilling: FunctionComponent<Props> = ({ stilling, innlogget, personvernlenke }) => {
+const VisStilling: FunctionComponent<Props> = ({
+    stilling,
+    innlogget,
+    personvernlenke,
+    visSamtykke,
+}) => {
     const stillingDTO = konverterStilling(stilling);
 
     // søknadSlot vises som egen boks til høyre på desktop, og rett under
@@ -27,6 +33,7 @@ const VisStilling: FunctionComponent<Props> = ({ stilling, innlogget, personvern
                         stillingsId={stilling.uuid}
                         innlogget={innlogget}
                         personvernlenke={personvernlenke}
+                        visSamtykke={visSamtykke}
                     />
                 }
             />

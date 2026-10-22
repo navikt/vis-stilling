@@ -14,6 +14,32 @@ interface Props {
     personvernlenke: string;
 }
 
+const KontaktVeileder = () => (
+    <div className="flex items-center gap-3">
+        <ChatIcon aria-hidden className="text-2xl" />
+        <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
+    </div>
+);
+
+const Spørsmålsboks = () => (
+    <Box
+        as="section"
+        aria-label="Spørsmål om stillingen"
+        padding="space-16"
+        background="accent-soft"
+        borderColor="info-subtle"
+        borderWidth="1"
+        borderRadius="8"
+    >
+        <VStack gap="space-16">
+            <Heading level="2" size="small">
+                Har du spørsmål om stillingen?
+            </Heading>
+            <KontaktVeileder />
+        </VStack>
+    </Box>
+);
+
 const samtykketekst = (status: Samtykkestatus): string => {
     switch (status) {
         case 'TRUKKET':
@@ -84,10 +110,7 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
                 </Heading>
                 <div aria-live="polite">
                     {visSpørsmål ? (
-                        <div className="flex items-center gap-3">
-                            <ChatIcon aria-hidden className="text-2xl" />
-                            <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
-                        </div>
+                        <KontaktVeileder />
                     ) : isLoading ? (
                         <BodyLong>Henter status...</BodyLong>
                     ) : hentFeil ? null : (
@@ -154,7 +177,16 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
     );
 };
 
-const SamtykkeCvDeling = ({ stillingsId, innlogget, personvernlenke }: Props) => {
+const SamtykkeCvDeling = ({
+    stillingsId,
+    innlogget,
+    personvernlenke,
+    visSamtykke,
+}: Props & { visSamtykke: boolean }) => {
+    if (!visSamtykke) {
+        return <Spørsmålsboks />;
+    }
+
     return (
         <Samtykkeboks
             stillingsId={stillingsId}
