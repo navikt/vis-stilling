@@ -128,7 +128,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.4.7 Synlig fokus | Utvidet sjekk: tastatur | Tab gjennom siden. Fokusmarkeringen skal være tydelig. |
 | 2.5.1 Pekerbevegelser | Ingen | Ikke aktuelt så lenge ingenting krever bevegelser med flere fingre, som å knipe, eller bevegelser som må følge en bestemt bane, som å sveipe i et mønster. Vanlig dra og slipp hører ikke til dette kriteriet. |
 | 2.5.2 Pekeravbrytelse | Ingen | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. |
-| 2.5.3 Ledetekst i navn | axe: `label-content-name-mismatch` | Når en lenke eller knapp har `aria-label`, skal den inneholde den synlige teksten, helst først. |
+| 2.5.3 Ledetekst i navn | Ingen. axe-regelen `label-content-name-mismatch` er eksperimentell og kjøres ikke. | Når en lenke eller knapp har `aria-label`, skal den inneholde den synlige teksten, helst først. |
 | 2.5.4 Bevegelsesaktivering | Ingen | Ikke aktuelt så lenge siden ikke bruker bevegelsessensorer. |
 
 ### 3 Forståelig
