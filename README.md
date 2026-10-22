@@ -34,6 +34,10 @@ CI bygger med `pnpm test-build` og tester standalone-serveren. Testbygget bruker
 eksisterende mockdata fra `mock/eksempler` via `NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true`.
 Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 
+## Tilgjengelighet
+
+[A11Y-STATEMENT.md](./A11Y-STATEMENT.md) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
+
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:
 
