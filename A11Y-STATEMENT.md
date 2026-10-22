@@ -37,7 +37,6 @@ Testen «Tilgjengelighet – utvidede sjekker» kjører i nettleseren på de sam
 | Tekstavstand | 1.4.12 | Legger på WCAG-tekstavstanden og feiler hvis tekst blir kuttet av. |
 | Visningsretning | 1.3.4 | Laster siden i stående og liggende format og sjekker at innholdet vises i begge. |
 | Tastatur | 2.1.1, 2.1.2, 2.4.7, 3.2.1 | Tabber gjennom hele siden. Feiler hvis klikkbare elementer ikke kan nås, fokus står fast, fokus ikke vises eller fokus alene åpner noe nytt. |
-| Hopp til hovedinnhold | 2.4.1 | Tabber til første lenke og sjekker at den peker til et mål som finnes, og at neste Tab etter Enter går til hovedinnholdet eller videre. |
 
 Hver kjøring legger ved `fokusrekkefølge.txt` i rapporten. Den er nyttig når du sjekker 2.4.3.
 
@@ -108,7 +107,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.2.1 Justerbar hastighet | axe: `meta-refresh` | Ikke aktuelt: siden har ingen innlogging eller tidsfrister. |
 | 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee` | Innhold som beveger seg, blinker eller ruller, starter automatisk, varer mer enn 5 sekunder og vises sammen med annet innhold, skal kunne pauses, stoppes eller skjules. Innhold som oppdateres automatisk og vises sammen med annet innhold, skal kunne pauses, stoppes, skjules eller få justert hvor ofte det oppdateres, uansett hvor lenge det varer. Unntaket gjelder bare når bevegelsen eller oppdateringen er nødvendig, for eksempel en lasteindikator mens brukeren ikke kan gjøre noe annet. |
 | 2.3.1 Terskelverdi på maksimalt tre glimt | Ingen | Ikke aktuelt så lenge ingenting blinker. |
-| 2.4.1 Hoppe over blokker | axe: `bypass`, utvidet sjekk: hopp til hovedinnhold | Trykk Tab på siden. Dekoratørens «Hopp til hovedinnhold» skal flytte fokus til `<main id="maincontent">` i `app/_ui/Visning.tsx`. |
+| 2.4.1 Hoppe over blokker | axe: `bypass` | Trykk Tab på siden. Dekoratørens «Hopp til hovedinnhold» skal flytte fokus til `<main id="maincontent">` i `app/_ui/Visning.tsx`. |
 | 2.4.2 Sidetitler | axe: `document-title` sjekker bare at tittelen finnes | Tittelen i fanen skal beskrive siden. Den settes i `generateMetadata` i `app/layout.tsx`. Vurder om tittelen bør inneholde stillingstittelen. |
 | 2.4.3 Fokusrekkefølge | Delvis: vedlegget `fokusrekkefølge.txt` | Tab gjennom siden. Rekkefølgen skal følge det visuelle, også på mobil. |
 | 2.4.4 Formål med lenke (i kontekst) | axe: `link-name` | Åpne lenkelisten i VoiceOver-rotoren. Hver lenke, sammen med setningen den står i, skal forklare hvor den går. Lenker som åpner en ekstern side, bør si det. |
