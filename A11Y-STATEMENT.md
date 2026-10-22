@@ -41,6 +41,16 @@ Testen «Tilgjengelighet – utvidede sjekker» kjører i nettleseren på de sam
 
 Hver kjøring legger ved `fokusrekkefølge.txt` i rapporten. Den er nyttig når du sjekker 2.4.3.
 
+### Pekepinner
+
+Testen «Tilgjengelighet – pekepinner» kjører på de samme variantene og ser etter mulige brudd på 1.4.11 (kontrast for ikke-tekstlig innhold), 2.2.2 (bevegelse), 3.1.2 (språk på deler av innholdet) og landemerker. Den feiler aldri. Funnene vises som annotations av typen `a11y-pekepinn` og i vedlegget `a11y-pekepinner.json` i Playwright-rapporten. Et funn er ikke nødvendigvis et brudd, men skal sjekkes manuelt.
+
+### ESLint
+
+`pnpm run lint` kjører regelen `toi-a11y/ingen-handling-ved-pekerned` fra `@navikt/toi-next-frontend/eslint` (2.5.2). Den varsler om `onMouseDown`, `onPointerDown` og tilsvarende `addEventListener`. Oppsettet i `eslint.config.mjs` har bare denne regelen.
+
+typescript-eslint støtter ikke TypeScript 7 ennå. `.pnpmfile.cjs` gir derfor typescript-eslint-pakkene TypeScript 6 (`@typescript/typescript6`), mens resten av appen bruker TypeScript 7.
+
 ### Sidetitler
 
 `tests/sidetitler.spec.ts` sjekker med `toHaveTitle` at hver variant av siden har sin egen tittel på formen `<side> – Se stilling` (2.4.2). En stilling får stillingstittelen. Upubliserte stillinger får «Stillingen er ikke publisert», ukjente id-er får «Fant ikke stillingen», og andre feil får «Feil ved visning av stilling». Titlene settes i `generateMetadata` i `app/[stillingsId]/page.tsx` med `sidetittel` fra `app/_utils/sidetittel.ts`.
@@ -82,6 +92,7 @@ pnpm run test:a11y                                                # alle tilgjen
 pnpm exec playwright test --grep @a11y-utvidet --project='chromium*'   # bare utvidede sjekker
 pnpm exec playwright test tests/sidetitler.spec.ts --project='chromium*' # bare sidetitler
 pnpm exec playwright test tests/ariaSnapshot.spec.ts --project=chromium-desktop # bare aria-snapshots
+pnpm run lint                                                     # ESLint-regelen for 2.5.2
 ```
 
 Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port.
@@ -123,7 +134,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 1.4.4 Endring av tekststørrelse | Utvidet sjekk: tekstforstørrelse, axe: `meta-viewport` | Zoom til 200 % og sett standard skriftstørrelse i nettleseren til «Svært stor». Ingen tekst eller funksjon skal forsvinne eller overlappe. |
 | 1.4.5 Bilder av tekst | Ingen | Tekst skal ikke vises som bilde. Logoer er unntatt. |
 | 1.4.10 Dynamisk tilpasning (reflow) | Reflow i hovedtesten | Sett vinduet til 1280 px og zoom til 400 %. Siden skal ikke rulle horisontalt. Test med lange ord og lenker i annonseteksten. |
-| 1.4.11 Kontrast for ikke-tekstlig innhold | Ingen | Ikoner som betyr noe og fokusmarkering skal ha 3:1 mot bakgrunnen. |
+| 1.4.11 Kontrast for ikke-tekstlig innhold | Pekepinn (feiler ikke) | Ikoner som betyr noe og fokusmarkering skal ha 3:1 mot bakgrunnen. |
 | 1.4.12 Tekstavstand | Utvidet sjekk: tekstavstand, axe: `avoid-inline-spacing` | Bruk bokmerket for tekstavstand på lange annonser. Ingen tekst skal bli kuttet av. |
 | 1.4.13 Pekerfølsomt innhold | Ingen. `sjekkPekerfølsomtInnhold` er ikke i bruk fordi siden ikke har hjelpetekster eller tooltips. | Ikke aktuelt så lenge siden ikke har slikt innhold. Ellers: flytt musen fra utløseren og over på hjelpeteksten eller popoveren. Innholdet skal bli værende til du flytter musen eller fokus bort, eller lukker det. Dekker innholdet annet innhold, skal det kunne lukkes med Esc uten å flytte musen eller fokus. Feilmeldinger fra validering er unntatt. |
 
@@ -135,7 +146,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.1.2 Ingen tastaturfelle | Utvidet sjekk: tastatur | Tab gjennom hele siden og tilbake. Fokus skal aldri stå fast. |
 | 2.1.4 Hurtigtaster som består av ett tegn | Ingen | Ikke aktuelt så lenge appen ikke har hurtigtaster. |
 | 2.2.1 Justerbar hastighet | axe: `meta-refresh` | Ikke aktuelt: siden har ingen innlogging eller tidsfrister. |
-| 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee` | Innhold som beveger seg, blinker eller ruller, starter automatisk, varer mer enn 5 sekunder og vises sammen med annet innhold, skal kunne pauses, stoppes eller skjules. Innhold som oppdateres automatisk og vises sammen med annet innhold, skal kunne pauses, stoppes, skjules eller få justert hvor ofte det oppdateres, uansett hvor lenge det varer. Unntaket gjelder bare når bevegelsen eller oppdateringen er nødvendig, for eksempel en lasteindikator mens brukeren ikke kan gjøre noe annet. |
+| 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee`, pekepinn for bevegelse (feiler ikke) | Innhold som beveger seg, blinker eller ruller, starter automatisk, varer mer enn 5 sekunder og vises sammen med annet innhold, skal kunne pauses, stoppes eller skjules. Innhold som oppdateres automatisk og vises sammen med annet innhold, skal kunne pauses, stoppes, skjules eller få justert hvor ofte det oppdateres, uansett hvor lenge det varer. Unntaket gjelder bare når bevegelsen eller oppdateringen er nødvendig, for eksempel en lasteindikator mens brukeren ikke kan gjøre noe annet. |
 | 2.3.1 Terskelverdi på maksimalt tre glimt | Ingen | Ikke aktuelt så lenge ingenting blinker. |
 | 2.4.1 Hoppe over blokker | axe: `bypass`, utvidet sjekk: hopp til hovedinnhold | Trykk Tab på siden. Dekoratørens «Hopp til hovedinnhold» skal flytte fokus til `<main id="maincontent">` i `app/_ui/Visning.tsx`. |
 | 2.4.2 Sidetitler | axe: `document-title`, `tests/sidetitler.spec.ts` sjekker tittelen for hver variant | Åpne flere stillinger, en ukjent id og en upublisert stilling. Tittelen i fanen skal beskrive siden, for eksempel «Butikkmedarbeider – Se stilling». Den skal ikke inneholde navn på personer. |
@@ -145,7 +156,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.4.6 Overskrifter og ledetekster | Aria-snapshots fanger opp endringer i overskrifter og ledetekster, men vurderer ikke om de er gode. | Les overskriftene for seg. De skal beskrive innholdet under dem. |
 | 2.4.7 Synlig fokus | Utvidet sjekk: tastatur | Tab gjennom siden. Fokusmarkeringen skal være tydelig. |
 | 2.5.1 Pekerbevegelser | Ingen | Ikke aktuelt så lenge ingenting krever bevegelser med flere fingre, som å knipe, eller bevegelser som må følge en bestemt bane, som å sveipe i et mønster. Vanlig dra og slipp hører ikke til dette kriteriet. |
-| 2.5.2 Pekeravbrytelse | Ingen | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. |
+| 2.5.2 Pekeravbrytelse | ESLint: `toi-a11y/ingen-handling-ved-pekerned` (advarsel) | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. |
 | 2.5.3 Ledetekst i navn | Ingen. axe-regelen `label-content-name-mismatch` er eksperimentell og kjøres ikke. | Når en lenke eller knapp har `aria-label`, skal den inneholde den synlige teksten, helst først. |
 | 2.5.4 Bevegelsesaktivering | Ingen | Ikke aktuelt så lenge siden ikke bruker bevegelsessensorer. |
 
@@ -154,7 +165,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | Kriterium | Testes automatisk | Slik tester du manuelt |
 |---|---|---|
 | 3.1.1 Språk på siden | axe: `html-has-lang`, `html-lang-valid` | `<html lang="no">` er satt i `app/layout.tsx`. |
-| 3.1.2 Språk på deler av innholdet | axe: `valid-lang` sjekker bare at `lang`-verdiene er gyldige | Annonser kan være skrevet på engelsk eller andre språk. Sjekk at VoiceOver leser dem med riktig uttale. Det krever `lang` på annonseteksten. Navn og faguttrykk er unntatt. |
+| 3.1.2 Språk på deler av innholdet | axe: `valid-lang` sjekker bare at `lang`-verdiene er gyldige, pekepinn for språk (feiler ikke) | Annonser kan være skrevet på engelsk eller andre språk. Sjekk at VoiceOver leser dem med riktig uttale. Det krever `lang` på annonseteksten. Navn og faguttrykk er unntatt. |
 | 3.2.1 Fokus | Utvidet sjekk: tastatur | Fokus alene skal ikke åpne nye sider, vinduer eller dialoger. |
 | 3.2.2 Inndata | Ingen | Ikke aktuelt: siden har ingen skjemafelt. |
 | 3.2.3 Konsekvent navigering | Ingen | Dekoratøren gir samme navigering som resten av nav.no. Sjekk at sidens egne lenker står på samme sted for alle stillinger. |
