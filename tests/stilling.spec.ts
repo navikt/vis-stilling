@@ -23,6 +23,16 @@ test('viser søknadslenke for ekstern stilling', async ({ page }) => {
     );
 });
 
+test('lenker til arbeidsgivers nettside uten protokoll blir absolutte', async ({ page }) => {
+    await page.goto('formatert-stilling');
+    await expect(page.getByRole('link', { name: 'www.eksempel.no' })).toHaveAttribute(
+        'href',
+        'https://www.eksempel.no'
+    );
+    await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Facebook' })).toHaveCount(0);
+});
+
 test('viser advarsel for slettet stilling', async ({ page }) => {
     await page.goto('slettet-stilling');
     await expect(
