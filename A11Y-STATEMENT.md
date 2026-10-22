@@ -47,6 +47,23 @@ Hver kjøring legger ved `fokusrekkefølge.txt` i rapporten. Den er nyttig når 
 
 Titlene sendes til Umami med hver sidevisning og skal aldri inneholde navn på personer.
 
+### Aria-snapshots
+
+`tests/ariaSnapshot.spec.ts` sammenligner tilgjengelighetstreet for utvalgte deler av siden med `toMatchAriaSnapshot`. Snapshotene viser rollene, navnene og rekkefølgen en skjermleser får. Feiler testen, har strukturen endret seg, for eksempel et overskriftsnivå, en ledetekst eller navnet på en lenke. Endringen kan være tilsiktet, men da skal den vurderes.
+
+Disse delene dekkes:
+
+| Del | Variant | Hva sjekkes |
+|---|---|---|
+| Overskrift og nøkkelinfo | Direktemeldt stilling | `banner` med arbeidsgiver og sted og `h1` med stillingstittelen. Panelet «Om stillingen» med `h2` og ledetekster og verdier. |
+| Søknad uten lenke | Direktemeldt stilling | Panelet «Søknad» har søknadsfrist og ingen lenke. Panelet «Har du spørsmål om stillingen?» vises, og kontaktperson vises ikke. |
+| Søknad med lenke | Ekstern stilling | Lenken «Søk på stillingen» og adressen den peker til |
+| Søknad med e-post | Slettet stilling | Ledeteksten «Søknad sendes til» med `mailto`-lenke |
+| Kontaktperson | Ekstern stilling | Ledetekster og en `mailto`-lenke for e-post. Navn og telefon matches med regex. |
+| Feilsider | Ukjent id og upublisert stilling | Innholdet i `main` |
+
+Snapshotene dekker bare små deler av siden og ikke annonseteksten eller hele siden, så de tåler endringer andre steder. Datoer og andre verdier som kan endre seg, matches med regex. Testene kjører bare i `chromium-desktop`, fordi tilgjengelighetstreet er det samme i de andre prosjektene.
+
 ### Sjekker for interaksjoner
 
 `@navikt/toi-next-frontend/a11y` har sjekker for dialoger (`sjekkDialog`), pekerfølsomt innhold som hjelpetekster og tooltips (`sjekkPekerfølsomtInnhold`) og skjemafeil (`sjekkSkjemafeil`). Siden har i dag ingen dialoger, tooltips, popovere eller skjemaer, så ingen av sjekkene er i bruk. Får siden slikt innhold, skal sjekken legges til i en egen test.
@@ -64,6 +81,7 @@ Titlene sendes til Umami med hver sidevisning og skal aldri inneholde navn på p
 pnpm run test:a11y                                                # alle tilgjengelighetstester
 pnpm exec playwright test --grep @a11y-utvidet --project='chromium*'   # bare utvidede sjekker
 pnpm exec playwright test tests/sidetitler.spec.ts --project='chromium*' # bare sidetitler
+pnpm exec playwright test tests/ariaSnapshot.spec.ts --project=chromium-desktop # bare aria-snapshots
 ```
 
 Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port.
@@ -94,7 +112,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 1.2.2 Teksting | axe: `video-caption` | Ikke aktuelt så lenge siden ikke har video. |
 | 1.2.3 Synstolking eller mediealternativ | Ingen | Ikke aktuelt så lenge siden ikke har video. |
 | 1.2.5 Synstolking | Ingen | Ikke aktuelt så lenge siden ikke har video. |
-| 1.3.1 Informasjon og relasjoner | axe: `list`, `listitem`, `dlitem`, `definition-list`, `th-has-data-cells`, `td-headers-attr`, `aria-required-children`, `aria-required-parent` | Åpne overskriftslisten i VoiceOver-rotoren. Siden skal ha én `h1` med stillingstittelen, og nivåene skal speile strukturen. Sjekk at lister og overskrifter i annonseteksten vises som ekte lister og overskrifter. |
+| 1.3.1 Informasjon og relasjoner | axe: `list`, `listitem`, `dlitem`, `definition-list`, `th-has-data-cells`, `td-headers-attr`, `aria-required-children`, `aria-required-parent`. Aria-snapshots: overskrifter, landemerker og ledetekst og verdi i panelene. | Åpne overskriftslisten i VoiceOver-rotoren. Siden skal ha én `h1` med stillingstittelen, og nivåene skal speile strukturen. Sjekk at lister og overskrifter i annonseteksten vises som ekte lister og overskrifter. |
 | 1.3.2 Meningsbærende rekkefølge | Ingen | La VoiceOver lese hele siden (VO+A). Rekkefølgen skal gi mening også på mobil, der kolonnene ligger under hverandre. |
 | 1.3.3 Sensoriske egenskaper | Ingen | Instruksjoner skal ikke bare vise til form, farge, plassering eller lyd. |
 | 1.3.4 Visningsretning | Utvidet sjekk: visningsretning | Åpne siden på mobil og bytt mellom stående og liggende format. |
@@ -124,7 +142,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.4.3 Fokusrekkefølge | Delvis: vedlegget `fokusrekkefølge.txt` | Tab gjennom siden. Rekkefølgen skal følge det visuelle, også på mobil. |
 | 2.4.4 Formål med lenke (i kontekst) | axe: `link-name` | Åpne lenkelisten i VoiceOver-rotoren. Hver lenke, sammen med setningen den står i, skal forklare hvor den går. Lenker som åpner en ekstern side, bør si det. |
 | 2.4.5 Flere måter | Ingen | Kriteriet gjelder sider i et sett av nettsider. Avklar hvilke innganger siden har: lenken i SMS-en, aktivitetskortet i aktivitetsplanen og, for stillinger som ikke er direktemeldte, arbeidsplassen.no. Direktemeldte stillinger finnes bare her. Vurder om siden er et resultat av eller et steg i en prosess, og beskriv vurderingen i erklæringen. |
-| 2.4.6 Overskrifter og ledetekster | Ingen | Les overskriftene for seg. De skal beskrive innholdet under dem. |
+| 2.4.6 Overskrifter og ledetekster | Aria-snapshots fanger opp endringer i overskrifter og ledetekster, men vurderer ikke om de er gode. | Les overskriftene for seg. De skal beskrive innholdet under dem. |
 | 2.4.7 Synlig fokus | Utvidet sjekk: tastatur | Tab gjennom siden. Fokusmarkeringen skal være tydelig. |
 | 2.5.1 Pekerbevegelser | Ingen | Ikke aktuelt så lenge ingenting krever bevegelser med flere fingre, som å knipe, eller bevegelser som må følge en bestemt bane, som å sveipe i et mønster. Vanlig dra og slipp hører ikke til dette kriteriet. |
 | 2.5.2 Pekeravbrytelse | Ingen | Handlinger skal utløses når du slipper museknappen, ikke når du trykker den ned. |
@@ -151,5 +169,5 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | Kriterium | Testes automatisk | Slik tester du manuelt |
 |---|---|---|
 | 4.1.1 Parsing | Ingen | W3C regner kriteriet som alltid oppfylt for HTML, og det er fjernet i WCAG 2.2. Svar «Ja». |
-| 4.1.2 Navn, rolle, verdi | axe: `button-name`, `link-name`, `nested-interactive`, `aria-allowed-attr`, `aria-hidden-focus`, `aria-valid-attr-value` og flere `aria-*`-regler | Gå gjennom lenker og knapper med VoiceOver. Hver kontroll skal leses med navn og rolle. |
+| 4.1.2 Navn, rolle, verdi | axe: `button-name`, `link-name`, `nested-interactive`, `aria-allowed-attr`, `aria-hidden-focus`, `aria-valid-attr-value` og flere `aria-*`-regler. Aria-snapshots: navn og adresse på lenkene i søknad og kontaktperson. | Gå gjennom lenker og knapper med VoiceOver. Hver kontroll skal leses med navn og rolle. |
 | 4.1.3 Statusbeskjeder | Ingen | Ikke aktuelt så lenge siden ikke viser beskjeder etter at den er lastet. |
