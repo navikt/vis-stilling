@@ -5,12 +5,13 @@ import Script from 'next/script';
 import { connection } from 'next/server';
 
 import type { ReactNode } from 'react';
+import { APPNAVN } from './_utils/sidetittel';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
     await connection();
     return {
-        title: 'Se stilling',
+        title: APPNAVN,
         description: 'Visning av en arbeidsstilling',
         other: {
             'nais-app': process.env.NAIS_APP_NAME ?? 'vis-stilling',
