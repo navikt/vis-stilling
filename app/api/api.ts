@@ -1,8 +1,10 @@
 import { logger } from '@navikt/next-logger';
 
+import { erGyldigStillingsId } from '../_utils/stillingsId';
 import { Stilling } from '../types/Stilling';
 import {
     buildUpstreamUrl,
+    erMockStillingsId,
     getClientCredentialsToken,
     readMockData,
     shouldUseDevMocks,
@@ -145,14 +147,17 @@ const tilRespons = async (
         }
     }
 
-    logger.error(
-        {
-            status: respons.status,
-            stillingsId,
-            url,
-        },
-        'Oppslag mot stillingsendepunktet returnerte feilstatus'
-    );
+    const loggfelter = {
+        status: respons.status,
+        stillingsId,
+        url,
+    };
+
+    if (respons.status === 404) {
+        logger.warn(loggfelter, 'Fant ikke stillingen i stillingsendepunktet');
+    } else {
+        logger.error(loggfelter, 'Oppslag mot stillingsendepunktet returnerte feilstatus');
+    }
 
     return {
         status: Status.Feil,
@@ -161,6 +166,11 @@ const tilRespons = async (
 };
 
 export const hentStilling = async (stillingsId: string): Promise<Respons> => {
+    if (!erGyldigStillingsId(stillingsId) && !erMockStillingsId(stillingsId)) {
+        logger.info({ stillingsId }, 'Ugyldig stillings-id, kaller ikke stillingsendepunktet');
+        return { status: Status.UgyldigId };
+    }
+
     let url: string | undefined;
 
     try {

@@ -1,8 +1,9 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import Visning from '../_ui/Visning';
+import { tolkStillingsId } from '../_utils/stillingsId';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
@@ -24,6 +25,11 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     if (!stillingsId) {
         notFound();
+    }
+
+    const tolketStillingsId = tolkStillingsId(stillingsId);
+    if (tolketStillingsId.type === 'omdiriger') {
+        permanentRedirect(`/${tolketStillingsId.stillingsId}`);
     }
 
     logEvent('stilling', 'åpne');

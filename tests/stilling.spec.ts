@@ -63,3 +63,25 @@ test('mobilvisning viser innhold uten horisontal scrolling', async ({
     const innholdsbredde = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(innholdsbredde).toBeLessThanOrEqual(viewport.width);
 });
+
+for (const ugyldigId of ['undefined', 'ikke-en-uuid', '9983a5ef-e573-4ee8-b73c-7e617a1d896a0']) {
+    test(`viser «Fant ikke stillingen» for ugyldig id ${ugyldigId}`, async ({ page }) => {
+        await page.goto(ugyldigId);
+        await expect(
+            page.getByRole('heading', { level: 1, name: 'Fant ikke stillingen' })
+        ).toBeVisible();
+    });
+}
+
+for (const idMedEkstraTegn of [
+    '9983a5ef-e573-4ee8-b73c-7e617a1d896a.',
+    '9983a5ef-e573-4ee8-b73c-7e617a1d896a%C3%83%C2%A6',
+]) {
+    test(`sender ${idMedEkstraTegn} videre til adressen uten ekstra tegn`, async ({ page }) => {
+        await page.goto(idMedEkstraTegn);
+        await expect(page).toHaveURL(/\/arbeid\/stilling\/9983a5ef-e573-4ee8-b73c-7e617a1d896a$/);
+        await expect(
+            page.getByRole('heading', { level: 1, name: /Mossby taxi søker to sjåfører/ })
+        ).toBeVisible();
+    });
+}

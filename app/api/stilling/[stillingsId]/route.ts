@@ -1,9 +1,11 @@
 import { logger } from '@navikt/next-logger';
 import type { NextRequest } from 'next/server';
 
+import { erGyldigStillingsId } from '../../../_utils/stillingsId';
 import {
     buildUpstreamUrl,
     copyHeaders,
+    erMockStillingsId,
     getClientCredentialsToken,
     getUpstreamBase,
     readMockData,
@@ -25,6 +27,13 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
         logger.warn('GET /api/stilling/[stillingsId] mangler stillingsId parameter');
         return new Response('stillingsId må være satt i path', {
             status: 400,
+        });
+    }
+
+    if (!erGyldigStillingsId(stillingsId) && !erMockStillingsId(stillingsId)) {
+        logger.info({ stillingsId }, 'Ugyldig stillings-id, kaller ikke stillingsendepunktet');
+        return new Response('Fant ikke stillingen', {
+            status: 404,
         });
     }
 

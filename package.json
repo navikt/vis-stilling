@@ -40,6 +40,8 @@
     "scripts": {
         "dev": "next dev | pino-pretty --messageKey=message",
         "test": "playwright test",
+        "test:unit": "vitest run",
+        "typecheck": "tsc --noEmit",
         "test-dev": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next dev -p 1337",
         "test-build": "NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true next build",
         "build": "next build",
