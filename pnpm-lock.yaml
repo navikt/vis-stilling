@@ -188,8 +188,8 @@ importers:
         specifier: ^4.2.2
         version: 4.2.2
       '@navikt/toi-next-frontend':
-        specifier: 0.12.1
-        version: 0.12.1(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.5)
+        specifier: 0.12.0
+        version: 0.12.0(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.5)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -671,8 +671,8 @@ packages:
     resolution: {integrity: sha512-w/iTWLSdmvn2j2U3M+sJX9bSBvoV5UcMk+FuKs9EKz1QuaCoUksZrEfqX9/FtqyTUaOhwDnm/1iIuR6BudzFAg==, tarball: https://npm.pkg.github.com/download/@navikt/texas/4.2.2/862d743a1df21630a007a0d2d2a36a74dd8b5187}
     engines: {node: ^20.19.0 || >= 22.12.0 || 24.x || 25.x}
 
-  '@navikt/toi-next-frontend@0.12.1':
-    resolution: {integrity: sha512-BZ/yhe1p+8AxO+OzVgMoa6lsY18UQTLciShwYsZoHpRWV68+dlkytQYHx6g1Dvu7oAwL3irhcfrtu4EfnblfBA==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.12.1/429f5ed7cd5563d54c75fbb2366845edad4cb399}
+  '@navikt/toi-next-frontend@0.12.0':
+    resolution: {integrity: sha512-JkzaTK0Ppy341LWai79luZxQPK7wPaS6bLbryAyd9dQpd72Xqb/5JL25SNgrPlN2GpmTC2kGubK3muCiRPq5Gw==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.12.0/81871dc002164232828357145f58d8b6978af3cb}
     peerDependencies:
       '@axe-core/playwright': ^4.14.0
       '@playwright/test': ^1.50.0
@@ -2713,7 +2713,7 @@ snapshots:
 
   '@navikt/texas@4.2.2': {}
 
-  '@navikt/toi-next-frontend@0.12.1(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.5)':
+  '@navikt/toi-next-frontend@0.12.0(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(react@19.3.0)(swr@2.5.1(react@19.3.0))(zod@4.6.5)':
     dependencies:
       '@axe-core/playwright': 4.14.0(playwright-core@1.63.0)
       '@playwright/test': 1.63.0
