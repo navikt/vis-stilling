@@ -41,18 +41,29 @@ Testen «Tilgjengelighet – utvidede sjekker» kjører i nettleseren på de sam
 
 Hver kjøring legger ved `fokusrekkefølge.txt` i rapporten. Den er nyttig når du sjekker 2.4.3.
 
+### Sidetitler
+
+`tests/sidetitler.spec.ts` sjekker med `toHaveTitle` at hver variant av siden har sin egen tittel på formen `<side> – Se stilling` (2.4.2). En stilling får stillingstittelen. Upubliserte stillinger får «Stillingen er ikke publisert», ukjente id-er får «Fant ikke stillingen», og andre feil får «Feil ved visning av stilling». Titlene settes i `generateMetadata` i `app/[stillingsId]/page.tsx` med `sidetittel` fra `app/_utils/sidetittel.ts`.
+
+Titlene sendes til Umami med hver sidevisning og skal aldri inneholde navn på personer.
+
+### Sjekker for interaksjoner
+
+`@navikt/toi-next-frontend/a11y` har sjekker for dialoger (`sjekkDialog`), pekerfølsomt innhold som hjelpetekster og tooltips (`sjekkPekerfølsomtInnhold`) og skjemafeil (`sjekkSkjemafeil`). Siden har i dag ingen dialoger, tooltips, popovere eller skjemaer, så ingen av sjekkene er i bruk. Får siden slikt innhold, skal sjekken legges til i en egen test.
+
 ### Dette testes ikke automatisk
 
 - Dekoratøren
 - Om annonseteksten har riktig struktur og språk. Teksten kommer fra arbeidsgiveren eller fra stillingsregistreringen.
 - Om tekster, alternativtekster og overskrifter gir mening
-- Sidetittelen utover at den finnes
+- Om sidetittelen beskriver siden godt nok. Testen sjekker bare at hver variant får riktig tittel.
 
 ### Kjør testene lokalt
 
 ```sh
 pnpm run test:a11y                                                # alle tilgjengelighetstester
 pnpm exec playwright test --grep @a11y-utvidet --project='chromium*'   # bare utvidede sjekker
+pnpm exec playwright test tests/sidetitler.spec.ts --project='chromium*' # bare sidetitler
 ```
 
 Kjører du `pnpm dev` samtidig, setter du `PLAYWRIGHT_PORT` til en ledig port.
@@ -96,7 +107,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 1.4.10 Dynamisk tilpasning (reflow) | Reflow i hovedtesten | Sett vinduet til 1280 px og zoom til 400 %. Siden skal ikke rulle horisontalt. Test med lange ord og lenker i annonseteksten. |
 | 1.4.11 Kontrast for ikke-tekstlig innhold | Ingen | Ikoner som betyr noe og fokusmarkering skal ha 3:1 mot bakgrunnen. |
 | 1.4.12 Tekstavstand | Utvidet sjekk: tekstavstand, axe: `avoid-inline-spacing` | Bruk bokmerket for tekstavstand på lange annonser. Ingen tekst skal bli kuttet av. |
-| 1.4.13 Pekerfølsomt innhold | Ingen | Flytt musen fra utløseren og over på hjelpeteksten eller popoveren. Innholdet skal bli værende til du flytter musen eller fokus bort, eller lukker det. Dekker innholdet annet innhold, skal det kunne lukkes med Esc uten å flytte musen eller fokus. Feilmeldinger fra validering er unntatt. |
+| 1.4.13 Pekerfølsomt innhold | Ingen. `sjekkPekerfølsomtInnhold` er ikke i bruk fordi siden ikke har hjelpetekster eller tooltips. | Ikke aktuelt så lenge siden ikke har slikt innhold. Ellers: flytt musen fra utløseren og over på hjelpeteksten eller popoveren. Innholdet skal bli værende til du flytter musen eller fokus bort, eller lukker det. Dekker innholdet annet innhold, skal det kunne lukkes med Esc uten å flytte musen eller fokus. Feilmeldinger fra validering er unntatt. |
 
 ### 2 Mulig å betjene
 
@@ -109,7 +120,7 @@ Test flere ekte stillinger i dev: stillinger fra Nav, stillinger fra eksterne ki
 | 2.2.2 Pause, stopp, skjul | axe: `blink`, `marquee` | Innhold som beveger seg, blinker eller ruller, starter automatisk, varer mer enn 5 sekunder og vises sammen med annet innhold, skal kunne pauses, stoppes eller skjules. Innhold som oppdateres automatisk og vises sammen med annet innhold, skal kunne pauses, stoppes, skjules eller få justert hvor ofte det oppdateres, uansett hvor lenge det varer. Unntaket gjelder bare når bevegelsen eller oppdateringen er nødvendig, for eksempel en lasteindikator mens brukeren ikke kan gjøre noe annet. |
 | 2.3.1 Terskelverdi på maksimalt tre glimt | Ingen | Ikke aktuelt så lenge ingenting blinker. |
 | 2.4.1 Hoppe over blokker | axe: `bypass`, utvidet sjekk: hopp til hovedinnhold | Trykk Tab på siden. Dekoratørens «Hopp til hovedinnhold» skal flytte fokus til `<main id="maincontent">` i `app/_ui/Visning.tsx`. |
-| 2.4.2 Sidetitler | axe: `document-title` sjekker bare at tittelen finnes | Tittelen i fanen skal beskrive siden. Den settes i `generateMetadata` i `app/layout.tsx`. Vurder om tittelen bør inneholde stillingstittelen. |
+| 2.4.2 Sidetitler | axe: `document-title`, `tests/sidetitler.spec.ts` sjekker tittelen for hver variant | Åpne flere stillinger, en ukjent id og en upublisert stilling. Tittelen i fanen skal beskrive siden, for eksempel «Butikkmedarbeider – Se stilling». Den skal ikke inneholde navn på personer. |
 | 2.4.3 Fokusrekkefølge | Delvis: vedlegget `fokusrekkefølge.txt` | Tab gjennom siden. Rekkefølgen skal følge det visuelle, også på mobil. |
 | 2.4.4 Formål med lenke (i kontekst) | axe: `link-name` | Åpne lenkelisten i VoiceOver-rotoren. Hver lenke, sammen med setningen den står i, skal forklare hvor den går. Lenker som åpner en ekstern side, bør si det. |
 | 2.4.5 Flere måter | Ingen | Kriteriet gjelder sider i et sett av nettsider. Avklar hvilke innganger siden har: lenken i SMS-en, aktivitetskortet i aktivitetsplanen og, for stillinger som ikke er direktemeldte, arbeidsplassen.no. Direktemeldte stillinger finnes bare her. Vurder om siden er et resultat av eller et steg i en prosess, og beskriv vurderingen i erklæringen. |

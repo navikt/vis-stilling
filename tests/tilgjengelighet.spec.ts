@@ -15,7 +15,7 @@ const sider: { stillingsId: string; erKlar: (page: Page) => Locator }[] = [
     },
     {
         stillingsId: 'upublisert-stilling',
-        erKlar: (page) => page.getByText(/er ikke publisert/),
+        erKlar: (page) => page.getByRole('main').getByText(/er ikke publisert/),
     },
 ];
 
