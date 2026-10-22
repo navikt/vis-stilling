@@ -36,7 +36,9 @@ Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 
 ## Tilgjengelighet
 
-[A11Y-STATEMENT.md](./A11Y-STATEMENT.md) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
+Guiden til tilgjengelighetserklæringen, med hva tilgjengelighetstestene sjekker automatisk og hvordan du tester hvert WCAG-kriterium manuelt, ligger på [Trello](https://trello.com/c/2RWBDYg6).
+
+Kjør tilgjengelighetstestene med `pnpm run test:a11y` og ESLint-regelen for 2.5.2 med `pnpm run lint`.
 
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:
