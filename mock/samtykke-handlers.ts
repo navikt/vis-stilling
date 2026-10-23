@@ -35,6 +35,7 @@ const lagSvar = (harSvartJa: boolean) => ({
 const scenarioer: Record<string, (stillingsId: string) => unknown[]> = {
     'samtykke-ingen': () => [],
     'samtykke-ubesvart': (id) => [lagSamtykke(id)],
+    'samtykke-lagrefeil': (id) => [lagSamtykke(id)],
     'samtykke-utlopt': (id) => [
         lagSamtykke(id, { svarfrist: iso(-dag), tilstand: 'SVARFRIST_UTLOPT' }),
     ],
