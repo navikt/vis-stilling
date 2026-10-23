@@ -171,5 +171,7 @@ export const konverterStilling = (stilling: Stilling): StillingDTO => {
         oppdatert: tilDatoEllerEtikett(stilling.updated).dato,
         medium: stilling.medium ?? stilling.source ?? null,
         referanse: stilling.annonsenr ?? null,
+        soknadsepost: stilling.properties.applicationemail ?? null,
+        soknadslenke: stilling.properties.applicationurl ?? null,
     };
 };

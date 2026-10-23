@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 
 import VisStilling from '../_ui/VisStilling.tsx';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
-import { hentPersonvernlenke, skalMocke, visSamtykke } from '../_utils/util.ts';
+import { hentPersonvernlenke, skalMocke, ikkeErProd } from '../_utils/util.ts';
 import { Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
 
@@ -45,7 +45,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
                     stilling={respons.data}
                     innlogget={innlogget}
                     personvernlenke={hentPersonvernlenke()}
-                    visSamtykke={visSamtykke()}
+                    visSamtykke={ikkeErProd()}
                 />
             );
         }

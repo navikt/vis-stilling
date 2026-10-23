@@ -17,6 +17,7 @@ const devMockFileByIdentifier: Record<string, string> = {
     'formatert-stilling': 'formatert-stilling.json',
     formatertStilling: 'formatert-stilling.json',
     'stilling-uten-jobtitle': 'stilling-uten-jobtitle.json',
+    arbeidsplassenStilling: 'arbeidsplassen-stilling.json',
 };
 const defaultMockFile = 'annen-stilling.json';
 const mockCache = new Map<string, unknown>();

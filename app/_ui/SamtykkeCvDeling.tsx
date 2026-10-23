@@ -16,7 +16,7 @@ interface Props {
 
 const KontaktVeileder = () => (
     <div className="flex items-center gap-3">
-        <ChatIcon aria-hidden className="text-2xl" />
+        <ChatIcon aria-hidden className="text-2xl shrink-0" />
         <BodyLong>Kontakt veilederen din i dialogen i aktivitetsplanen.</BodyLong>
     </div>
 );
@@ -31,7 +31,7 @@ const Spørsmålsboks = () => (
         borderWidth="1"
         borderRadius="8"
     >
-        <VStack gap="space-16">
+        <VStack gap="space-12">
             <Heading level="2" size="small">
                 Har du spørsmål om stillingen?
             </Heading>
@@ -104,7 +104,7 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
             borderWidth="1"
             borderRadius="8"
         >
-            <VStack gap="space-16">
+            <VStack gap="space-12">
                 <Heading level="2" size="small">
                     {headingtekst(status)}
                 </Heading>

@@ -11,5 +11,5 @@ export const hentPersonvernlenke = (cluster = process.env.NAIS_CLUSTER_NAME): st
     cluster === 'prod-gcp' ? PERSONVERN_PROD : PERSONVERN_DEV;
 
 // samtykke til deling av CV skal ikke vises i prod
-export const visSamtykke = (cluster = process.env.NAIS_CLUSTER_NAME): boolean =>
+export const ikkeErProd = (cluster = process.env.NAIS_CLUSTER_NAME): boolean =>
     cluster !== 'prod-gcp';

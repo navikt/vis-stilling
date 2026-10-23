@@ -14,6 +14,14 @@ pnpm dev
 ```
 Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra `app/api/stilling/helpers.ts`, for eksempel `stilling`, eller en av samtykke-scenarioene i `mock/samtykke-handlers.ts` (f.eks. `samtykke-ja`).
 
+### Se siden slik den vises i prod
+
+```sh
+pnpm dev:prod
+```
+
+Serveren later som den kjører i `prod-gcp` og svarer på http://localhost:3001/arbeid/stilling/stilling. Samtykke til deling av CV er skrudd av i prod, så boksen viser bare «Har du spørsmål om stillingen?». Stillingsdata kommer fra mockdataene i `mock/eksempler`, mens dekoratøren hentes fra prod.
+
 ## Playwright
 
 Testene kjøres i desktop Chromium, Firefox og WebKit, samt mobilvisning med
