@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     output: 'standalone',
-    transpilePackages: ['@navikt/ds-react', '@navikt/ds-css'],
+    transpilePackages: ['@navikt/ds-react', '@navikt/ds-css', '@navikt/stilling-react'],
     serverExternalPackages: ['@navikt/next-logger'],
     reactStrictMode: true,
     basePath: '/arbeid/stilling',

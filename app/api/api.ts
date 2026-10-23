@@ -1,14 +1,9 @@
 import { logger } from '@navikt/next-logger';
 
+import { erMockStillingsId, readMockData, shouldUseDevMocks } from '../../mock/stilling';
 import { erGyldigStillingsId } from '../_utils/stillingsId';
 import { Stilling } from '../types/Stilling';
-import {
-    buildUpstreamUrl,
-    erMockStillingsId,
-    getClientCredentialsToken,
-    readMockData,
-    shouldUseDevMocks,
-} from './stilling/helpers';
+import { buildUpstreamUrl, getClientCredentialsToken } from './stilling/helpers';
 
 const API = '/arbeid/stilling/api/stilling';
 

@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+    name: vis-stilling-veileder
+    namespace: toi
+    labels:
+        team: toi
+spec:
+    groups:
+        - name: vis-stilling-veileder
+          rules:
+              - alert: vis-stilling-veileder
+                expr: kube_deployment_status_replicas_available{deployment="vis-stilling-veileder"} == 0
+                for: 1s
+                annotations:
+                    summary: Appen er nede
+                    action: 'https://logs.az.nav.no/goto/ed5aa8e413dce839206c59b9916d7cd4?security_tenant=navlogs'
+                labels:
+                    namespace: toi
+                    severity: critical
+
+              - alert: vis-stilling-veileder
+                expr: sum(increase(log_messages_errors{app="vis-stilling-veileder", level="Error"}[10m])) > 0
+                for: 1s
+                annotations:
+                    summary: Appen har logget en error
+                    action: 'https://logs.az.nav.no/goto/ed5aa8e413dce839206c59b9916d7cd4?security_tenant=navlogs'
+                labels:
+                    namespace: toi
+                    severity: critical
+
+              - alert: vis-stilling-veileder
+                expr: sum(increase(log_messages_errors{app="vis-stilling-veileder", level="Warning"}[10m])) > 3
+                for: 1s
+                annotations:
+                    summary: Økning i warnings
+                    action: 'https://logs.az.nav.no/goto/ed5aa8e413dce839206c59b9916d7cd4?security_tenant=navlogs'
+                labels:
+                    namespace: toi
+                    severity: warning

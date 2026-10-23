@@ -11,6 +11,9 @@ vi.mock('./stilling/helpers', () => ({
     buildUpstreamUrl: (stillingsId: string) =>
         new URL(`https://stilling-api.test/stilling/${encodeURIComponent(stillingsId)}`),
     getClientCredentialsToken: async () => 'token',
+}));
+
+vi.mock('../../mock/stilling', () => ({
     shouldUseDevMocks: () => false,
     erMockStillingsId: () => false,
     readMockData: vi.fn(),
