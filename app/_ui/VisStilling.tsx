@@ -38,33 +38,35 @@ const VisStilling: FunctionComponent<Props> = ({
     // sammendraget på mobil.
     return (
         <Theme>
-            {stilling.source !== 'DIR' && (
-                <InfoCard data-color="info" className="rounded-none ">
-                    <InfoCardMessage
-                        icon={<InformationSquareIcon aria-hidden />}
-                        className=" rounded-none text-center justify-center"
-                    >
-                        <span>
-                            Denne stillingen kan du også finne på{' '}
-                            <Link data-color="neutral" href={stillingPåArbeidsplassen}>
-                                arbeidsplassen.no
-                            </Link>
-                        </span>
-                    </InfoCardMessage>
-                </InfoCard>
-            )}
-            <StillingVisning
-                data={stillingDTO}
-                søknadSlot={
-                    <SamtykkeCvDeling
-                        key={stilling.uuid}
-                        stillingsId={stilling.uuid}
-                        innlogget={innlogget}
-                        personvernlenke={personvernlenke}
-                        visSamtykke={visSamtykke}
-                    />
-                }
-            />
+            <main id="maincontent" tabIndex={-1} className="focus:outline-none">
+                {stilling.source !== 'DIR' && (
+                    <InfoCard data-color="info" className="rounded-none ">
+                        <InfoCardMessage
+                            icon={<InformationSquareIcon aria-hidden />}
+                            className=" rounded-none text-center justify-center"
+                        >
+                            <span>
+                                Denne stillingen kan du også finne på{' '}
+                                <Link data-color="neutral" href={stillingPåArbeidsplassen}>
+                                    arbeidsplassen.no
+                                </Link>
+                            </span>
+                        </InfoCardMessage>
+                    </InfoCard>
+                )}
+                <StillingVisning
+                    data={stillingDTO}
+                    søknadSlot={
+                        <SamtykkeCvDeling
+                            key={stilling.uuid}
+                            stillingsId={stilling.uuid}
+                            innlogget={innlogget}
+                            personvernlenke={personvernlenke}
+                            visSamtykke={visSamtykke}
+                        />
+                    }
+                />
+            </main>
         </Theme>
     );
 };

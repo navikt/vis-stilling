@@ -1,18 +1,14 @@
 import { expect, test, type Page } from '@playwright/test';
 
 // Aria-snapshots av utvalgte deler av siden (WCAG 1.3.1, 2.4.6, 4.1.2).
-// Snapshotene sjekker roller, navn og rekkefølge, ikke utseende. Datoer matches med regex.
+// Snapshotene sjekker roller, navn og rekkefølge, ikke utseende. Data som kan endre seg
+// (datoer, id-er og fritekst), matches med regex. Barn som ikke er tatt med, ignoreres.
 // Testene sammenligner bare den tilgjengelige strukturen, så det holder med én nettleser.
 
-const dato = String.raw`/\d{2}\.\d{2}\.\d{4}/`;
+const langDato = String.raw`/\d{1,2}\. \S+ \d{4}/`;
 
-const toppseksjon = (page: Page) =>
-    page.getByRole('banner').filter({ has: page.getByRole('heading', { level: 1 }) });
-
-const panel = (page: Page, tittel: string) =>
-    page
-        .locator('div:has(> h2)')
-        .filter({ has: page.getByRole('heading', { level: 2, name: tittel, exact: true }) });
+const samtykkeboks = (page: Page) =>
+    page.getByRole('region', { name: 'Samtykke til deling av CV' });
 
 test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
     test.skip(
@@ -20,93 +16,125 @@ test.describe('Aria-snapshots', { tag: '@a11y' }, () => {
         'Kjører bare i chromium-desktop'
     );
 
-    test.describe('direktemeldt stilling', () => {
-        test.beforeEach(async ({ page }) => {
-            await page.goto('stilling');
-        });
-
-        test('overskrift og nøkkelinfo', async ({ page }) => {
-            await expect(toppseksjon(page)).toMatchAriaSnapshot(`
-                - banner:
-                  - text: /MOSSBY TAXI AS, .+/
-                  - heading "Jobbservice Mossby taxi søker to sjåfører. Kurs og opplæring gis." [level=1]
-            `);
-            await expect(panel(page, 'Om stillingen')).toMatchAriaSnapshot(`
-                - heading "Om stillingen" [level=2]
-                - term: "Stillingstittel:"
-                - definition: Drosjesjåfør
-                - term: "Arbeidssted:"
-                - definition: Drammen
-                - term: "Ansettelsesform:"
-                - definition: Fast
-                - term: "Omfang:"
-                - definition: Heltid
-                - term: "Antall stillinger:"
-                - definition: "2"
-                - term: "Oppstart:"
-                - definition: Etter avtale
-            `);
-        });
-
-        test('søknad uten lenke og kontakt via veileder', async ({ page }) => {
-            await expect(panel(page, 'Søknad')).toMatchAriaSnapshot(`
-                - heading "Søknad" [level=2]
-                - term: "Søknadsfrist:"
-                - definition: Snarest
-            `);
-            await expect(panel(page, 'Søknad').getByRole('link')).toHaveCount(0);
-            await expect(panel(page, 'Har du spørsmål om stillingen?')).toMatchAriaSnapshot(`
-                - heading "Har du spørsmål om stillingen?" [level=2]
-                - text: Kontakt veilederen din i dialogen i aktivitetsplanen.
-            `);
-            await expect(panel(page, 'Kontaktperson for stillingen')).toHaveCount(0);
-        });
-    });
-
-    test.describe('ekstern stilling', () => {
-        test.beforeEach(async ({ page }) => {
-            await page.goto('annen-stilling');
-        });
-
-        test('søknad med lenke', async ({ page }) => {
-            await expect(panel(page, 'Søknad')).toMatchAriaSnapshot(`
-                - heading "Søknad" [level=2]
-                - term: "Søknadsfrist:"
-                - definition: ${dato}
-                - link "Søk på stillingen":
-                  - /url: https://www.nrk.no/
-            `);
-        });
-
-        test('kontaktperson', async ({ page }) => {
-            await expect(panel(page, 'Kontaktperson for stillingen')).toMatchAriaSnapshot(`
-                - heading "Kontaktperson for stillingen" [level=2]
-                - term: "Kontaktperson:"
-                - definition: /.+/
-                - term: "Stillingstittel:"
-                - definition: /.+/
-                - term: "Telefon:"
-                - definition: /\\d+/
-                - term: "E-post:"
+    test('direktemeldt stilling uten søknadslenke', async ({ page }) => {
+        await page.goto('stilling');
+        await expect(page.getByRole('main')).toMatchAriaSnapshot(`
+            - main:
+              - article:
+                - heading "Jobbservice Mossby taxi søker to sjåfører. Kurs og opplæring gis." [level=1]
+                - text: /MOSSBY TAXI AS .*Frist.*Antall stillinger:/
+                - region "Samtykke til deling av CV":
+                  - heading "Har du spørsmål om stillingen?" [level=2]
+                  - paragraph: Kontakt veilederen din i dialogen i aktivitetsplanen.
+                - heading "Om jobben" [level=2]
+                - heading "Om bedriften" [level=2]
+                - heading "Annonsedata" [level=2]
+                - term: Sist endret
                 - definition:
-                  - link /.+@.+/:
-                    - /url: /^mailto:.+@.+/
-            `);
-            await expect(panel(page, 'Har du spørsmål om stillingen?')).toHaveCount(0);
-        });
+                  - paragraph: ${langDato}
+        `);
+        await expect(page.getByRole('heading', { name: 'Søk på stillingen' })).toHaveCount(0);
     });
 
-    test('søknad med e-post', async ({ page }) => {
-        await page.goto('slettet-stilling');
-        await expect(panel(page, 'Søknad')).toMatchAriaSnapshot(`
-            - heading "Søknad" [level=2]
-            - term: "Søknadsfrist:"
-            - definition: Snarest
-            - term: "Søknad sendes til:"
-            - definition:
-              - link "test@nav.no":
-                - /url: mailto:test@nav.no
+    test('ekstern stilling med nettsted og søknadslenke', async ({ page }) => {
+        await page.goto('annen-stilling');
+        await expect(page.getByRole('main')).toMatchAriaSnapshot(`
+            - main:
+              - article:
+                - heading "Tulleskolen søker tøysekopper" [level=1]
+                - heading "Om bedriften" [level=2]
+                - term: Nettsted
+                - definition:
+                  - link "https://www.vg.no":
+                    - /url: https://www.vg.no
+                - heading "Søk på stillingen" [level=2]
+                - term: Søknadslenke
+                - definition:
+                  - paragraph:
+                    - link "https://www.nrk.no/":
+                      - /url: https://www.nrk.no/
         `);
+    });
+
+    test('nettsted uten protokoll vises som tekst, og ugyldige lenker vises ikke', async ({
+        page,
+    }) => {
+        await page.goto('formatert-stilling');
+        await expect(page.getByRole('main')).toMatchAriaSnapshot(`
+            - main:
+              - article:
+                - heading "Om bedriften" [level=2]
+                - term: Nettsted
+                - definition: www.eksempel.no
+        `);
+        await expect(page.getByRole('main').locator('a[href^="javascript:" i]')).toHaveCount(0);
+    });
+
+    test('utløpt stilling med søknad på e-post', async ({ page }) => {
+        await page.goto('slettet-stilling');
+        await expect(page.getByRole('main')).toMatchAriaSnapshot(`
+            - main:
+              - article:
+                - heading "IKT-brukbarhetstester" [level=1]
+                - text: /^Utløpt stilling /
+                - heading "Søk på stillingen" [level=2]
+                - term: Søknadsepost
+                - definition:
+                  - paragraph:
+                    - link "test@nav.no":
+                      - /url: mailto:test@nav.no
+        `);
+    });
+
+    test.describe('samtykke til deling av CV', () => {
+        test('ubesvart forespørsel', async ({ page }) => {
+            await page.goto('samtykke-ubesvart');
+            await expect(samtykkeboks(page)).toMatchAriaSnapshot(`
+                - region "Samtykke til deling av CV":
+                  - heading "Vil du dele CV-en din med arbeidsgiveren?" [level=2]
+                  - paragraph: /forespørsel fra Nav om å dele CV-en din/
+                  - paragraph:
+                    - link "Her kan du lese mer om å dele CV-en med arbeidsgiver":
+                      - /url: /\\/min-cv\\/personvern#deling-av-cv-med-arbeidsgivere$/
+                  - paragraph: /Ønsker du at Nav kan dele CV-en din/
+                  - button "Gi samtykke"
+                  - button "Avvis samtykke"
+            `);
+        });
+
+        test('har sagt ja', async ({ page }) => {
+            await page.goto('samtykke-ja');
+            await expect(samtykkeboks(page)).toMatchAriaSnapshot(`
+                - region "Samtykke til deling av CV":
+                  - heading "Dele CV med arbeidsgiver" [level=2]
+                  - paragraph: /^Du har sagt ja til/
+                  - paragraph:
+                    - link "Her kan du lese mer om å dele CV-en med arbeidsgiver"
+                  - button "Trekk samtykke"
+            `);
+        });
+
+        test('feil ved henting', async ({ page }) => {
+            await page.goto('samtykke-feil');
+            await expect(samtykkeboks(page)).toMatchAriaSnapshot(`
+                - region "Samtykke til deling av CV":
+                  - alert: /Vi kunne ikke hente samtykkestatusen din/
+                  - button "Prøv igjen"
+            `);
+        });
+
+        test('bekreftelsesdialog', async ({ page }) => {
+            await page.goto('samtykke-ubesvart');
+            await page.getByRole('button', { name: 'Gi samtykke', exact: true }).click();
+            await expect(page.getByRole('alertdialog')).toMatchAriaSnapshot(`
+                - alertdialog "Vil du gi samtykke?":
+                  - button "Lukk"
+                  - heading "Vil du gi samtykke?" [level=1]
+                  - paragraph: /samtykke til å dele CV-en din/
+                  - button "Avbryt"
+                  - button "Bekreft samtykke"
+            `);
+        });
     });
 
     test('feilside for ukjent stilling', async ({ page }) => {

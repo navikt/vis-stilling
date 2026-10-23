@@ -6,6 +6,8 @@ const sider: [stillingsId: string, tittel: string][] = [
     ['stilling', 'Jobbservice Mossby taxi søker to sjåfører. Kurs og opplæring gis.'],
     ['annen-stilling', 'Tulleskolen søker tøysekopper'],
     ['slettet-stilling', 'IKT-brukbarhetstester'],
+    ['formatert-stilling', 'Formatert stilling eksempel'],
+    ['samtykke-ubesvart', 'Tulleskolen søker tøysekopper'],
     ['upublisert-stilling', 'Stillingen er ikke publisert'],
     ['ugyldig-id', 'Fant ikke stillingen'],
 ];
