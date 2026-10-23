@@ -23,11 +23,19 @@ spec:
   azure:
     application:
       enabled: true
+  tokenx:
+    enabled: true
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+      level: Level3
   accessPolicy:
     outbound:
       rules:
         - application: rekrutteringsbistand-stilling-api
           namespace: toi
+        - application: toi-deling-av-cv-api
         - application: nav-dekoratoren
           namespace: personbruker
   env:
@@ -35,6 +43,8 @@ spec:
       value: {{ NEXT_PUBLIC_BASE_URL }}
     - name: STILLING_API
       value: http://rekrutteringsbistand-stilling-api
+    - name: TOI_DELING_AV_CV_API
+      value: http://toi-deling-av-cv-api
   observability:
     autoInstrumentation:
       enabled: true

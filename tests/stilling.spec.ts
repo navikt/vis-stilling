@@ -1,46 +1,35 @@
 import { expect, test } from '@playwright/test';
 
-test('viser direktemeldt stilling med søknadsinformasjon', async ({ page }) => {
+test('viser direktemeldt stilling med kontaktinformasjon', async ({ page }) => {
     await page.goto('stilling');
     await expect(
         page.getByRole('heading', { level: 1, name: /Mossby taxi søker to sjåfører/ })
     ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Søknad', exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Om stillingen', exact: true })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Samtykke til deling av CV' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toBeVisible();
     await expect(
         page.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
     ).toBeVisible();
 });
 
-test('viser søknadslenke for ekstern stilling', async ({ page }) => {
+test('viser arbeidsgiverens nettsted for ekstern stilling', async ({ page }) => {
     await page.goto('annen-stilling');
     await expect(
         page.getByRole('heading', { level: 1, name: 'Tulleskolen søker tøysekopper' })
     ).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Søk på stillingen' })).toHaveAttribute(
+    await expect(page.getByRole('heading', { name: 'Om bedriften', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'https://www.vg.no' })).toHaveAttribute(
         'href',
-        'https://www.nrk.no/'
+        'https://www.vg.no'
     );
 });
 
-test('lenker til arbeidsgivers nettside uten protokoll blir absolutte', async ({ page }) => {
-    await page.goto('formatert-stilling');
-    await expect(page.getByRole('link', { name: 'www.eksempel.no' })).toHaveAttribute(
-        'href',
-        'https://www.eksempel.no/'
-    );
-    await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Facebook' })).toHaveCount(0);
-});
-
-test('viser advarsel for slettet stilling', async ({ page }) => {
+test('merker slettet stilling som utløpt', async ({ page }) => {
     await page.goto('slettet-stilling');
     await expect(
         page.getByRole('heading', { level: 1, name: 'IKT-brukbarhetstester' })
     ).toBeVisible();
-    await expect(
-        page.getByText('Denne stillingen er slettet og er ikke lenger aktiv.')
-    ).toBeVisible();
+    await expect(page.getByText('Utløpt stilling', { exact: true })).toBeVisible();
 });
 
 test('viser ikke upublisert stilling', async ({ page }) => {
@@ -48,15 +37,15 @@ test('viser ikke upublisert stilling', async ({ page }) => {
     await expect(
         page.getByText(/Stillingen med tittel "Ny stilling" er ikke publisert/)
     ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Søknad', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toHaveCount(0);
 });
 
-test('bruker kategoritittel når stillingstittel mangler', async ({ page }) => {
+test('viser stilling uten jobbtittel', async ({ page }) => {
     await page.goto('stilling-uten-jobtitle');
     await expect(
         page.getByRole('heading', { level: 1, name: /Moss taxi søker to sjåfører/ })
     ).toBeVisible();
-    await expect(page.getByText('Hjelpearbeider', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toBeVisible();
 });
 
 test('mobilvisning viser innhold uten horisontal scrolling', async ({
@@ -69,7 +58,7 @@ test('mobilvisning viser innhold uten horisontal scrolling', async ({
         throw new Error('Mobiltesten krever en konfigurert skjermstørrelse');
     }
     await page.goto('annen-stilling');
-    await expect(page.getByRole('link', { name: 'Søk på stillingen' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Vis flere jobbdetaljer' })).toBeVisible();
     const innholdsbredde = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(innholdsbredde).toBeLessThanOrEqual(viewport.width);
 });
