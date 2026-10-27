@@ -14,7 +14,7 @@ jobs:
                 pnpm exec playwright install --with-deps firefox webkit &&
                 pnpm run test
             playwright-shards: 4
-            deploy-dev-branch: 'ny_stillingsvisning'
+            deploy-dev-branch: 'a11y'
             dev-vars-path: '.nais/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
