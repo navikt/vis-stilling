@@ -57,6 +57,8 @@ const samtykketekst = (status: Samtykkestatus): string => {
             return 'Svarfristen for forespørselen har gått ut. Hvis du ønsker at Nav skal dele CV-en din med arbeidsgiveren, kan du kontakte veilederen din i dialogen i aktivitetsplanen.';
         case 'INGEN_FORESPØRSEL':
             return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
+        case 'AVBRUTT_FORESPØRSEL':
+            return 'Du kan ikke svare på spørsmålet fordi aktiviteten er avbrutt.';
     }
 };
 
@@ -67,6 +69,7 @@ const headingtekst = (status: Samtykkestatus): string => {
         case 'SVART_NEI':
         case 'UTLØPT':
             return 'Dele CV med arbeidsgiver';
+        case 'AVBRUTT_FORESPØRSEL':
         case 'UBESVART':
             return 'Vil du dele CV-en din med arbeidsgiveren?';
         case 'INGEN_FORESPØRSEL':
@@ -91,7 +94,11 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
     const status = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
     const harAktivForespørsel =
-        innlogget && !isLoading && !hentFeil && status !== 'INGEN_FORESPØRSEL';
+        innlogget &&
+        !isLoading &&
+        !hentFeil &&
+        status !== 'INGEN_FORESPØRSEL' &&
+        status !== 'AVBRUTT_FORESPØRSEL';
     const visSpørsmål = !innlogget || (!isLoading && !hentFeil && status === 'INGEN_FORESPØRSEL');
 
     return (

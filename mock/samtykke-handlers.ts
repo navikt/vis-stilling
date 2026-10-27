@@ -41,6 +41,7 @@ const scenarioer: Record<string, (stillingsId: string) => unknown[]> = {
     ],
     'samtykke-ja': (id) => [lagSamtykke(id, lagSvar(true))],
     'samtykke-nei': (id) => [lagSamtykke(id, lagSvar(false))],
+    'samtykke-avbrutt': (id) => [lagSamtykke(id, { tilstand: 'AVBRUTT' })],
     'samtykke-trukket': (id) => [
         lagSamtykke(id, { ...lagSvar(true), trukket: true, trukketTidspunkt: iso(-dag) }),
     ],

@@ -27,10 +27,10 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
     if (!skalMocke) {
         let validation: ValidationResult;
         if (erVeileder) {
-            logger.info("Validerer token for veileder");
+            logger.info('Validerer token for veileder');
             validation = await validateAzureToken(token);
         } else {
-            logger.info("Validerer token for personbruker");
+            logger.info('Validerer token for personbruker');
             validation = await validateIdportenToken(token);
         }
 
@@ -46,12 +46,12 @@ export const hentOboToken = async (props: hentOboTokenProps): Promise<TokenResul
     let obo: TokenResult;
     try {
         if (skalMocke) {
-            obo = ({ ok: true, token: 'DEV' } as TokenResult);
+            obo = { ok: true, token: 'DEV' } as TokenResult;
         } else if (erVeileder) {
-            logger.info("Henter token for azure");
+            logger.info('Henter token for azure');
             obo = await requestAzureOboToken(token, props.scope);
         } else {
-            logger.info("Henter token for tokenx");
+            logger.info('Henter token for tokenx');
             obo = await requestTokenxOboToken(token, props.scope);
         }
 

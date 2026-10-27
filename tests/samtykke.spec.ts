@@ -181,6 +181,146 @@ test.describe('Personvernlenke', () => {
     });
 });
 
+test.describe('Avbrutt forespørsel', () => {
+    const avbruttTekst = 'Du kan ikke svare på spørsmålet fordi aktiviteten er avbrutt.';
+
+    const forventAvbruttVisning = async (region: Locator) => {
+        await expect(
+            region.getByRole('heading', { name: 'Vil du dele CV-en din med arbeidsgiveren?' })
+        ).toBeVisible();
+        await expect(region.getByText(avbruttTekst)).toBeVisible();
+        await expect(region.getByRole('button')).toHaveCount(0);
+        await expect(region.getByRole('link', { name: lenketekst })).toHaveCount(0);
+    };
+
+    test('viser at aktiviteten er avbrutt uten svarmuligheter eller personvernlenke', async ({
+        page,
+    }) => {
+        const requests = await mockSamtykkeApi(page, (route) =>
+            svarJson(route, [lagSamtykke({ tilstand: 'AVBRUTT' })])
+        );
+        await gåTilStilling(page, 'samtykke-avbrutt');
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await forventAvbruttVisning(region);
+        await expect(
+            region.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
+        ).toHaveCount(0);
+        expect(requests.every((request) => request.method === 'GET')).toBe(true);
+    });
+
+    const svarMedAvbruttForespørsel = [
+        {
+            beskrivelse: 'ja-svar',
+            samtykke: lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(true) }),
+            statustekst: /Du har sagt ja til/,
+            knapp: 'Trekk samtykke',
+        },
+        {
+            beskrivelse: 'nei-svar',
+            samtykke: lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(false) }),
+            statustekst: /Du har sagt nei til/,
+        },
+        {
+            beskrivelse: 'trukket samtykke',
+            samtykke: lagSamtykke({
+                tilstand: 'AVBRUTT',
+                svar: lagSvar(true),
+                trukket: true,
+                trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+            }),
+            statustekst: /Du har trukket samtykket/,
+        },
+    ];
+
+    for (const { beskrivelse, samtykke, statustekst, knapp } of svarMedAvbruttForespørsel) {
+        test(`${beskrivelse} har forrang over avbrutt forespørsel`, async ({ page }) => {
+            await mockSamtykkeApi(page, (route) => svarJson(route, [samtykke]));
+            await gåTilStilling(page, 'samtykke-svar-foran-avbrutt');
+
+            const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+            await expect(region.getByText(statustekst)).toBeVisible();
+            await expect(region.getByText(avbruttTekst)).toHaveCount(0);
+            await expect(region.getByRole('link', { name: lenketekst })).toHaveAttribute(
+                'href',
+                personvernUrl
+            );
+            if (knapp) {
+                await expect(region.getByRole('button', { name: knapp })).toBeVisible();
+            } else {
+                await expect(region.getByRole('button')).toHaveCount(0);
+            }
+        });
+    }
+
+    test('avbrutt forespørsel har forrang over utløpt svarfrist', async ({ page }) => {
+        await mockSamtykkeApi(page, (route) =>
+            svarJson(route, [
+                lagSamtykke({ tilstand: 'AVBRUTT', svarfrist: '2000-01-08T10:00:00.000Z' }),
+            ])
+        );
+        await gåTilStilling(page, 'samtykke-avbrutt-utlopt');
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await forventAvbruttVisning(region);
+        await expect(region.getByText(/Svarfristen for forespørselen har gått ut/)).toHaveCount(0);
+    });
+
+    test('kan trekke samtykke selv om aktiviteten er avbrutt', async ({ page }) => {
+        const id = 'samtykke-avbrutt-trekk';
+        let sisteSamtykke = lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(true) });
+        const requests = await mockSamtykkeApi(page, async (route) => {
+            if (route.request().method() === 'DELETE') {
+                sisteSamtykke = {
+                    ...sisteSamtykke,
+                    trukket: true,
+                    trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                };
+                await route.fulfill({ status: 204 });
+                return;
+            }
+            await svarJson(route, [sisteSamtykke]);
+        });
+        await gåTilStilling(page, id);
+        await bekreftHandling(page, 'Trekk samtykke', 'Bekreft tilbaketrekking');
+
+        await expect.poll(() => kallMedMetode(requests, 'DELETE').length).toBe(1);
+        const slett = requests.find((request) => request.method === 'DELETE')!;
+        expect(new URL(slett.url).pathname).toBe(apiSti(id));
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await expect(region.getByText(/Du har trukket samtykket/)).toBeVisible();
+        await expect(region.getByText(avbruttTekst)).toHaveCount(0);
+        await expect(region.getByRole('button')).toHaveCount(0);
+    });
+
+    test('viser avbrutt når den nyeste forespørselen er avbrutt', async ({ page }) => {
+        const eldreUbesvart = lagSamtykke({ deltTidspunkt: '2024-01-01T10:00:00.000Z' });
+        const nyesteAvbrutt = lagSamtykke({
+            deltTidspunkt: '2024-02-01T10:00:00.000Z',
+            tilstand: 'AVBRUTT',
+        });
+        await mockSamtykkeApi(page, (route) => svarJson(route, [eldreUbesvart, nyesteAvbrutt]));
+        await gåTilStilling(page, 'samtykke-nyeste-avbrutt');
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await forventAvbruttVisning(region);
+    });
+
+    test('viser svarmuligheter når bare en eldre forespørsel er avbrutt', async ({ page }) => {
+        const eldreAvbrutt = lagSamtykke({
+            deltTidspunkt: '2024-01-01T10:00:00.000Z',
+            tilstand: 'AVBRUTT',
+        });
+        const nyesteUbesvart = lagSamtykke({ deltTidspunkt: '2024-02-01T10:00:00.000Z' });
+        await mockSamtykkeApi(page, (route) => svarJson(route, [eldreAvbrutt, nyesteUbesvart]));
+        await gåTilStilling(page, 'samtykke-eldre-avbrutt');
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeVisible();
+        await expect(region.getByText(avbruttTekst)).toHaveCount(0);
+    });
+});
+
 test.describe('Samtykkedialoger', () => {
     const dialogscenarioer = [
         {

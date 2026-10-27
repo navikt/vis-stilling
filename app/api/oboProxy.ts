@@ -6,7 +6,7 @@ import { hentOboToken } from './obotoken.ts';
 
 const tilOborute = (proxy: Iroute): Oborute => ({
     // I mock-modus rutes alt til http://mock-api, så api_url kan være tom
-    apiUrl: proxy.api_url || (skalMocke ? 'http://mock-api' : ''),
+    apiUrl: skalMocke ? 'http://mock-api' : proxy.api_url,
     apiRute: proxy.api_route,
     internUrl: proxy.internUrl,
     internUrlWithoutBaseUrl: proxy.internUrlWithoutBaseUrl,
