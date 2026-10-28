@@ -12,6 +12,7 @@ interface Props {
     stillingsId: string;
     innlogget: boolean;
     personvernlenke: string;
+    visSpørsmålsboks: boolean;
 }
 
 const KontaktVeileder = () => (
@@ -77,7 +78,7 @@ const headingtekst = (status: Samtykkestatus): string => {
     }
 };
 
-const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
+const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke, visSpørsmålsboks }: Props) => {
     const {
         data: samtykke,
         isLoading,
@@ -100,6 +101,10 @@ const Samtykkeboks = ({ stillingsId, innlogget, personvernlenke }: Props) => {
         status !== 'INGEN_FORESPØRSEL' &&
         status !== 'AVBRUTT_FORESPØRSEL';
     const visSpørsmål = !innlogget || (!isLoading && !hentFeil && status === 'INGEN_FORESPØRSEL');
+
+    if (!visSpørsmålsboks && (visSpørsmål || isLoading)) {
+        return null;
+    }
 
     return (
         <Box
@@ -189,9 +194,10 @@ const SamtykkeCvDeling = ({
     innlogget,
     personvernlenke,
     visSamtykke,
+    visSpørsmålsboks,
 }: Props & { visSamtykke: boolean }) => {
     if (!visSamtykke) {
-        return <Spørsmålsboks />;
+        return visSpørsmålsboks ? <Spørsmålsboks /> : null;
     }
 
     return (
@@ -199,6 +205,7 @@ const SamtykkeCvDeling = ({
             stillingsId={stillingsId}
             innlogget={innlogget}
             personvernlenke={personvernlenke}
+            visSpørsmålsboks={visSpørsmålsboks}
         />
     );
 };

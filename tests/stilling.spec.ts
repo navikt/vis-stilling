@@ -24,6 +24,39 @@ test('viser arbeidsgiverens nettsted for ekstern stilling', async ({ page }) => 
     );
 });
 
+test.describe('Kontaktperson', () => {
+    const kontaktpersonOverskrift = 'Kontaktperson for stillingen';
+
+    test('viser kontaktperson for stilling som ikke er direktemeldt', async ({ page }) => {
+        await page.goto('arbeidsplassenStilling');
+
+        const seksjon = page.locator('section', {
+            has: page.getByRole('heading', { level: 2, name: kontaktpersonOverskrift }),
+        });
+        await expect(seksjon).toBeVisible();
+        for (const [felt, verdi] of [
+            ['Kontaktperson', 'Kontakt Kontaktus'],
+            ['Stillingstittel', 'leder'],
+            ['Telefon', '00000000'],
+            ['E-post', 'kontakt.kontaktus@tøys.no'],
+        ]) {
+            await expect(seksjon.getByText(felt, { exact: true })).toBeVisible();
+            await expect(seksjon.getByText(verdi, { exact: true })).toBeVisible();
+        }
+    });
+
+    test('viser ikke kontaktperson for direktemeldt stilling', async ({ page }) => {
+        await page.goto('stilling');
+
+        await expect(
+            page.getByRole('heading', { level: 1, name: /Mossby taxi søker to sjåfører/ })
+        ).toBeVisible();
+        await expect(page.getByRole('heading', { name: kontaktpersonOverskrift })).toHaveCount(0);
+        await expect(page.getByText('Joare Mangstuen Mossby')).toHaveCount(0);
+        await expect(page.getByText('joare.mangstuen.mossby@nav.no')).toHaveCount(0);
+    });
+});
+
 test('merker slettet stilling som utløpt', async ({ page }) => {
     await page.goto('slettet-stilling');
     await expect(

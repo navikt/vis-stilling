@@ -181,6 +181,41 @@ test.describe('Personvernlenke', () => {
     });
 });
 
+test.describe('Stilling som ikke er direktemeldt', () => {
+    const ikkeDirektemeldt = 'arbeidsplassenStilling';
+
+    test('viser ikke boksen om å kontakte veileder uten forespørsel', async ({ page }) => {
+        const requests = await mockSamtykkeApi(page, (route) => svarJson(route, []));
+        await gåTilStilling(page, ikkeDirektemeldt);
+
+        await expect(
+            page.getByRole('heading', { level: 1, name: 'Tulleskolen søker tøysekopper' })
+        ).toBeVisible();
+        await expect.poll(() => requests.length).toBeGreaterThan(0);
+        await expect(
+            page.getByRole('heading', { name: 'Har du spørsmål om stillingen?' })
+        ).toHaveCount(0);
+        await expect(
+            page.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
+        ).toHaveCount(0);
+        await expect(page.getByRole('region', { name: 'Samtykke til deling av CV' })).toHaveCount(
+            0
+        );
+    });
+
+    test('viser samtykkeboksen ved forespørsel', async ({ page }) => {
+        await mockSamtykkeApi(page, (route) => svarJson(route, [lagSamtykke()]));
+        await gåTilStilling(page, ikkeDirektemeldt);
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await expect(
+            region.getByRole('heading', { name: 'Vil du dele CV-en din med arbeidsgiveren?' })
+        ).toBeVisible();
+        await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeVisible();
+        await expect(region.getByRole('link', { name: lenketekst })).toBeVisible();
+    });
+});
+
 test.describe('Avbrutt forespørsel', () => {
     const avbruttTekst = 'Du kan ikke svare på spørsmålet fordi aktiviteten er avbrutt.';
 

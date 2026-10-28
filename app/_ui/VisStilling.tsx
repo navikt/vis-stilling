@@ -33,13 +33,14 @@ const VisStilling: FunctionComponent<Props> = ({
 }) => {
     const stillingDTO = konverterStilling(stilling);
     const stillingPåArbeidsplassen = lagArbeidsplassenLenke(stilling.uuid);
+    const erDirektemeldt = stilling.source === 'DIR';
 
     // søknadSlot vises som egen boks til høyre på desktop, og rett under
     // sammendraget på mobil.
     return (
         <Theme>
             <main id="maincontent" tabIndex={-1} className="focus:outline-none">
-                {stilling.source !== 'DIR' && (
+                {!erDirektemeldt && (
                     <InfoCard data-color="info" className="rounded-none ">
                         <InfoCardMessage
                             icon={<InformationSquareIcon aria-hidden />}
@@ -57,13 +58,17 @@ const VisStilling: FunctionComponent<Props> = ({
                 <StillingVisning
                     data={stillingDTO}
                     søknadSlot={
-                        <SamtykkeCvDeling
-                            key={stilling.uuid}
-                            stillingsId={stilling.uuid}
-                            innlogget={innlogget}
-                            personvernlenke={personvernlenke}
-                            visSamtykke={visSamtykke}
-                        />
+                        // Uten søknadSlot får innholdet full bredde i stedet for en tom sidekolonne.
+                        visSamtykke || erDirektemeldt ? (
+                            <SamtykkeCvDeling
+                                key={stilling.uuid}
+                                stillingsId={stilling.uuid}
+                                innlogget={innlogget}
+                                personvernlenke={personvernlenke}
+                                visSamtykke={visSamtykke}
+                                visSpørsmålsboks={erDirektemeldt}
+                            />
+                        ) : undefined
                     }
                 />
             </main>

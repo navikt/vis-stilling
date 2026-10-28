@@ -138,6 +138,8 @@ export const konverterStilling = (stilling: Stilling): StillingDTO => {
     const søknadsfrist = tilDatoEllerEtikett(properties.applicationdue);
     const oppstart = tilDatoEllerEtikett(properties.starttime);
 
+    const kontaktperson = stilling.contactList[0];
+
     return {
         id: stilling.uuid,
         status: stilling.status ?? null,
@@ -173,5 +175,14 @@ export const konverterStilling = (stilling: Stilling): StillingDTO => {
         referanse: stilling.annonsenr ?? null,
         soknadsepost: stilling.properties.applicationemail ?? null,
         soknadslenke: stilling.properties.applicationurl ?? null,
+        kontaktperson:
+            kontaktperson && stilling.source !== 'DIR'
+                ? {
+                      navn: kontaktperson.name ?? null,
+                      stillingstittel: kontaktperson.title ?? null,
+                      epost: kontaktperson.email ?? null,
+                      telefon: kontaktperson.phone ?? null,
+                  }
+                : null,
     };
 };
