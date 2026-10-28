@@ -129,6 +129,7 @@ const hentArbeidssted = (locationList: Location[]) => {
 };
 
 const hentAntallStillinger = (positioncount: string | undefined) => {
+    if (!positioncount?.trim()) return null;
     const antall = Number(positioncount);
     return Number.isFinite(antall) ? antall : null;
 };

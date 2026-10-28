@@ -58,7 +58,8 @@ export const useHentSamtykke = (stillingsId: string, innlogget: boolean) => {
     const result = useSWRGet(
         innlogget && stillingsId ? samtykkeEndepunkt(stillingsId) : null,
         samtykkeListeSchema,
-        ({ endpoint, schema }) => fetcher.getMedSchema(schema, endpoint)
+        ({ endpoint, schema }) => fetcher.getMedSchema(schema, endpoint),
+        { nonImmutable: true }
     );
 
     return {
