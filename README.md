@@ -42,6 +42,29 @@ CI bygger med `pnpm test-build` og tester standalone-serveren. Testbygget bruker
 eksisterende mockdata fra `mock/eksempler` via `NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true`.
 Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 
+## Nettleserstøtte
+
+Appen bruker [`@navikt/browserslist-config-public`](https://github.com/navikt/browserslist-config/tree/main/packages/config-public)
+via `browserslist` i `package.json`, både i utvikling og produksjon.
+Next.js leser konfigurasjonen og sender nettlesermålene til Turbopack for å
+tilpasse JavaScript og CSS. Det trengs derfor ingen egen målkonfigurasjon i `next.config.ts`.
+
+Versjon 0.3.0 angir Chrome og Edge 108, Firefox 121, Safari og iOS Safari 16,
+Opera 94 og Samsung Internet 21 som minsteversjoner. Dette er kompileringsmål,
+ikke en garanti for at alle funksjoner virker i disse nettleserne:
+
+- [Tailwind CSS 4](https://tailwindcss.com/docs/compatibility#browser-support) krever
+  Chrome 111, Safari 16.4 og Firefox 128. Tailwinds PostCSS-plugin bruker egne,
+  faste CSS-mål. Browserslist senker ikke disse kravene, og et ekstra CSS-steg
+  kan ikke erstatte alle nettleserfunksjonene Tailwind trenger.
+- Pakken legger ikke til polyfills for JavaScript-API-er. API-er som mangler i
+  nettlesermålene, krever en funksjonssjekk eller en egen polyfill utover dem Next.js leverer.
+- Playwright tester nyere nettlesere, ikke minsteversjonene i konfigurasjonen.
+
+`packageExtensions` i `pnpm-workspace.yaml` gjenoppretter metadata for valgfrie
+Astro- og Vite-avhengigheter som mangler i pakkeregisteret for 0.3.0.
+Appen bruker ikke pakkens Astro- eller Vite-integrasjoner.
+
 ## Tilgjengelighet
 
 Guiden til tilgjengelighetserklæringen, med hva tilgjengelighetstestene sjekker automatisk og hvordan du tester hvert WCAG-kriterium manuelt, ligger på [Trello](https://trello.com/c/2RWBDYg6).
