@@ -71,6 +71,16 @@ test('viser ikke upublisert stilling', async ({ page }) => {
         page.getByText(/Stillingen med tittel "Ny stilling" er ikke publisert/)
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toHaveCount(0);
+
+    const footer = page.getByRole('contentinfo').last();
+    await expect(footer).toBeVisible();
+    const vinduhøyde = page.viewportSize()!.height;
+    await expect
+        .poll(async () => {
+            const boks = await footer.boundingBox();
+            return boks ? Math.round(boks.y + boks.height) : 0;
+        })
+        .toBeGreaterThanOrEqual(vinduhøyde);
 });
 
 test('viser stilling uten jobbtittel', async ({ page }) => {

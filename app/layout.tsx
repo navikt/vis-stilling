@@ -54,12 +54,12 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
                 {skalMocke && <script dangerouslySetInnerHTML={{ __html: dekoratorMockScript }} />}
                 <Decorator.HeadAssets />
             </head>
-            <body>
+            <body className="flex min-h-dvh flex-col">
                 <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
                 <div data-axe-ignore>
                     <Decorator.Header />
                 </div>
-                {children}
+                <div className="flex-1">{children}</div>
                 <div data-axe-ignore>
                     <Decorator.Footer />
                 </div>
