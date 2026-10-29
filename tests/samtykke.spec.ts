@@ -185,13 +185,21 @@ test.describe('Stilling som ikke er direktemeldt', () => {
     const ikkeDirektemeldt = 'arbeidsplassenStilling';
 
     test('viser ikke boksen om å kontakte veileder uten forespørsel', async ({ page }) => {
-        const requests = await mockSamtykkeApi(page, (route) => svarJson(route, []));
+        await mockSamtykkeApi(page, (route) => svarJson(route, []));
+        const samtykkesvar = page.waitForResponse('**/api/deling-av-cv/samtykker/**');
         await gåTilStilling(page, ikkeDirektemeldt);
 
         await expect(
             page.getByRole('heading', { level: 1, name: 'Tulleskolen søker tøysekopper' })
         ).toBeVisible();
-        await expect.poll(() => requests.length).toBeGreaterThan(0);
+        // Boksen er også skjult mens statusen lastes. Vent til svaret er tegnet opp.
+        await (await samtykkesvar).finished();
+        await page.evaluate(
+            () =>
+                new Promise((resolve) =>
+                    requestAnimationFrame(() => requestAnimationFrame(resolve))
+                )
+        );
         await expect(
             page.getByRole('heading', { name: 'Har du spørsmål om stillingen?' })
         ).toHaveCount(0);

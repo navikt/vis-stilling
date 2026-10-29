@@ -59,7 +59,7 @@ const VisStilling: FunctionComponent<Props> = ({
                     data={stillingDTO}
                     søknadSlot={
                         // Uten søknadSlot får innholdet full bredde i stedet for en tom sidekolonne.
-                        visSamtykke || erDirektemeldt ? (
+                        erDirektemeldt || (visSamtykke && innlogget) ? (
                             <SamtykkeCvDeling
                                 key={stilling.uuid}
                                 stillingsId={stilling.uuid}

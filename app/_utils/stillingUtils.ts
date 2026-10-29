@@ -139,7 +139,7 @@ export const konverterStilling = (stilling: Stilling): StillingDTO => {
     const søknadsfrist = tilDatoEllerEtikett(properties.applicationdue);
     const oppstart = tilDatoEllerEtikett(properties.starttime);
 
-    const kontaktperson = stilling.contactList[0];
+    const kontaktperson = stilling.contactList?.[0];
 
     return {
         id: stilling.uuid,
