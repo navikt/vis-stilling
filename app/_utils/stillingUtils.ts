@@ -56,7 +56,7 @@ export const hentAdresser = (locationList: Location[]) => {
 const ISO_DATO_FORMAT = 'yyyy-MM-dd';
 
 /**
- * Feltene workday/workhours kommer som JSON-strenger fra stilling-api
+ * Feltene workday/workhours/workLanguage kommer som JSON-strenger fra stilling-api
  * (f.eks. `["Dagtid","Kveld"]`), men er typet som lister. Vi normaliserer
  * begge varianter til en vanlig liste.
  */
@@ -164,13 +164,12 @@ export const konverterStilling = (stilling: Stilling): StillingDTO => {
         arbeidstidsordning: properties.jobarrangement ?? null,
         arbeidstimer: tilListe(properties.workhours),
         arbeidsdager: tilListe(properties.workday),
-        // Arbeidsspråk finnes ikke i stilling-api i dag
-        arbeidssprak: null,
+        // Arbeidsspråk finnes i dag ikke på direktemeldte stillinger, men kan finnes på stillinger som kommer fra arbeidsplassen.
+        arbeidssprak: tilListe(properties.workLanguage) ?? null,
         antallStillinger: hentAntallStillinger(properties.positioncount),
         arbeidssted: hentArbeidssted(stilling.locationList),
         omfang: properties.extent ? [properties.extent] : null,
-        // Stillingsprosent finnes ikke i stilling-api i dag
-        stillingsprosent: null,
+        stillingsprosent: properties.jobpercentage ?? null,
         oppdatert: tilDatoEllerEtikett(stilling.updated).dato,
         medium: stilling.medium ?? stilling.source ?? null,
         referanse: stilling.annonsenr ?? null,

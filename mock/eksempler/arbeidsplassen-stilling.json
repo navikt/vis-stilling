@@ -128,7 +128,8 @@
         "starttime": "2020-03-19T12:16:10.388778",
         "twitteraddress": "https://twitter.com/@tullogtoys",
         "workday": "[\"Ukedager\", \"Lørdag\"]",
-        "workhours": "[\"Dagtid\"]"
+        "workhours": "[\"Dagtid\"]",
+        "workLanguage": "[\"Norsk\"]"
     },
     "published": "2020-03-19T08:45:32.153448",
     "publishedByAdmin": "2020-03-19T08:45:32.153448",

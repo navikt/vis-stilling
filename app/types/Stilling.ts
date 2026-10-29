@@ -46,6 +46,8 @@ export type Properties = {
     positioncount: string;
     applicationdue: Due;
     starttime?: StartTime;
+    jobpercentage?: string;
+    workLanguage?: string[];
 
     // Hvordan sende søknad?
     applicationurl?: string;
