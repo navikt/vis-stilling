@@ -1,17 +1,51 @@
 import { BodyShort, Heading } from '@navikt/ds-react';
+import { getToken } from '@navikt/oasis';
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound, permanentRedirect } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { cache, type ReactNode } from 'react';
 
-import Visning from '../_ui/Visning';
+import VisStilling from '../_ui/VisStilling.tsx';
+import { sidetittel } from '../_utils/sidetittel';
 import { tolkStillingsId } from '../_utils/stillingsId';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
-import { Status, hentStilling } from '../api/api';
+import { hentPersonvernlenke, ikkeErProd, skalMocke } from '../_utils/util.ts';
+import { type Respons, Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
 
 export const dynamic = 'force-dynamic';
 
 type StillingPageProps = {
     params: Promise<{ stillingsId: string }>;
+};
+
+// Deler oppslaget mellom generateMetadata og siden i samme forespørsel
+const hentStillingMedCache = cache(hentStilling);
+
+const fantIkkeStillingen = (respons: Respons) =>
+    respons.status === Status.UgyldigId ||
+    (respons.status === Status.Feil && respons.statusKode === 404);
+
+const lagTittel = (respons: Respons): string => {
+    if (respons.status === Status.Suksess) {
+        const stilling = respons.data;
+        if (stillingInneholderPåkrevdeFelter(stilling) && stillingenErPublisert(stilling)) {
+            return stilling.title?.trim() || 'Stilling';
+        }
+        return 'Stillingen er ikke publisert';
+    }
+    if (fantIkkeStillingen(respons)) {
+        return 'Fant ikke stillingen';
+    }
+    return 'Feil ved visning av stilling';
+};
+
+export const generateMetadata = async ({ params }: StillingPageProps): Promise<Metadata> => {
+    const { stillingsId } = await params;
+    if (!stillingsId || tolkStillingsId(stillingsId).type === 'omdiriger') {
+        return {};
+    }
+    return { title: sidetittel(lagTittel(await hentStillingMedCache(stillingsId))) };
 };
 
 const Feilmelding = ({ children }: { children: ReactNode }) => (
@@ -34,15 +68,19 @@ const StillingPage = async ({ params }: StillingPageProps) => {
 
     logEvent('stilling', 'åpne');
 
-    const respons = await hentStilling(stillingsId);
-
-    const fantIkkeStilling =
-        respons.status === Status.UgyldigId ||
-        (respons.status === Status.Feil && respons.statusKode === 404);
+    const respons = await hentStillingMedCache(stillingsId);
 
     if (respons.status === Status.Suksess) {
         if (stillingInneholderPåkrevdeFelter(respons.data) && stillingenErPublisert(respons.data)) {
-            return <Visning stilling={respons.data} />;
+            const innlogget = skalMocke || Boolean(getToken(await headers()));
+            return (
+                <VisStilling
+                    stilling={respons.data}
+                    innlogget={innlogget}
+                    personvernlenke={hentPersonvernlenke()}
+                    visSamtykke={ikkeErProd()}
+                />
+            );
         }
 
         return (
@@ -55,7 +93,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
         );
     }
 
-    if (fantIkkeStilling) {
+    if (fantIkkeStillingen(respons)) {
         return (
             <Feilmelding>
                 <Heading level="1" size="small" className="mb-2">

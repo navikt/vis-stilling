@@ -46,6 +46,8 @@ export type Properties = {
     positioncount: string;
     applicationdue: Due;
     starttime?: StartTime;
+    jobpercentage?: string;
+    workLanguage?: string[];
 
     // Hvordan sende søknad?
     applicationurl?: string;
@@ -111,6 +113,7 @@ export type Stilling = {
     annonsenr: string;
     status: Annonsestatus;
     source: string;
+    medium?: string;
     deactivatedByExpiry?: boolean;
 
     // Janzz

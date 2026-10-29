@@ -12,7 +12,15 @@ Denne appen viser en webside med informasjon om en gitt direktemeldt stilling so
 pnpm install
 pnpm dev
 ```
-Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra `app/api/stilling/helpers.ts`, for eksempel `stilling`.
+Utviklingsserveren svarer på http://localhost:3000/arbeid/stilling. Utvid URL-en med en av stillingsID-ene fra `app/api/stilling/helpers.ts`, for eksempel `stilling`, eller en av samtykke-scenarioene i `mock/samtykke-handlers.ts` (f.eks. `samtykke-ja`).
+
+### Se siden slik den vises i prod
+
+```sh
+pnpm dev:prod
+```
+
+Serveren later som den kjører i `prod-gcp` og svarer på http://localhost:3001/arbeid/stilling/stilling. Samtykke til deling av CV er skrudd av i prod, så boksen viser bare «Har du spørsmål om stillingen?». Stillingsdata kommer fra mockdataene i `mock/eksempler`, mens dekoratøren hentes fra prod.
 
 ## Playwright
 
@@ -36,7 +44,9 @@ Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 
 ## Tilgjengelighet
 
-[A11Y-STATEMENT.md](./A11Y-STATEMENT.md) viser hva tilgjengelighetstestene sjekker automatisk, og hvordan du tester hvert WCAG-kriterium i tilgjengelighetserklæringen manuelt.
+Guiden til tilgjengelighetserklæringen, med hva tilgjengelighetstestene sjekker automatisk og hvordan du tester hvert WCAG-kriterium manuelt, ligger på [Trello](https://trello.com/c/2RWBDYg6).
+
+Kjør tilgjengelighetstestene med `pnpm run test:a11y` og ESLint-regelen for 2.5.2 med `pnpm run lint`.
 
 ## Manuell testing i miljø
 I nettelseren, gå til følgende adresser:

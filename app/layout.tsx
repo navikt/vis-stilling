@@ -5,12 +5,15 @@ import Script from 'next/script';
 import { connection } from 'next/server';
 
 import type { ReactNode } from 'react';
+import { dekoratorMockScript } from '../mock/dekorator.ts';
+import { APPNAVN } from './_utils/sidetittel';
+import { skalMocke } from './_utils/util.ts';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
     await connection();
     return {
-        title: 'Se stilling',
+        title: APPNAVN,
         description: 'Visning av en arbeidsstilling',
         other: {
             'nais-app': process.env.NAIS_APP_NAME ?? 'vis-stilling',
@@ -35,9 +38,12 @@ interface RootLayoutProps {
 const RootLayout = async ({ children }: RootLayoutProps) => {
     const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
 
+    // TODO her skal det velges hvilken dekoratør som skal vises modia eller nav-dekoratør
+
     const Decorator = await fetchDecoratorReact({
         env: env,
         params: {
+            redirectToApp: true,
             chatbot: false,
         },
     });
@@ -45,14 +51,15 @@ const RootLayout = async ({ children }: RootLayoutProps) => {
     return (
         <html lang="no">
             <head>
+                {skalMocke && <script dangerouslySetInnerHTML={{ __html: dekoratorMockScript }} />}
                 <Decorator.HeadAssets />
             </head>
-            <body>
+            <body className="flex min-h-dvh flex-col">
                 <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
                 <div data-axe-ignore>
                     <Decorator.Header />
                 </div>
-                {children}
+                <div className="flex-1">{children}</div>
                 <div data-axe-ignore>
                     <Decorator.Footer />
                 </div>
