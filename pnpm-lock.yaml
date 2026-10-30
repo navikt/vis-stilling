@@ -237,8 +237,8 @@ importers:
         specifier: 0.1.4
         version: 0.1.4(@navikt/aksel-icons@8.16.2)(@navikt/ds-react@8.16.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(react@19.3.1)
       '@navikt/toi-next-frontend':
-        specifier: 0.13.1
-        version: 0.13.1(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(eslint@10.13.0(jiti@2.7.0))(react@19.3.1)(swr@2.5.1(react@19.3.1))(zod@4.6.5)
+        specifier: 0.14.0
+        version: 0.14.0(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(eslint@10.13.0(jiti@2.7.0))(react@19.3.1)(swr@2.5.1(react@19.3.1))(zod@4.6.5)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -813,8 +813,8 @@ packages:
     resolution: {integrity: sha512-w/iTWLSdmvn2j2U3M+sJX9bSBvoV5UcMk+FuKs9EKz1QuaCoUksZrEfqX9/FtqyTUaOhwDnm/1iIuR6BudzFAg==, tarball: https://npm.pkg.github.com/download/@navikt/texas/4.2.2/862d743a1df21630a007a0d2d2a36a74dd8b5187}
     engines: {node: ^20.19.0 || >= 22.12.0 || 24.x || 25.x}
 
-  '@navikt/toi-next-frontend@0.13.1':
-    resolution: {integrity: sha512-fSLGnligF0GV1avM67OGkbM3s1locPiBBB7AoEFghZT53j6Hi3LZ7gEQRDWIsT1jC9mdjA7IyghjLx51bFtWAw==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.13.1/c984f67a1d6e89b9610e1477395dadd5c8f6230b}
+  '@navikt/toi-next-frontend@0.14.0':
+    resolution: {integrity: sha512-rp4CIH8rlWq+0EAzWWThUVa83nPyj+rNqwwuPAQHBmGNbfITjvB9O9AfcxX9Bup9ELmGtjisB6oICGCmCckhGQ==, tarball: https://npm.pkg.github.com/download/@navikt/toi-next-frontend/0.14.0/e43c76ef5281b1e8acef64309ccdb17e235ce94f}
     peerDependencies:
       '@axe-core/playwright': ^4.14.0
       '@playwright/test': ^1.50.0
@@ -3135,7 +3135,7 @@ snapshots:
 
   '@navikt/texas@4.2.2': {}
 
-  '@navikt/toi-next-frontend@0.13.1(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(eslint@10.13.0(jiti@2.7.0))(react@19.3.1)(swr@2.5.1(react@19.3.1))(zod@4.6.5)':
+  '@navikt/toi-next-frontend@0.14.0(@axe-core/playwright@4.14.0(playwright-core@1.63.0))(@playwright/test@1.63.0)(eslint@10.13.0(jiti@2.7.0))(react@19.3.1)(swr@2.5.1(react@19.3.1))(zod@4.6.5)':
     dependencies:
       '@axe-core/playwright': 4.14.0(playwright-core@1.63.0)
       '@playwright/test': 1.63.0
