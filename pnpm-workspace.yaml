@@ -9,3 +9,11 @@ blockExoticSubdeps: true
 registries:
     '@navikt': https://npm.pkg.github.com
     '@nais': https://npm.pkg.github.com
+packageExtensions:
+    # Registeret mangler optional-metadataene som finnes i pakkens package.json.
+    '@navikt/browserslist-config-public@0.3.0':
+        peerDependenciesMeta:
+            astro:
+                optional: true
+            vite:
+                optional: true

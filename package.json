@@ -24,6 +24,7 @@
     },
     "devDependencies": {
         "@axe-core/playwright": "^4.14.0",
+        "@navikt/browserslist-config-public": "^0.3.0",
         "@navikt/ds-tailwind": "^8.16.2",
         "@playwright/test": "^1.63.0",
         "@tailwindcss/postcss": "^4.3.3",
@@ -62,16 +63,7 @@
         "arrowParens": "always",
         "printWidth": 100
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    }
+    "browserslist": [
+        "extends @navikt/browserslist-config-public"
+    ]
 }
