@@ -13,7 +13,7 @@
         "@navikt/next-logger": "^5.0.1",
         "@navikt/oasis": "^4.2.2",
         "@navikt/stilling-react": "0.1.4",
-        "@navikt/toi-next-frontend": "0.13.1",
+        "@navikt/toi-next-frontend": "0.14.0",
         "date-fns": "^4.4.0",
         "next": "16.4.2",
         "pino": "^10.3.1",
