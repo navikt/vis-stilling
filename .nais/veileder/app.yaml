@@ -53,8 +53,6 @@ spec:
       value: http://toi-deling-av-cv-api
     - name: MODIA_CONTEXT_HOLDER_API
       value: http://modiacontextholder.personoversikt
-    - name: NEXT_PUBLIC_DECORATOR_SRC
-      value: {{ decoratorSrc }}
   observability:
     autoInstrumentation:
       enabled: true

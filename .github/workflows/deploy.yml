@@ -16,6 +16,9 @@ jobs:
             playwright-shards: 4
             deploy-dev-branch: 'a11y'
             dev-vars-path: '.nais/dev-gcp.json'
+            deploy-dev2-branch: 'vis-stilling-modia'
+            dev2-yaml-path: '.nais/veileder/app.yaml'
+            dev2-vars-path: '.nais/veileder/dev-gcp.json'
             prod-vars-path: '.nais/prod-gcp.json'
         secrets: inherit
         permissions:
