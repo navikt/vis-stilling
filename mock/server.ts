@@ -5,6 +5,7 @@ export const startMockServer = () =>
         hentServer: async () => {
             const { setupServer } = await import('msw/node');
             const { samtykkeHandlers } = await import('./samtykke-handlers.ts');
-            return setupServer(...samtykkeHandlers);
+            const { modiaHandlers } = await import('./modia-handlers.ts');
+            return setupServer(...samtykkeHandlers, ...modiaHandlers);
         },
     });

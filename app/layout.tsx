@@ -6,8 +6,9 @@ import { connection } from 'next/server';
 
 import type { ReactNode } from 'react';
 import { dekoratorMockScript } from '../mock/dekorator.ts';
+import ModiaDekorator, { ModiaDekoratorScript } from './_ui/ModiaDekorator.tsx';
 import { APPNAVN } from './_utils/sidetittel';
-import { skalMocke } from './_utils/util.ts';
+import { erVeileder, skalMocke } from './_utils/util.ts';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,9 +37,24 @@ interface RootLayoutProps {
 }
 
 const RootLayout = async ({ children }: RootLayoutProps) => {
-    const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
+    if (erVeileder) {
+        return (
+            <html lang="no">
+                <head>
+                    <ModiaDekoratorScript />
+                </head>
+                <body className="flex min-h-dvh flex-col">
+                    <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
+                    <div data-axe-ignore>
+                        <ModiaDekorator />
+                    </div>
+                    <div className="flex-1">{children}</div>
+                </body>
+            </html>
+        );
+    }
 
-    // TODO her skal det velges hvilken dekoratør som skal vises modia eller nav-dekoratør
+    const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
 
     const Decorator = await fetchDecoratorReact({
         env: env,

@@ -21,3 +21,12 @@ export const DelingAvCv: Iroute = {
     internUrlWithoutBaseUrl: '/api/deling-av-cv',
     scope: lagScope('toi', 'toi-deling-av-cv-api'),
 };
+
+// Modia-dekoratøren legger selv til /api, f.eks. /arbeid/stilling/api/modia/api/decorator
+export const ModiaContextHolder: Iroute = {
+    api_route: '',
+    api_url: process.env.MODIA_CONTEXT_HOLDER_API ?? '',
+    internUrl: '/arbeid/stilling/api/modia',
+    internUrlWithoutBaseUrl: '/api/modia',
+    scope: `api://${miljø}.personoversikt.modiacontextholder/.default`,
+};
