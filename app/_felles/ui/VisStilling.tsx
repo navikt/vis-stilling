@@ -2,13 +2,13 @@ import { StillingVisning } from '@navikt/stilling-react';
 import { Theme } from '@navikt/ds-react/Theme';
 import { FunctionComponent } from 'react';
 
-import { konverterStilling } from '../_utils/stillingUtils';
+import { konverterStilling } from '../utils/stillingUtils';
 import { Stilling } from '../types/Stilling';
 import SamtykkeCvDeling from './SamtykkeCvDeling';
 import { Link } from '@navikt/ds-react';
 import { InfoCard, InfoCardMessage } from '@navikt/ds-react/InfoCard';
 import { InformationSquareIcon } from '@navikt/aksel-icons';
-import { ikkeErProd } from '../_utils/util.ts';
+import { ikkeErProd } from '../utils/util.ts';
 
 interface Props {
     stilling: Stilling;

@@ -1,6 +1,6 @@
-import { DelingAvCv } from '../../api-routes-with-obo.ts';
+import { DelingAvCv } from '../../../_felles/api/api-routes-with-obo.ts';
 import { NextRequest } from 'next/server';
-import { proxyWithOBO } from '../../oboProxy.ts';
+import { proxyWithOBO } from '../../../_felles/api/oboProxy.ts';
 
 export async function GET(req: NextRequest) {
     return proxyWithOBO(DelingAvCv, req);

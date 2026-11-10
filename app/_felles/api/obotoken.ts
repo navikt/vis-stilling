@@ -8,7 +8,7 @@ import {
     validateIdportenToken,
     ValidationResult,
 } from '@navikt/oasis';
-import { erVeileder, skalMocke } from '../_utils/util.ts';
+import { erVeileder, skalMocke } from '../utils/util.ts';
 
 interface hentOboTokenProps {
     headers: Headers;

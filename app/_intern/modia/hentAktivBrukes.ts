@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { hentOboToken } from '../obotoken.ts';
-import { ModiaContextHolder } from '../api-routes-with-obo.ts';
-import { skalMocke } from '../../_utils/util.ts';
+import { hentOboToken } from '../../_felles/api/obotoken.ts';
+import { ModiaContextHolder } from '../../_felles/api/api-routes-with-obo.ts';
+import { skalMocke } from '../../_felles/utils/util.ts';
 import { logger } from '@navikt/next-logger';
-import { identDtoSchema } from '../deling-av-cv/samtykkeSchema.ts';
+import { identDtoSchema } from '../../_felles/samtykke/samtykkeSchema.ts';
 
 export type AktivBruker =
     | { ok: true; fnr: string }

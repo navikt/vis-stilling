@@ -1,4 +1,4 @@
-import { ModiaContextHolder } from '../api/api-routes-with-obo.ts';
+import { ModiaContextHolder } from '../_felles/api/api-routes-with-obo.ts';
 
 const erProd = () => process.env.NAIS_CLUSTER_NAME === 'prod-gcp';
 

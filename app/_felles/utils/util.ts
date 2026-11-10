@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { skalMocke as pakkeSkalMocke } from '@navikt/toi-next-frontend/miljo';
 
 export const skalMocke = pakkeSkalMocke();

@@ -1,4 +1,4 @@
-import { erVeileder } from '../_utils/util.ts';
+import { erVeileder } from '../utils/util.ts';
 
 const miljø = process.env.NAIS_CLUSTER_NAME;
 

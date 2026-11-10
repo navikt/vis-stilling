@@ -1,4 +1,4 @@
-import type { Samtykke } from '../api/deling-av-cv/samtykkeSchema.ts';
+import type { Samtykke } from '../samtykke/samtykkeSchema.ts';
 
 export type Samtykkestatus =
     | 'INGEN_FORESPØRSEL'

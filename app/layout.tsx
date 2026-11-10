@@ -1,14 +1,12 @@
 import { versionFromImage } from '@nais/apm';
-import { fetchDecoratorReact } from '@navikt/nav-dekoratoren-moduler/ssr';
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import { connection } from 'next/server';
 
 import type { ReactNode } from 'react';
-import { dekoratorMockScript } from '../mock/dekorator.ts';
-import ModiaDekorator, { ModiaDekoratorScript } from './_ui/ModiaDekorator.tsx';
-import { APPNAVN } from './_utils/sidetittel';
-import { erVeileder, skalMocke } from './_utils/util.ts';
+import EksternRamme from './_ekstern/EksternRamme.tsx';
+import InternRamme from './_intern/InternRamme.tsx';
+import { APPNAVN } from './_felles/utils/sidetittel';
+import { erVeileder } from './_felles/utils/util.ts';
 import './globals.css';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,51 +36,10 @@ interface RootLayoutProps {
 
 const RootLayout = async ({ children }: RootLayoutProps) => {
     if (erVeileder) {
-        return (
-            <html lang="no">
-                <head>
-                    <ModiaDekoratorScript />
-                </head>
-                <body className="flex min-h-dvh flex-col">
-                    <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
-                    <div data-axe-ignore>
-                        <ModiaDekorator />
-                    </div>
-                    <div className="flex-1">{children}</div>
-                </body>
-            </html>
-        );
+        return <InternRamme>{children}</InternRamme>;
     }
 
-    const env = process.env.NAIS_CLUSTER_NAME === 'prod-gcp' ? 'prod' : 'dev';
-
-    const Decorator = await fetchDecoratorReact({
-        env: env,
-        params: {
-            redirectToApp: true,
-            chatbot: false,
-        },
-    });
-
-    return (
-        <html lang="no">
-            <head>
-                {skalMocke && <script dangerouslySetInnerHTML={{ __html: dekoratorMockScript }} />}
-                <Decorator.HeadAssets />
-            </head>
-            <body className="flex min-h-dvh flex-col">
-                <noscript>Du må aktivere JavaScript for å bruke denne applikasjonen.</noscript>
-                <div data-axe-ignore>
-                    <Decorator.Header />
-                </div>
-                <div className="flex-1">{children}</div>
-                <div data-axe-ignore>
-                    <Decorator.Footer />
-                </div>
-                <Decorator.Scripts loader={Script} />
-            </body>
-        </html>
-    );
+    return <EksternRamme>{children}</EksternRamme>;
 };
 
 export default RootLayout;
