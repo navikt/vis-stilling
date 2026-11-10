@@ -14,8 +14,11 @@ jobs:
             playwright-github-report: true
             playwright-shards: 4
             deploy-dev-branch: 'vis-stilling-modia'
-            dev-vars-path: '.nais/dev-gcp.json'
-            prod-vars-path: '.nais/prod-gcp.json'
+            dev-yaml-path: '.nais/ekstern/app.yaml'
+            dev-vars-path: '.nais/ekstern/dev-gcp.json'
+            prod-yaml-path: '.nais/ekstern/app.yaml'
+            prod-vars-path: '.nais/ekstern/prod-gcp.json'
+            nais-alerts-path: '.nais/ekstern/alerts.yaml'
         secrets: inherit
         permissions:
             actions: write
