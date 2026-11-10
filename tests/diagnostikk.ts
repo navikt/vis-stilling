@@ -1,4 +1,5 @@
 import { test as grunntest, type Request } from '@playwright/test';
+import { closeSync, constants, openSync, readSync } from 'node:fs';
 import { readdir, readFile, readlink } from 'node:fs/promises';
 
 export { expect, type Locator, type Page, type Route } from '@playwright/test';
@@ -130,6 +131,47 @@ export const test = grunntest.extend({
                         stdout: await readlink(`/proc/${pid}/fd/1`),
                         stderr: await readlink(`/proc/${pid}/fd/2`),
                     });
+                    for (const fd of [1, 2]) {
+                        let kanal: number | undefined;
+                        let lest = 0;
+                        let kode: unknown;
+                        try {
+                            kanal = openSync(
+                                `/proc/${pid}/fd/${fd}`,
+                                constants.O_RDONLY | constants.O_NONBLOCK
+                            );
+                            const buffer = Buffer.alloc(65536);
+                            while (lest < 1024 * 1024) {
+                                const antall = readSync(kanal, buffer);
+                                if (antall === 0) break;
+                                lest += antall;
+                            }
+                        } catch (error) {
+                            kode =
+                                error instanceof Error && 'code' in error ? error.code : 'ukjent';
+                        } finally {
+                            if (kanal !== undefined) closeSync(kanal);
+                        }
+                        // Rå loggdata forkastes. Bare byteantall og eventuell I/O-feilkode beholdes.
+                        prosesser.push({ pid, hendelse: 'loggkanal-avlastet', fd, lest, kode });
+                    }
+                    try {
+                        const response = await fetch(new URL('internal/isReady', baseURL), {
+                            signal: AbortSignal.timeout(2000),
+                        });
+                        prosesser.push({
+                            pid,
+                            hendelse: 'readiness-etter-loggavlasting',
+                            status: response.status,
+                        });
+                        await response.body?.cancel();
+                    } catch (error) {
+                        prosesser.push({
+                            pid,
+                            hendelse: 'readiness-etter-loggavlasting-feil',
+                            type: error instanceof Error ? error.name : 'ukjent',
+                        });
+                    }
                 } catch (error) {
                     const kode = error instanceof Error && 'code' in error ? error.code : 'ukjent';
                     if (kode !== 'ENOENT' && kode !== 'ESRCH') {
