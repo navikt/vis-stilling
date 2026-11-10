@@ -1,4 +1,4 @@
-import { expect, test } from './diagnostikk';
+import { expect, test } from '@playwright/test';
 
 // WCAG 2.4.2 Sidetitler: hver side skal ha en tittel som beskriver formålet.
 // Titler sendes til Umami, så de skal aldri inneholde navn på personer.

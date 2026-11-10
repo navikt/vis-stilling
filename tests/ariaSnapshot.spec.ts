@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './diagnostikk';
+import { expect, test, type Page } from '@playwright/test';
 
 // Aria-snapshots av utvalgte deler av siden (WCAG 1.3.1, 2.4.6, 4.1.2).
 // Snapshotene sjekker roller, navn og rekkefølge, ikke utseende. Data som kan endre seg

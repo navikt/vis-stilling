@@ -43,9 +43,13 @@ export default defineConfig({
     ],
     webServer: {
         command: process.env.CI
-            ? 'node tests/diagnostikkserver.mjs'
+            ? 'node .next/standalone/server.js'
             : `pnpm exec next dev -p ${PLAYWRIGHT_PORT}`,
-        env: { NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE: 'true', PORT: PLAYWRIGHT_PORT },
+        env: {
+            NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE: 'true',
+            PORT: PLAYWRIGHT_PORT,
+            ...(process.env.CI ? { HOSTNAME: '127.0.0.1' } : {}),
+        },
         url: process.env.CI
             ? `http://localhost:${PLAYWRIGHT_PORT}/arbeid/stilling/internal/isReady`
             : `http://localhost:${PLAYWRIGHT_PORT}/arbeid/stilling/stilling`,

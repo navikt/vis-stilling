@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './diagnostikk';
+import { expect, test, type Page } from '@playwright/test';
 import { dekoratorMockScript } from '../mock/dekorator.ts';
 
 const APP_URL = 'https://dekoratoren.ekstern.dev.nav.no';

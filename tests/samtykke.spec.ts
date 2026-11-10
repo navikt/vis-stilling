@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page, type Route } from './diagnostikk';
+import { expect, test, type Locator, type Page, type Route } from '@playwright/test';
 
 const lenketekst = 'Her kan du lese mer om å dele CV-en med arbeidsgiver';
 const personvernUrl =

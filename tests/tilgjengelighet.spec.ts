@@ -1,5 +1,5 @@
 import { sjekkDialog, tilgjengelighetstest } from '@navikt/toi-next-frontend/a11y';
-import { expect, test, type Locator, type Page } from './diagnostikk';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const overskrift = (page: Page) => page.getByRole('heading', { level: 1 });
 const samtykkeknapp = (page: Page, navn: string) =>
