@@ -1,6 +1,6 @@
 import { type Oborute, opprettOboProxy } from '@navikt/toi-next-frontend/next';
 import { NextRequest, NextResponse } from 'next/server';
-import { Iroute } from './api-routes-with-obo.ts';
+import { DelingAvCv, Iroute } from './api-routes-with-obo.ts';
 import { erVeileder, skalMocke } from '../utils/util.ts';
 import { hentOboToken } from './obotoken.ts';
 import { hentAktivBruker, INGEN_AKTIV_BRUKER } from '../../_intern/modia/hentAktivBrukes.ts';
@@ -22,7 +22,7 @@ export const proxyWithOBO = async (
     customRoute?: string,
     customBody?: Record<string, unknown>
 ) => {
-    if (erVeileder) {
+    if (erVeileder && proxy === DelingAvCv) {
         const aktivBruker = await hentAktivBruker(req.headers);
         if (!aktivBruker.ok) {
             switch (aktivBruker.årsak) {
