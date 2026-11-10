@@ -13,6 +13,8 @@ type ProfilSvar = {
             samples: number[];
         };
     };
+    method?: string;
+    params?: { data?: { description?: string } };
 };
 
 export async function målCpuProfil(pid: string) {
@@ -49,7 +51,7 @@ export async function målCpuProfil(pid: string) {
         socket.onerror = () => reject(new Error('Kunne ikke koble til lokal debugger'));
     });
     let sekvens = 0;
-    const kommando = (method: string) =>
+    const kommando = (method: string, params = {}) =>
         new Promise<ProfilSvar>((resolve, reject) => {
             const id = ++sekvens;
             const timeout = setTimeout(() => {
@@ -65,7 +67,7 @@ export async function målCpuProfil(pid: string) {
                 else resolve(svar);
             };
             socket.addEventListener('message', motta);
-            socket.send(JSON.stringify({ id, method }));
+            socket.send(JSON.stringify({ id, method, params }));
         });
     try {
         await kommando('Profiler.enable');
@@ -74,12 +76,36 @@ export async function målCpuProfil(pid: string) {
         const svar = await kommando('Profiler.stop');
         const profil = svar.result?.profile;
         if (!profil) throw new Error('CPU-profil mangler');
-        return profil.nodes.map((node) => ({
+        const rammer = profil.nodes.map((node) => ({
             funksjon: node.callFrame.functionName,
             fil: node.callFrame.url.split('/').slice(-2).join('/').split(/[?#]/)[0],
             linje: node.callFrame.lineNumber + 1,
             prøver: profil.samples.filter((id) => id === node.id).length,
         }));
+        await kommando('Debugger.enable');
+        const nesteFeil = new Promise<string | undefined>((resolve) => {
+            const timeout = setTimeout(() => {
+                socket.removeEventListener('message', motta);
+                resolve(undefined);
+            }, 2000);
+            const motta = (event: MessageEvent) => {
+                const data: ProfilSvar = JSON.parse(String(event.data));
+                if (data.method !== 'Debugger.paused') return;
+                clearTimeout(timeout);
+                socket.removeEventListener('message', motta);
+                resolve(
+                    data.params?.data?.description?.match(
+                        /\b(?:EPIPE|EBADF|ECONNRESET|ERR_[A-Z_]+)\b/
+                    )?.[0] ?? 'annen-feil'
+                );
+            };
+            socket.addEventListener('message', motta);
+        });
+        await kommando('Debugger.setPauseOnExceptions', { state: 'all' });
+        const feilkode = await nesteFeil;
+        await kommando('Debugger.setPauseOnExceptions', { state: 'none' });
+        if (feilkode !== undefined) await kommando('Debugger.resume');
+        return { rammer, feilkode };
     } finally {
         socket.close();
     }
