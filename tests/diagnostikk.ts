@@ -1,7 +1,5 @@
 import { test as grunntest, type Request } from '@playwright/test';
-import { closeSync, constants, openSync, readSync } from 'node:fs';
-import { readdir, readFile, readlink } from 'node:fs/promises';
-import { målCpuProfil } from './diagnostikk-profil';
+import { readFile } from 'node:fs/promises';
 
 export { expect, type Locator, type Page, type Route } from '@playwright/test';
 
@@ -114,85 +112,7 @@ export const test = grunntest.extend({
             body: diagnose,
             contentType: 'application/json',
         });
-        if (process.platform === 'linux') {
-            const prosesser: object[] = [];
-            for (const pid of (await readdir('/proc')).filter((navn) => /^\d+$/.test(navn))) {
-                try {
-                    const kommando = await readFile(`/proc/${pid}/cmdline`, 'utf8');
-                    if (
-                        !kommando.includes('.next/standalone/server.js') &&
-                        !kommando.startsWith('next-server')
-                    )
-                        continue;
-                    const status = await readFile(`/proc/${pid}/status`, 'utf8');
-                    prosesser.push({
-                        pid,
-                        tilstand: status.match(/^State:\s+(.+)$/m)?.[1],
-                        ventepunkt: (await readFile(`/proc/${pid}/wchan`, 'utf8')).trim(),
-                        stdout: await readlink(`/proc/${pid}/fd/1`),
-                        stderr: await readlink(`/proc/${pid}/fd/2`),
-                    });
-                    prosesser.push({
-                        pid,
-                        hendelse: 'cpu-profil',
-                        profil: await målCpuProfil(pid),
-                    });
-                    for (const fd of [1, 2]) {
-                        let kanal: number | undefined;
-                        let lest = 0;
-                        let kode: unknown;
-                        try {
-                            kanal = openSync(
-                                `/proc/${pid}/fd/${fd}`,
-                                constants.O_RDONLY | constants.O_NONBLOCK
-                            );
-                            const buffer = Buffer.alloc(65536);
-                            while (lest < 1024 * 1024) {
-                                const antall = readSync(kanal, buffer);
-                                if (antall === 0) break;
-                                lest += antall;
-                            }
-                        } catch (error) {
-                            kode =
-                                error instanceof Error && 'code' in error ? error.code : 'ukjent';
-                        } finally {
-                            if (kanal !== undefined) closeSync(kanal);
-                        }
-                        // Rå loggdata forkastes. Bare byteantall og eventuell I/O-feilkode beholdes.
-                        prosesser.push({ pid, hendelse: 'loggkanal-avlastet', fd, lest, kode });
-                    }
-                    try {
-                        const response = await fetch(new URL('internal/isReady', baseURL), {
-                            signal: AbortSignal.timeout(2000),
-                        });
-                        prosesser.push({
-                            pid,
-                            hendelse: 'readiness-etter-loggavlasting',
-                            status: response.status,
-                        });
-                        await response.body?.cancel();
-                    } catch (error) {
-                        prosesser.push({
-                            pid,
-                            hendelse: 'readiness-etter-loggavlasting-feil',
-                            type: error instanceof Error ? error.name : 'ukjent',
-                        });
-                    }
-                } catch (error) {
-                    const kode = error instanceof Error && 'code' in error ? error.code : 'ukjent';
-                    if (kode !== 'ENOENT' && kode !== 'ESRCH') {
-                        prosesser.push({ pid, hendelse: 'prosessmåling-feil', kode });
-                    }
-                }
-            }
-            const prosessdiagnose = JSON.stringify(prosesser);
-            console.error(`PROSESSDIAGNOSTIKK ${prosessdiagnose}`);
-            await testInfo.attach('prosessdiagnostikk', {
-                body: prosessdiagnose,
-                contentType: 'application/json',
-            });
-        }
-        if (process.env.CI && process.env.PLAYWRIGHT_DIAGNOSTIKKSERVER === 'true') {
+        if (process.env.CI) {
             await testInfo.attach('serverdiagnostikk', {
                 body: await readFile('.next/playwright-server.jsonl'),
                 contentType: 'application/x-ndjson',
