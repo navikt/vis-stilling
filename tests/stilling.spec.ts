@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './diagnostikk';
 
 test('viser direktemeldt stilling med kontaktinformasjon', async ({ page }) => {
     await page.goto('stilling');

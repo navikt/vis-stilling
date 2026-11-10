@@ -10,7 +10,8 @@ jobs:
         with:
             cdn-upload: true
             baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26
-            playwright-command: pnpm run test
+            playwright-command: pnpm run test --max-failures=4
+            playwright-github-report: true
             playwright-shards: 4
             deploy-dev-branch: 'vis-stilling-modia'
             dev-vars-path: '.nais/dev-gcp.json'
