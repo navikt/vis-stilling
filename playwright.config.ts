@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PLAYWRIGHT_PORT = process.env.PLAYWRIGHT_PORT || '1337';
+// Egen CI-port lar Playwright eie serverens loggpipes gjennom hele testkjøringen.
+const PLAYWRIGHT_PORT = process.env.PLAYWRIGHT_PORT || (process.env.CI ? '1338' : '1337');
 
 export default defineConfig({
     testDir: './tests',
@@ -40,13 +41,21 @@ export default defineConfig({
         { name: 'chromium-mobile', use: { ...devices['Pixel 7'] } },
         { name: 'webkit-mobile', use: { ...devices['iPhone 13'] } },
     ],
-    webServer: process.env.CI
-        ? undefined
-        : {
-              command: `pnpm exec next dev -p ${PLAYWRIGHT_PORT}`,
-              env: { NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE: 'true' },
-              url: `http://localhost:${PLAYWRIGHT_PORT}/arbeid/stilling/stilling`,
-              reuseExistingServer: true,
-              timeout: 120 * 1000,
-          },
+    webServer: {
+        command: process.env.CI
+            ? 'node .next/standalone/server.js'
+            : `pnpm exec next dev -p ${PLAYWRIGHT_PORT}`,
+        env: {
+            NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE: 'true',
+            PORT: PLAYWRIGHT_PORT,
+            ...(process.env.CI ? { HOSTNAME: '127.0.0.1' } : {}),
+        },
+        url: process.env.CI
+            ? `http://localhost:${PLAYWRIGHT_PORT}/arbeid/stilling/internal/isReady`
+            : `http://localhost:${PLAYWRIGHT_PORT}/arbeid/stilling/stilling`,
+        reuseExistingServer: !process.env.CI,
+        stdout: 'pipe',
+        stderr: 'pipe',
+        timeout: 120 * 1000,
+    },
 });

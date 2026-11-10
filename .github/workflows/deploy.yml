@@ -6,13 +6,12 @@ on:
 jobs:
     build-and-deploy:
         name: 🤖
-        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v3.5
+        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v4
         with:
             cdn-upload: true
-            baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24
-            playwright-command: >-
-                pnpm exec playwright install --with-deps firefox webkit &&
-                pnpm run test
+            baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26
+            playwright-command: pnpm run test
+            playwright-github-report: true
             playwright-shards: 4
             deploy-dev-branch: 'vis-stilling-modia'
             dev-vars-path: '.nais/dev-gcp.json'
