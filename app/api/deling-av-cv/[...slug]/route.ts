@@ -10,6 +10,10 @@ export async function PUT(req: NextRequest) {
     return proxyWithOBO(DelingAvCv, req);
 }
 
+export async function POST(req: NextRequest) {
+    return proxyWithOBO(DelingAvCv, req);
+}
+
 export async function DELETE(req: NextRequest) {
     return proxyWithOBO(DelingAvCv, req);
 }

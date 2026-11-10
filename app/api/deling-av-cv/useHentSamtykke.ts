@@ -1,46 +1,10 @@
 'use client';
 
 import { createFetcher } from '@navikt/toi-next-frontend/api';
-import { z } from 'zod';
-import { useSWRGet } from '@navikt/toi-next-frontend/swr';
-import { samtykkeEndepunkt } from './samtykkeEndepunkt.ts';
-
-const tilstandSchema = z.enum([
-    'OPPRETTET',
-    'KAN_IKKE_OPPRETTE',
-    'PROVER_VARSLING',
-    'HAR_VARSLET',
-    'KAN_IKKE_VARSLE',
-    'HAR_SVART',
-    'AVBRUTT',
-    'SVARFRIST_UTLOPT',
-]);
-const datoSchema = z.string().pipe(z.coerce.date());
-
-const identSchema = z.object({
-    ident: z.string(),
-    identType: z.enum(['AKTOR_ID', 'FNR', 'NAV_IDENT']),
-});
-
-const svarSchema = z.object({
-    harSvartJa: z.boolean(),
-    svarTidspunkt: datoSchema,
-    svartAv: identSchema,
-});
-
-const samtykkeSchema = z.object({
-    stillingsId: z.string(),
-    deltTidspunkt: datoSchema,
-    svarfrist: datoSchema,
-    tilstand: tilstandSchema.nullable(),
-    svar: svarSchema.nullable(),
-    trukket: z.boolean(),
-    trukketTidspunkt: datoSchema.nullable(),
-});
-
-const samtykkeListeSchema = z.array(samtykkeSchema);
-
-export type Samtykke = z.infer<typeof samtykkeSchema>;
+import { useSWRGet, useSWRPost } from '@navikt/toi-next-frontend/swr';
+import { samtykkeEndepunkt, samtykkeEndepunktVeileder } from './samtykkeEndepunkt.ts';
+import { type Samtykke, samtykkeListeSchema } from './samtykkeSchema.ts';
+import { erVeileder } from '../../_utils/util.ts';
 
 export const hentSisteSamtykke = (samtykker: readonly Samtykke[]): Samtykke | undefined =>
     samtykker.reduce<Samtykke | undefined>(
@@ -54,7 +18,7 @@ export const hentSisteSamtykke = (samtykker: readonly Samtykke[]): Samtykke | un
 
 const fetcher = createFetcher();
 
-export const useHentSamtykke = (stillingsId: string, innlogget: boolean) => {
+const useHentSamtykkePersonbruker = (stillingsId: string, innlogget: boolean) => {
     const result = useSWRGet(
         innlogget && stillingsId ? samtykkeEndepunkt(stillingsId) : null,
         samtykkeListeSchema,
@@ -67,3 +31,27 @@ export const useHentSamtykke = (stillingsId: string, innlogget: boolean) => {
         data: innlogget && result.data ? hentSisteSamtykke(result.data) : undefined,
     };
 };
+
+const useHentSamtykkeVeileder = (stillingsId: string, innlogget: boolean) => {
+    const result = useSWRPost(
+        innlogget && stillingsId ? `${samtykkeEndepunktVeileder(stillingsId)}/hent` : null,
+        samtykkeListeSchema,
+        // Proxyen setter inn identen til aktiv bruker, men useSWRPost henter ikke uten body
+        {},
+        ({ endpoint, schema, body }) =>
+            fetcher
+                .post<unknown>(endpoint, body)
+                .then((data) => fetcher.validerSchema(schema, data)),
+        { nonImmutable: true }
+    );
+
+    return {
+        ...result,
+        data: innlogget && result.data ? hentSisteSamtykke(result.data) : undefined,
+    };
+};
+
+export const useHentSamtykke = (stillingsId: string, innlogget: boolean) =>
+    erVeileder
+        ? useHentSamtykkeVeileder(stillingsId, innlogget)
+        : useHentSamtykkePersonbruker(stillingsId, innlogget);

@@ -15,6 +15,7 @@ interface Props {
     innlogget: boolean;
     personvernlenke: string;
     visSamtykke: boolean;
+    erVeileder: boolean;
 }
 
 const lagArbeidsplassenLenke = (uuid: string) => {
@@ -30,6 +31,7 @@ const VisStilling: FunctionComponent<Props> = ({
     innlogget,
     personvernlenke,
     visSamtykke,
+    erVeileder,
 }) => {
     const stillingDTO = konverterStilling(stilling);
     const stillingPåArbeidsplassen = lagArbeidsplassenLenke(stilling.uuid);
@@ -66,7 +68,8 @@ const VisStilling: FunctionComponent<Props> = ({
                                 innlogget={innlogget}
                                 personvernlenke={personvernlenke}
                                 visSamtykke={visSamtykke}
-                                visSpørsmålsboks={erDirektemeldt}
+                                erVeileder={erVeileder}
+                                visSpørsmålsboks={!erVeileder && erDirektemeldt}
                             />
                         ) : undefined
                     }

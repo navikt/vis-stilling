@@ -16,7 +16,9 @@ export const modiaHandlers = [
         })
     ),
     http.get(`${modiaUrl}/context/v2/aktivenhet`, () => HttpResponse.json({ aktivEnhet: '0403' })),
-    http.get(`${modiaUrl}/context/v2/aktivbruker`, () => HttpResponse.json({ aktivBruker: null })),
+    http.get(`${modiaUrl}/context/v2/aktivbruker`, () =>
+        HttpResponse.json({ aktivBruker: '01010012345' })
+    ),
     http.post(`${modiaUrl}/context`, () => new HttpResponse(null, { status: 200 })),
     http.delete(`${modiaUrl}/context/aktivbruker`, () => new HttpResponse(null, { status: 200 })),
 ];

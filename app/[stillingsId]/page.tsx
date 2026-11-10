@@ -9,7 +9,7 @@ import VisStilling from '../_ui/VisStilling.tsx';
 import { sidetittel } from '../_utils/sidetittel';
 import { tolkStillingsId } from '../_utils/stillingsId';
 import { stillingInneholderPåkrevdeFelter, stillingenErPublisert } from '../_utils/stillingUtils';
-import { hentPersonvernlenke, ikkeErProd, skalMocke } from '../_utils/util.ts';
+import { erVeileder, hentPersonvernlenke, ikkeErProd, skalMocke } from '../_utils/util.ts';
 import { type Respons, Status, hentStilling } from '../api/api';
 import { logEvent } from '../logg/logEvent';
 
@@ -79,6 +79,7 @@ const StillingPage = async ({ params }: StillingPageProps) => {
                     innlogget={innlogget}
                     personvernlenke={hentPersonvernlenke()}
                     visSamtykke={ikkeErProd()}
+                    erVeileder={erVeileder}
                 />
             );
         }

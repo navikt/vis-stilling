@@ -2,6 +2,7 @@
 
 import { Button, Dialog } from '@navikt/ds-react';
 import { useId, useRef } from 'react';
+import type { EndreSamtykkeRespons } from '../api/deling-av-cv/useEndreSamtykke.ts';
 
 const handlinger = {
     JA: {
@@ -27,16 +28,41 @@ const handlinger = {
     },
 };
 
+const veilederhandlinger = {
+    JA: {
+        knappetekst: 'Svar ja for brukeren',
+        tittel: 'Vil du svare ja på vegne av brukeren?',
+        beskrivelse:
+            'Du svarer ja på vegne av brukeren. Nav kan da dele CV-en med arbeidsgiveren for denne stillingen.',
+        bekreftTekst: 'Bekreft ja',
+    },
+    NEI: {
+        knappetekst: 'Svar nei for brukeren',
+        tittel: 'Vil du svare nei på vegne av brukeren?',
+        beskrivelse:
+            'Du svarer nei på vegne av brukeren. Nav kan da ikke dele CV-en med arbeidsgiveren for denne stillingen.',
+        bekreftTekst: 'Bekreft nei',
+    },
+    TREKK: {
+        knappetekst: 'Trekk samtykket for brukeren',
+        tittel: 'Vil du trekke samtykket på vegne av brukeren?',
+        beskrivelse:
+            'Du trekker samtykket på vegne av brukeren. Nav kan da ikke lenger dele CV-en med arbeidsgiveren for denne stillingen.',
+        bekreftTekst: 'Bekreft tilbaketrekking',
+    },
+};
+
 interface Props {
     handling: keyof typeof handlinger;
     disabled: boolean;
-    onBekreft: () => Promise<void>;
+    onBekreft: () => Promise<EndreSamtykkeRespons>;
+    erVeileder: boolean;
 }
 
-const BekreftSamtykkeKnapp = ({ handling, disabled, onBekreft }: Props) => {
+const BekreftSamtykkeKnapp = ({ handling, disabled, onBekreft, erVeileder }: Props) => {
     const avbrytRef = useRef<HTMLButtonElement>(null);
     const beskrivelseId = useId();
-    const tekst = handlinger[handling];
+    const tekst = erVeileder ? veilederhandlinger[handling] : handlinger[handling];
 
     return (
         <Dialog>
