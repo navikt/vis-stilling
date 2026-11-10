@@ -9,7 +9,7 @@ jobs:
         name: 🤖
         uses: navikt/toi-frontend-workflows/.github/workflows/sjekk-base-image.yaml@v4
         with:
-            deploy-workflow: deploy.yml
+            deploy-workflow: workflow.yaml
         permissions:
             actions: write
             contents: read

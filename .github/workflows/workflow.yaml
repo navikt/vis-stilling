@@ -13,7 +13,7 @@ jobs:
             playwright-command: pnpm run test
             playwright-github-report: true
             playwright-shards: 4
-            deploy-dev-branch: 'vis-stilling-modia'
+            deploy-dev-branch: 'ny_app_for_veileder_ny'
             dev-yaml-path: '.nais/ekstern/app.yaml'
             dev-vars-path: '.nais/ekstern/dev-gcp.json'
             prod-yaml-path: '.nais/ekstern/app.yaml'
