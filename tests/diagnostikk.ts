@@ -1,6 +1,7 @@
 import { test as grunntest, type Request } from '@playwright/test';
 import { closeSync, constants, openSync, readSync } from 'node:fs';
 import { readdir, readFile, readlink } from 'node:fs/promises';
+import { målCpuProfil } from './diagnostikk-profil';
 
 export { expect, type Locator, type Page, type Route } from '@playwright/test';
 
@@ -130,6 +131,11 @@ export const test = grunntest.extend({
                         ventepunkt: (await readFile(`/proc/${pid}/wchan`, 'utf8')).trim(),
                         stdout: await readlink(`/proc/${pid}/fd/1`),
                         stderr: await readlink(`/proc/${pid}/fd/2`),
+                    });
+                    prosesser.push({
+                        pid,
+                        hendelse: 'cpu-profil',
+                        profil: await målCpuProfil(pid),
                     });
                     for (const fd of [1, 2]) {
                         let kanal: number | undefined;
