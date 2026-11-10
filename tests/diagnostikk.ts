@@ -112,7 +112,7 @@ export const test = grunntest.extend({
             body: diagnose,
             contentType: 'application/json',
         });
-        if (process.env.CI) {
+        if (process.env.CI && process.env.PLAYWRIGHT_DIAGNOSTIKKSERVER === 'true') {
             await testInfo.attach('serverdiagnostikk', {
                 body: await readFile('.next/playwright-server.jsonl'),
                 contentType: 'application/x-ndjson',
