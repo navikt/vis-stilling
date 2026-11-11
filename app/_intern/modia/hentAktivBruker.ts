@@ -1,7 +1,6 @@
 import useSWRImmutable from 'swr';
-import { ModiaContextHolder } from '../../_felles/api/api-routes-with-obo.ts';
-import { skalMocke } from '../../_felles/utils/util.ts';
 import { z } from 'zod';
+import { ModiaContextHolder } from '../../_felles/api/api-routes-with-obo.ts';
 
 export type AktivBruker =
     | { ok: true; fnr: string }
@@ -24,10 +23,8 @@ const hentOgValiderAktivBruker = async (url: string): Promise<AktivBrukerRespons
 };
 
 export const useAktivBruker = async () => {
-    const baseUrl = skalMocke ? 'http://mock-api' : ModiaContextHolder.api_url;
-
     return useSWRImmutable<AktivBrukerRespons>(
-        `${baseUrl}/api/context/v2/aktivbruker`,
-        hentOgValiderAktivBruker,
+        `${ModiaContextHolder.api_url}/api/context/v2/aktivbruker`,
+        hentOgValiderAktivBruker
     );
 };
