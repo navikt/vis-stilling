@@ -12,23 +12,30 @@ import { samtykkeEndepunktVeileder } from '../../_felles/samtykke/samtykkeEndepu
 
 const fetcher = createFetcher();
 
-export const useEndreSamtykkeVeileder = (stillingsId: string) => {
+export const useEndreSamtykkeVeileder = (stillingsId: string, ident?: string) => {
     const { mutate } = useSWRConfig();
     const { trigger, isMutating, error } = useSWRMutation<
         EndreSamtykkeResponsVeileder,
         Error,
-        string,
+        [string, string] | null,
         Samtykkehandling
     >(
-        samtykkeEndepunktVeileder(stillingsId),
-        (endepunkt, { arg }) =>
+        ident ? [samtykkeEndepunktVeileder(stillingsId), ident] : null,
+        ([endepunkt, valgtIdent], { arg }) =>
             arg === 'TREKK'
-                ? fetcher.put<EndreSamtykkeResponsVeileder>(`${endepunkt}/trekk`)
-                : fetcher.put<EndreSamtykkeResponsVeileder>(`${endepunkt}/svar/${arg}`),
+                ? fetcher.put<EndreSamtykkeResponsVeileder>(`${endepunkt}/trekk`, {
+                      ident: valgtIdent,
+                  })
+                : fetcher.put<EndreSamtykkeResponsVeileder>(`${endepunkt}/svar/${arg}`, {
+                      ident: valgtIdent,
+                  }),
         {
             throwOnError: false,
             onSuccess: () =>
-                mutate([`${samtykkeEndepunktVeileder(stillingsId)}/hent`, JSON.stringify({})]),
+                mutate([
+                    `${samtykkeEndepunktVeileder(stillingsId)}/hent`,
+                    JSON.stringify({ ident }),
+                ]),
         }
     );
 

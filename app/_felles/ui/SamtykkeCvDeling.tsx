@@ -10,7 +10,7 @@ import * as internTekster from '../../_intern/samtykke/tekster.ts';
 import BekreftSamtykkeKnapp from './BekreftSamtykkeKnapp.tsx';
 import { ChatIcon } from '@navikt/aksel-icons';
 import { ApiError } from '@navikt/toi-next-frontend';
-import { useEffect } from 'react';
+import { useAktivBruker } from '../../_intern/modia/hentAktivBruker.ts';
 
 interface Props {
     stillingsId: string;
@@ -18,6 +18,7 @@ interface Props {
     personvernlenke: string;
     visSpørsmålsboks: boolean;
     erVeileder: boolean;
+    ident?: string;
 }
 
 const KontaktVeileder = () => (
@@ -52,6 +53,7 @@ const Samtykkeboks = ({
     personvernlenke,
     visSpørsmålsboks,
     erVeileder,
+    ident,
 }: Props) => {
     const {
         data: samtykke,
@@ -59,22 +61,13 @@ const Samtykkeboks = ({
         isValidating,
         error: hentFeil,
         mutate,
-    } = useHentSamtykke(stillingsId, innlogget, erVeileder);
-    useEffect(() => {
-        if (!erVeileder) {
-            return;
-        }
-
-        const oppdaterSamtykke = () => void mutate();
-        document.addEventListener('fnr-changed', oppdaterSamtykke);
-        return () => document.removeEventListener('fnr-changed', oppdaterSamtykke);
-    }, [erVeileder, mutate]);
+    } = useHentSamtykke(stillingsId, innlogget, erVeileder, ident);
     const {
         endreSamtykke,
         trekkSamtykke,
         isMutating,
         error: lagreFeil,
-    } = useEndreSamtykke(stillingsId, erVeileder);
+    } = useEndreSamtykke(stillingsId, erVeileder, ident);
     const tekster = erVeileder ? internTekster : eksternTekster;
     const status = lesSamtykkestatus(samtykke);
     const venter = isMutating || isValidating;
@@ -183,6 +176,39 @@ const Samtykkeboks = ({
     );
 };
 
+const SamtykkeForAktivBruker = (props: Props) => {
+    const { data, error, isLoading, isValidating, mutate, generasjon } = useAktivBruker();
+    if (isLoading || isValidating) {
+        return <BodyLong>Henter status...</BodyLong>;
+    }
+    if (error) {
+        return (
+            <>
+                <ErrorMessage showIcon role="alert">
+                    Vi kunne ikke hente samtykkestatusen til brukeren. Prøv igjen.
+                </ErrorMessage>
+                <Button type="button" variant="secondary" onClick={() => void mutate()}>
+                    Prøv igjen
+                </Button>
+            </>
+        );
+    }
+    if (!data?.aktivBruker) {
+        return (
+            <ErrorMessage showIcon role="alert">
+                Velg en bruker i Modia for å se samtykkestatusen.
+            </ErrorMessage>
+        );
+    }
+    return (
+        <Samtykkeboks
+            key={`${generasjon}:${data.aktivBruker}`}
+            {...props}
+            ident={data.aktivBruker}
+        />
+    );
+};
+
 const SamtykkeCvDeling = ({
     stillingsId,
     innlogget,
@@ -193,6 +219,18 @@ const SamtykkeCvDeling = ({
 }: Props & { visSamtykke: boolean }) => {
     if (!visSamtykke) {
         return visSpørsmålsboks ? <Spørsmålsboks /> : null;
+    }
+
+    if (erVeileder && innlogget) {
+        return (
+            <SamtykkeForAktivBruker
+                stillingsId={stillingsId}
+                innlogget={innlogget}
+                personvernlenke={personvernlenke}
+                visSpørsmålsboks={visSpørsmålsboks}
+                erVeileder={erVeileder}
+            />
+        );
     }
 
     return (

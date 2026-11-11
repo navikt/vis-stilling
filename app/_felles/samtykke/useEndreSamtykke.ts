@@ -12,5 +12,7 @@ export type EndreSamtykkeResponsPersonbruker = undefined;
 export type EndreSamtykkeResponsVeileder = string;
 export type EndreSamtykkeRespons = EndreSamtykkeResponsPersonbruker | EndreSamtykkeResponsVeileder;
 
-export const useEndreSamtykke = (stillingsId: string, erVeileder: boolean) =>
-    erVeileder ? useEndreSamtykkeVeileder(stillingsId) : useEndreSamtykkePersonbruker(stillingsId);
+export const useEndreSamtykke = (stillingsId: string, erVeileder: boolean, ident?: string) =>
+    erVeileder
+        ? useEndreSamtykkeVeileder(stillingsId, ident)
+        : useEndreSamtykkePersonbruker(stillingsId);
