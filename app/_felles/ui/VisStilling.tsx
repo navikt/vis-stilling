@@ -7,7 +7,7 @@ import { Stilling } from '../types/Stilling';
 import SamtykkeCvDeling from './SamtykkeCvDeling';
 import { Link } from '@navikt/ds-react';
 import { InfoCard, InfoCardMessage } from '@navikt/ds-react/InfoCard';
-import { InformationSquareIcon } from '@navikt/aksel-icons';
+import { ExternalLinkIcon, InformationSquareIcon } from '@navikt/aksel-icons';
 import { ikkeErProd } from '../utils/util.ts';
 
 interface Props {
@@ -50,8 +50,13 @@ const VisStilling: FunctionComponent<Props> = ({
                         >
                             <span>
                                 Denne stillingen kan du også finne på{' '}
-                                <Link data-color="neutral" href={stillingPåArbeidsplassen}>
+                                <Link
+                                    data-color="neutral"
+                                    href={stillingPåArbeidsplassen}
+                                    target="_blank"
+                                >
                                     arbeidsplassen.no
+                                    <ExternalLinkIcon aria-hidden />
                                 </Link>
                             </span>
                         </InfoCardMessage>
