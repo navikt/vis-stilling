@@ -13,7 +13,7 @@ vi.mock('./stilling/helpers', () => ({
     getClientCredentialsToken: async () => 'token',
 }));
 
-vi.mock('../../mock/stilling', () => ({
+vi.mock('../../../mock/stilling', () => ({
     shouldUseDevMocks: () => false,
     erMockStillingsId: () => false,
     readMockData: vi.fn(),

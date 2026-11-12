@@ -2,41 +2,22 @@
 
 import { Button, Dialog } from '@navikt/ds-react';
 import { useId, useRef } from 'react';
-
-const handlinger = {
-    JA: {
-        knappetekst: 'Gi samtykke',
-        tittel: 'Vil du gi samtykke?',
-        beskrivelse:
-            'Du gir Nav samtykke til å dele CV-en din med arbeidsgiveren for denne stillingen.',
-        bekreftTekst: 'Bekreft samtykke',
-    },
-    NEI: {
-        knappetekst: 'Avvis samtykke',
-        tittel: 'Vil du svare nei?',
-        beskrivelse:
-            'Du svarer nei til at Nav kan dele CV-en din med arbeidsgiveren for denne stillingen.',
-        bekreftTekst: 'Bekreft nei',
-    },
-    TREKK: {
-        knappetekst: 'Trekk samtykke',
-        tittel: 'Vil du trekke samtykket?',
-        beskrivelse:
-            'Du trekker samtykket til at Nav kan dele CV-en din med arbeidsgiveren for denne stillingen.',
-        bekreftTekst: 'Bekreft tilbaketrekking',
-    },
-};
+import type { EndreSamtykkeRespons } from '../samtykke/useEndreSamtykke.ts';
+import { bekreftSamtykkeTekster as eksternBekreftTekster } from '../../_ekstern/samtykke/tekster.ts';
+import { bekreftSamtykkeTekster as internBekreftTekster } from '../../_intern/samtykke/tekster.ts';
 
 interface Props {
-    handling: keyof typeof handlinger;
+    handling: keyof typeof eksternBekreftTekster;
     disabled: boolean;
-    onBekreft: () => Promise<void>;
+    onBekreft: () => Promise<EndreSamtykkeRespons>;
+    erVeileder: boolean;
 }
 
-const BekreftSamtykkeKnapp = ({ handling, disabled, onBekreft }: Props) => {
+const BekreftSamtykkeKnapp = ({ handling, disabled, onBekreft, erVeileder }: Props) => {
     const avbrytRef = useRef<HTMLButtonElement>(null);
     const beskrivelseId = useId();
-    const tekst = handlinger[handling];
+    const tekster = erVeileder ? internBekreftTekster : eksternBekreftTekster;
+    const tekst = tekster[handling];
 
     return (
         <Dialog>

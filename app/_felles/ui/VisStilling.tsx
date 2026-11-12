@@ -2,19 +2,20 @@ import { StillingVisning } from '@navikt/stilling-react';
 import { Theme } from '@navikt/ds-react/Theme';
 import { FunctionComponent } from 'react';
 
-import { konverterStilling } from '../_utils/stillingUtils';
+import { konverterStilling } from '../utils/stillingUtils';
 import { Stilling } from '../types/Stilling';
 import SamtykkeCvDeling from './SamtykkeCvDeling';
 import { Link } from '@navikt/ds-react';
 import { InfoCard, InfoCardMessage } from '@navikt/ds-react/InfoCard';
-import { InformationSquareIcon } from '@navikt/aksel-icons';
-import { ikkeErProd } from '../_utils/util.ts';
+import { ExternalLinkIcon, InformationSquareIcon } from '@navikt/aksel-icons';
+import { ikkeErProd } from '../utils/util.ts';
 
 interface Props {
     stilling: Stilling;
     innlogget: boolean;
     personvernlenke: string;
     visSamtykke: boolean;
+    erVeileder: boolean;
 }
 
 const lagArbeidsplassenLenke = (uuid: string) => {
@@ -30,6 +31,7 @@ const VisStilling: FunctionComponent<Props> = ({
     innlogget,
     personvernlenke,
     visSamtykke,
+    erVeileder,
 }) => {
     const stillingDTO = konverterStilling(stilling);
     const stillingPåArbeidsplassen = lagArbeidsplassenLenke(stilling.uuid);
@@ -48,8 +50,13 @@ const VisStilling: FunctionComponent<Props> = ({
                         >
                             <span>
                                 Denne stillingen kan du også finne på{' '}
-                                <Link data-color="neutral" href={stillingPåArbeidsplassen}>
+                                <Link
+                                    data-color="neutral"
+                                    href={stillingPåArbeidsplassen}
+                                    target="_blank"
+                                >
                                     arbeidsplassen.no
+                                    <ExternalLinkIcon aria-hidden />
                                 </Link>
                             </span>
                         </InfoCardMessage>
@@ -66,7 +73,8 @@ const VisStilling: FunctionComponent<Props> = ({
                                 innlogget={innlogget}
                                 personvernlenke={personvernlenke}
                                 visSamtykke={visSamtykke}
-                                visSpørsmålsboks={erDirektemeldt}
+                                erVeileder={erVeileder}
+                                visSpørsmålsboks={!erVeileder && erDirektemeldt}
                             />
                         ) : undefined
                     }

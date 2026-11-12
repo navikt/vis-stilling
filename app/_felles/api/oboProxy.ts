@@ -1,7 +1,7 @@
-import { opprettOboProxy, type Oborute } from '@navikt/toi-next-frontend/next';
+import { type Oborute, opprettOboProxy } from '@navikt/toi-next-frontend/next';
 import { NextRequest } from 'next/server';
+import { skalMocke } from '../utils/util.ts';
 import { Iroute } from './api-routes-with-obo.ts';
-import { skalMocke } from '../_utils/util.ts';
 import { hentOboToken } from './obotoken.ts';
 
 const tilOborute = (proxy: Iroute): Oborute => ({

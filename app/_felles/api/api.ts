@@ -1,7 +1,7 @@
 import { logger } from '@navikt/next-logger';
 
-import { erMockStillingsId, readMockData, shouldUseDevMocks } from '../../mock/stilling';
-import { erGyldigStillingsId } from '../_utils/stillingsId';
+import { erMockStillingsId, readMockData, shouldUseDevMocks } from '../../../mock/stilling';
+import { erGyldigStillingsId } from '../utils/stillingsId';
 import { Stilling } from '../types/Stilling';
 import { buildUpstreamUrl, getClientCredentialsToken } from './stilling/helpers';
 

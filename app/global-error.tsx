@@ -3,7 +3,7 @@
 import { BodyShort, Button, Heading } from '@navikt/ds-react';
 import { useEffect } from 'react';
 
-import { rapporterFeil } from './_utils/apm';
+import { rapporterFeil } from './_felles/utils/apm';
 import './globals.css';
 
 const GlobalError = ({
