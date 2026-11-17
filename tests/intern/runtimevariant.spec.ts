@@ -1,6 +1,5 @@
 import { expect, test, type Route } from '@playwright/test';
 
-const erVeileder = process.env.ER_VEILEDER === 'true';
 const erProd = process.env.NAIS_CLUSTER_NAME === 'prod-gcp';
 
 type Samtykke = {
@@ -63,25 +62,7 @@ const avskjærInternDekoratør = async (page: import('@playwright/test').Page) =
     });
 };
 
-test('beholder stillings-URL-en uten nye variantstier', async ({ page }) => {
-    await page.route('**/api/deling-av-cv/**', (route) => svarJson(route, []));
-
-    const svar = await page.goto('stilling');
-    expect(svar?.status()).toBe(200);
-    expect(new URL(page.url()).pathname).toBe('/arbeid/stilling/stilling');
-    await expect(
-        page.getByRole('heading', { level: 1, name: /Jobbservice Mossby taxi søker to sjåfører/ })
-    ).toBeVisible();
-
-    for (const stiForNyVariant of ['intern/stilling', 'ekstern/stilling']) {
-        const respons = await page.goto(stiForNyVariant);
-        expect(respons?.status(), stiForNyVariant).toBe(404);
-    }
-});
-
 test('intern ramme viser custom element uten å laste ekstern dekoratør', async ({ page }) => {
-    test.skip(!erVeileder, 'Krever ER_VEILEDER=true i testprosessen');
-
     const eksterneKall: string[] = [];
     await page.route('https://**/*', async (route) => {
         const url = route.request().url();
@@ -112,7 +93,7 @@ test('intern ramme viser custom element uten å laste ekstern dekoratør', async
 });
 
 test('intern samtykke hentes og endres med syntetisk fixture', async ({ page }) => {
-    test.skip(!erVeileder || erProd, 'Krever intern variant uten prod-gating');
+    test.skip(erProd, 'Krever variant uten prod-gating');
 
     const stillingsId = 'samtykke-runtime-intern';
     const forventetSti = `/arbeid/stilling/api/deling-av-cv/foresporsler/kandidat/${stillingsId}`;
@@ -237,7 +218,7 @@ test('intern samtykke hentes og endres med syntetisk fixture', async ({ page }) 
 test('intern samtykke venter på aktiv bruker og kaller ikke API uten valgt bruker', async ({
     page,
 }) => {
-    test.skip(!erVeileder || erProd, 'Krever intern variant uten prod-gating');
+    test.skip(erProd, 'Krever variant uten prod-gating');
 
     const stillingsId = 'samtykke-uten-aktiv-bruker';
     const forventetSti = `/arbeid/stilling/api/deling-av-cv/foresporsler/kandidat/${stillingsId}`;
@@ -297,7 +278,7 @@ test('intern samtykke venter på aktiv bruker og kaller ikke API uten valgt bruk
 test('intern samtykke lukker dialog og holder brukerbytte isolert fra sene svar', async ({
     page,
 }) => {
-    test.skip(!erVeileder || erProd, 'Krever intern variant uten prod-gating');
+    test.skip(erProd, 'Krever variant uten prod-gating');
 
     const stillingsId = 'samtykke-brukerbytte-intern';
     const forventetSti = `/arbeid/stilling/api/deling-av-cv/foresporsler/kandidat/${stillingsId}`;
@@ -396,7 +377,7 @@ test('intern samtykke lukker dialog og holder brukerbytte isolert fra sene svar'
 });
 
 test('intern samtykke bruker identiteten fra fnr-changed før Modia-svaret', async ({ page }) => {
-    test.skip(!erVeileder || erProd, 'Krever intern variant uten prod-gating');
+    test.skip(erProd, 'Krever variant uten prod-gating');
 
     const stillingsId = 'samtykke-fnr-changed-detail-intern';
     const forventetSti = `/arbeid/stilling/api/deling-av-cv/foresporsler/kandidat/${stillingsId}`;
@@ -514,63 +495,4 @@ test('intern samtykke bruker identiteten fra fnr-changed før Modia-svaret', asy
     expect(
         kall.filter((k) => k.method === 'PUT').map((k) => JSON.parse(k.postData!).ident)
     ).toEqual([identB]);
-});
-
-test('ekstern samtykke bruker samtykker-endepunktet og ekstern tekst', async ({ page }) => {
-    test.skip(erVeileder || erProd, 'Krever ekstern variant uten prod-gating');
-
-    const stillingsId = 'samtykke-runtime-ekstern';
-    const forventetSti = `/arbeid/stilling/api/deling-av-cv/samtykker/${stillingsId}`;
-    const kall: RegistrertKall[] = [];
-    await page.route('**/api/deling-av-cv/samtykker/**', async (route) => {
-        const request = route.request();
-        kall.push({
-            method: request.method(),
-            url: request.url(),
-            postData: request.postData(),
-        });
-        await svarJson(route, [syntetiskSamtykke(stillingsId)]);
-    });
-
-    await page.goto(stillingsId);
-
-    const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
-    await expect(
-        region.getByRole('heading', { name: 'Vil du dele CV-en din med arbeidsgiveren?' })
-    ).toBeVisible();
-    await expect(region.getByRole('button', { name: 'Gi samtykke' })).toBeVisible();
-    await expect.poll(() => kall.length).toBeGreaterThan(0);
-    expect(kall.some((k) => k.method === 'GET' && sti(k.url) === forventetSti)).toBe(true);
-});
-
-test('ekstern variant svarer 404 på Modia-dekoratørens proxy', async ({ page, request }) => {
-    test.skip(erVeileder, 'Krever ER_VEILEDER=false i testprosessen');
-
-    await page.goto('stilling');
-    const respons = await request.get(
-        new URL('/arbeid/stilling/api/modia/api/decorator', page.url()).href
-    );
-    expect(respons.status()).toBe(404);
-});
-
-test('prod viser ikke samtykkeregion eller kaller samtykke-API i noen variant', async ({
-    page,
-}) => {
-    test.skip(!erProd, 'Krever NAIS_CLUSTER_NAME=prod-gcp i testprosessen');
-
-    const kall: string[] = [];
-    await page.route('**/api/deling-av-cv/**', async (route) => {
-        kall.push(route.request().url());
-        await svarJson(route, []);
-    });
-
-    await page.goto('samtykke-runtime-prod');
-    await expect(
-        page.getByRole('heading', { level: 1, name: /Tulleskolen søker tøysekopper/ })
-    ).toBeVisible();
-    await expect(page.getByRole('region', { name: 'Samtykke til deling av CV' })).toHaveCount(0);
-    await page.evaluate(
-        () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
-    );
-    expect(kall).toEqual([]);
 });

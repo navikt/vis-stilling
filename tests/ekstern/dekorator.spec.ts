@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { dekoratorMockScript } from '../mock/dekorator.ts';
+import { dekoratorMockScript } from '../../mock/dekorator.ts';
 
 const APP_URL = 'https://dekoratoren.ekstern.dev.nav.no';
 const LOGIN_SESSION_API_URL = 'https://login.ekstern.dev.nav.no/oauth2/session';

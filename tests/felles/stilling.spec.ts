@@ -1,16 +1,4 @@
-import { expect, test } from '@playwright/test';
-
-test('viser direktemeldt stilling med kontaktinformasjon', async ({ page }) => {
-    await page.goto('stilling');
-    await expect(
-        page.getByRole('heading', { level: 1, name: /Mossby taxi søker to sjåfører/ })
-    ).toBeVisible();
-    await expect(page.getByRole('region', { name: 'Samtykke til deling av CV' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toBeVisible();
-    await expect(
-        page.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
-    ).toBeVisible();
-});
+import { expect, test } from '../fixtures.ts';
 
 test('viser arbeidsgiverens nettsted for ekstern stilling', async ({ page }) => {
     await page.goto('annen-stilling');
@@ -63,24 +51,6 @@ test('merker slettet stilling som utløpt', async ({ page }) => {
         page.getByRole('heading', { level: 1, name: 'IKT-brukbarhetstester' })
     ).toBeVisible();
     await expect(page.getByText('Utløpt stilling', { exact: true })).toBeVisible();
-});
-
-test('viser ikke upublisert stilling', async ({ page }) => {
-    await page.goto('upublisert-stilling');
-    await expect(
-        page.getByText(/Stillingen med tittel "Ny stilling" er ikke publisert/)
-    ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Om jobben', exact: true })).toHaveCount(0);
-
-    const footer = page.getByRole('contentinfo').last();
-    await expect(footer).toBeVisible();
-    const vinduhøyde = page.viewportSize()!.height;
-    await expect
-        .poll(async () => {
-            const boks = await footer.boundingBox();
-            return boks ? Math.round(boks.y + boks.height) : 0;
-        })
-        .toBeGreaterThanOrEqual(vinduhøyde);
 });
 
 test('viser stilling uten jobbtittel', async ({ page }) => {
