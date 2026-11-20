@@ -215,6 +215,55 @@ test('intern samtykke hentes og endres med syntetisk fixture', async ({ page }) 
     }
 });
 
+test('veilederen bekrefter nei for valgt bruker og ser nei-status', async ({ page }) => {
+    test.skip(erProd, 'Krever variant uten prod-gating');
+
+    const stillingsId = 'samtykke-nei-intern';
+    const kandidatSti = `/arbeid/stilling/api/deling-av-cv/foresporsler/kandidat/${stillingsId}`;
+    const ident = 'syntetisk-person-b';
+    const putKall: { sti: string; body: unknown }[] = [];
+    let samtykke = syntetiskSamtykke(stillingsId);
+
+    await avskjærInternDekoratør(page);
+    await page.route('**/arbeid/stilling/api/modia/api/context/v2/aktivbruker', (route) =>
+        svarJson(route, { aktivBruker: ident })
+    );
+    await page.route('**/api/deling-av-cv/**', (route) => {
+        const request = route.request();
+        const path = sti(request.url());
+        if (request.method() === 'POST' && path === `${kandidatSti}/hent`) {
+            return svarJson(route, [samtykke]);
+        }
+        if (request.method() === 'PUT') {
+            putKall.push({ sti: path, body: request.postDataJSON() });
+            if (path === `${kandidatSti}/svar/NEI`) {
+                samtykke = {
+                    ...samtykke,
+                    tilstand: 'HAR_SVART',
+                    svar: { harSvartJa: false, svarTidspunkt: '2024-01-02T10:00:00.000Z' },
+                };
+                return route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
+            }
+        }
+        return route.fulfill({ status: 404, body: 'Ukjent syntetisk forespørsel' });
+    });
+
+    await page.goto(stillingsId);
+    const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+    await region.getByRole('button', { name: 'Svar nei for brukeren' }).click();
+    const bekreft = page.getByRole('alertdialog').getByRole('button', { name: 'Bekreft nei' });
+    await expect(bekreft).toBeVisible();
+    expect(putKall).toHaveLength(0);
+    await bekreft.click();
+
+    await expect(
+        region.getByText(
+            'Brukeren har sagt nei til at Nav kan dele CV-en med arbeidsgiveren for denne stillingen.'
+        )
+    ).toBeVisible();
+    expect(putKall).toEqual([{ sti: `${kandidatSti}/svar/NEI`, body: { ident } }]);
+});
+
 test('intern samtykke venter på aktiv bruker og kaller ikke API uten valgt bruker', async ({
     page,
 }) => {
