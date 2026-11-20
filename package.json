@@ -54,7 +54,7 @@
         "build": "next build",
         "start": "next start",
         "format": "prettier --write .",
-        "test:a11y": "playwright test --grep @a11y --project='chromium*'"
+        "test:a11y": "playwright test --grep @a11y --project='*chromium*'"
     },
     "prettier": {
         "tabWidth": 4,

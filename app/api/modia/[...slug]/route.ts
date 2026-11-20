@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { erVeileder } from '../../../_utils/util.ts';
-import { ModiaContextHolder } from '../../api-routes-with-obo.ts';
-import { proxyWithOBO } from '../../oboProxy.ts';
+import { erVeileder } from '../../../_felles/utils/util.ts';
+import { ModiaContextHolder } from '../../../_felles/api/api-routes-with-obo.ts';
+import { proxyWithOBO } from '../../../_felles/api/oboProxy.ts';
 
 // Bare veilederappen har Azure-innlogging og tilgang til modiacontextholder
 const proxy = (req: NextRequest) =>

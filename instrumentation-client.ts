@@ -1,7 +1,7 @@
 import { initNaisAPMClient } from '@nais/apm/react';
 import { DEKORATØR_URLER } from '@navikt/toi-next-frontend/apm';
 
-import { filtrerApmHendelse } from './app/_utils/apm';
+import { filtrerApmHendelse } from './app/_felles/utils/apm';
 
 initNaisAPMClient({
     namespace: 'toi',

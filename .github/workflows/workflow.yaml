@@ -1,0 +1,30 @@
+name: Bygg og Deploy vis-stilling
+on:
+    push:
+    workflow_dispatch:
+
+jobs:
+    build-and-deploy:
+        name: 🤖
+        uses: navikt/toi-frontend-workflows/.github/workflows/build-and-deploy-nextjs.yaml@v4
+        with:
+            cdn-upload: true
+            baseimage: europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26
+            playwright-command: pnpm run test
+            playwright-github-report: true
+            playwright-shards: 4
+            deploy-dev-branch: 'ny_app_for_veileder_ny'
+            dev-yaml-path: '.nais/ekstern/app.yaml'
+            dev-vars-path: '.nais/ekstern/dev-gcp.json'
+            deploy-dev2-branch: 'ny_app_for_veileder_ny'
+            dev2-yaml-path: '.nais/intern/app.yaml'
+            dev2-vars-path: '.nais/intern/dev-gcp.json'
+            prod-yaml-path: '.nais/ekstern/app.yaml'
+            prod-vars-path: '.nais/ekstern/prod-gcp.json'
+            nais-alerts-path: '.nais/ekstern/alerts.yaml'
+        secrets: inherit
+        permissions:
+            actions: write
+            contents: write
+            id-token: write
+            pages: write
