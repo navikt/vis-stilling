@@ -32,13 +32,26 @@ CI kjører med fire shards og 100 % workers per shard.
 ```sh
 pnpm exec playwright install chromium firefox webkit
 pnpm test
-pnpm run test --project=chromium-mobile
+pnpm run test --project=ekstern-chromium-mobile
+pnpm run test --project='intern-*'
 ```
 
-Playwright starter testserveren automatisk lokalt. Bruk `PLAYWRIGHT_PORT` for å
-overstyre standardporten 1337 når flere apper testes samtidig.
+Testene ligger i tre mapper:
 
-CI bygger med `pnpm test-build` og tester standalone-serveren. Testbygget bruker
+- `tests/ekstern` kjøres mot personbrukervarianten.
+- `tests/intern` kjøres mot veiledervarianten (`ER_VEILEDER=true`).
+- `tests/felles` kjøres mot begge.
+
+Playwright starter én testserver per variant, så `pnpm run test` dekker begge uten
+ekstra miljøvariabler. Prosjektnavnene er `<variant>-<nettleser>`. Ekstern server
+bruker port 1337 lokalt, intern bruker neste port. Bruk `PLAYWRIGHT_PORT` for å
+overstyre startporten når flere apper testes samtidig. Den interne dev-serveren
+bygger til `.next/intern`, fordi `next dev` låser byggmappen.
+
+Tester i `tests/felles` importerer `test` fra `tests/fixtures.ts`. Den stubber
+Modia-dekoratøren, som ellers lastes fra CDN i veiledervarianten.
+
+CI bygger med `pnpm test-build` og starter to standalone-servere fra samme bygg. Testbygget bruker
 eksisterende mockdata fra `mock/eksempler` via `NEXT_PUBLIC_PLAYWRIGHT_TEST_MODE=true`.
 Vanlige produksjonsbygg bruker fortsatt stillings-APIet.
 

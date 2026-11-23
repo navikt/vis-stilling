@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
     assetPrefix: process.env.CDN_ASSET_PREFIX,
     crossOrigin: 'anonymous',
     productionBrowserSourceMaps: true,
-    distDir: '.next',
+    // Playwright kjører ekstern og intern dev-server samtidig, og next dev låser distDir
+    distDir: process.env.NEXT_DIST_DIR ?? '.next',
 };
 
 export default nextConfig;
