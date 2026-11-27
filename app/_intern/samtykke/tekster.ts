@@ -1,6 +1,6 @@
-import type { Samtykkestatus } from '../../_felles/types/Samtykkesvar.ts';
+import type { Samtykkevisning } from '../../_felles/types/Samtykkesvar.ts';
 
-export const samtykketekst = (status: Samtykkestatus): string => {
+export const samtykketekst = (status: Samtykkevisning): string => {
     switch (status) {
         case 'TRUKKET':
             return 'Samtykket til at Nav kan dele CV-en med arbeidsgiveren for denne stillingen, er trukket.';
@@ -10,8 +10,10 @@ export const samtykketekst = (status: Samtykkestatus): string => {
             return 'Brukeren har sagt nei til at Nav kan dele CV-en med arbeidsgiveren for denne stillingen.';
         case 'UBESVART':
             return 'Brukeren har fått en forespørsel om å dele CV-en med arbeidsgiveren for denne stillingen, men har ikke svart ennå. Du kan svare på vegne av brukeren.';
-        case 'UTLØPT':
+        case 'SVARFRIST_UTLØPT':
             return 'Svarfristen for forespørselen har gått ut.';
+        case 'SAMTYKKE_UTLØPT':
+            return 'Samtykket til at Nav kan dele CV-en med arbeidsgiveren for denne stillingen, har gått ut på tid.';
         case 'INGEN_FORESPØRSEL':
             return 'Brukeren har ikke fått en forespørsel om å dele CV-en med arbeidsgiveren for denne stillingen.';
         case 'AVBRUTT_FORESPØRSEL':
@@ -19,7 +21,7 @@ export const samtykketekst = (status: Samtykkestatus): string => {
     }
 };
 
-export const headingtekst = (_status: Samtykkestatus): string => 'Deling av CV med arbeidsgiver';
+export const headingtekst = (_status: Samtykkevisning): string => 'Deling av CV med arbeidsgiver';
 
 export const ubesvartSpørsmål =
     'Vil brukeren at Nav skal dele CV-en med arbeidsgiveren for denne stillingen?';

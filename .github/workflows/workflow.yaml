@@ -13,10 +13,10 @@ jobs:
             playwright-command: pnpm run test
             playwright-github-report: true
             playwright-shards: 4
-            deploy-dev-branch: 'ny_app_for_veileder_ny'
+            deploy-dev-branch: 'ta_i_bruk_ny_samtykkestatus_fra_backend'
             dev-yaml-path: '.nais/ekstern/app.yaml'
             dev-vars-path: '.nais/ekstern/dev-gcp.json'
-            deploy-dev2-branch: 'ny_app_for_veileder_ny'
+            deploy-dev2-branch: 'ta_i_bruk_ny_samtykkestatus_fra_backend'
             dev2-yaml-path: '.nais/intern/app.yaml'
             dev2-vars-path: '.nais/intern/dev-gcp.json'
             prod-yaml-path: '.nais/ekstern/app.yaml'

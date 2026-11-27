@@ -1,6 +1,6 @@
-import type { Samtykkestatus } from '../../_felles/types/Samtykkesvar.ts';
+import type { Samtykkevisning } from '../../_felles/types/Samtykkesvar.ts';
 
-export const samtykketekst = (status: Samtykkestatus): string => {
+export const samtykketekst = (status: Samtykkevisning): string => {
     switch (status) {
         case 'TRUKKET':
             return 'Du har trukket samtykket til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
@@ -13,8 +13,10 @@ export const samtykketekst = (status: Samtykkestatus): string => {
                 'Du har fått en forespørsel fra Nav om å dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen. Hvis du samtykker til at CV-en din kan deles, så ' +
                 'kan du når som helst trekke samtykket ditt.'
             );
-        case 'UTLØPT':
+        case 'SVARFRIST_UTLØPT':
             return 'Svarfristen for forespørselen har gått ut. Hvis du ønsker at Nav skal dele CV-en din med arbeidsgiveren, kan du kontakte veilederen din i dialogen i aktivitetsplanen.';
+        case 'SAMTYKKE_UTLØPT':
+            return 'Samtykket ditt til at Nav kan dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen, har gått ut på tid. Hvis du ønsker at Nav skal dele CV-en din med arbeidsgiveren, kan du kontakte veilederen din i dialogen i aktivitetsplanen.';
         case 'INGEN_FORESPØRSEL':
             return 'Hvis du samtykker, kan Nav dele CV-en din med arbeidsgiveren som har lyst ut denne stillingen.';
         case 'AVBRUTT_FORESPØRSEL':
@@ -22,12 +24,13 @@ export const samtykketekst = (status: Samtykkestatus): string => {
     }
 };
 
-export const headingtekst = (status: Samtykkestatus): string => {
+export const headingtekst = (status: Samtykkevisning): string => {
     switch (status) {
         case 'TRUKKET':
         case 'SAMTYKKET':
         case 'SVART_NEI':
-        case 'UTLØPT':
+        case 'SVARFRIST_UTLØPT':
+        case 'SAMTYKKE_UTLØPT':
             return 'Dele CV med arbeidsgiver';
         case 'AVBRUTT_FORESPØRSEL':
         case 'UBESVART':

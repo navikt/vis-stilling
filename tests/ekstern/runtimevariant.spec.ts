@@ -13,6 +13,8 @@ type Samtykke = {
     } | null;
     trukket: boolean;
     trukketTidspunkt: string | null;
+    samtykkeStatus: string;
+    brukerAkas: boolean;
 };
 
 type RegistrertKall = {
@@ -29,6 +31,8 @@ const syntetiskSamtykke = (stillingsId: string): Samtykke => ({
     svar: null,
     trukket: false,
     trukketTidspunkt: null,
+    samtykkeStatus: 'OPPRETTET',
+    brukerAkas: true,
 });
 
 const svarJson = (route: Route, data: unknown) =>
