@@ -20,6 +20,8 @@ type SamtykkeFixture = {
     svar: Samtykkesvar | null;
     trukket: boolean;
     trukketTidspunkt: string | null;
+    samtykkeStatus: string;
+    brukerAkas: boolean;
 };
 
 type RegistrertForespørsel = {
@@ -36,6 +38,8 @@ const lagSamtykke = (overrides: Partial<SamtykkeFixture> = {}): SamtykkeFixture 
     svar: null,
     trukket: false,
     trukketTidspunkt: null,
+    samtykkeStatus: 'OPPRETTET',
+    brukerAkas: true,
     ...overrides,
 });
 
@@ -121,17 +125,21 @@ test.describe('Personvernlenke', () => {
     const avsluttedeForespørsler = [
         {
             tilstand: 'utløpt',
-            samtykke: lagSamtykke({ svarfrist: '2000-01-08T10:00:00.000Z' }),
+            samtykke: lagSamtykke({
+                svarfrist: '2000-01-08T10:00:00.000Z',
+                tilstand: 'SVARFRIST_UTLOPT',
+                samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT',
+            }),
             statustekst: /Svarfristen for forespørselen har gått ut/,
         },
         {
             tilstand: 'besvart',
-            samtykke: lagSamtykke({ svar: lagSvar(true) }),
+            samtykke: lagSamtykke({ svar: lagSvar(true), samtykkeStatus: 'SAMTYKKE_GITT' }),
             statustekst: /Du har sagt ja til/,
         },
         {
             tilstand: 'trukket',
-            samtykke: lagSamtykke({ trukket: true }),
+            samtykke: lagSamtykke({ trukket: true, samtykkeStatus: 'SAMTYKKE_TRUKKET' }),
             statustekst: /Du har trukket samtykket/,
         },
     ];
@@ -240,7 +248,9 @@ test.describe('Avbrutt forespørsel', () => {
         page,
     }) => {
         const requests = await mockSamtykkeApi(page, (route) =>
-            svarJson(route, [lagSamtykke({ tilstand: 'AVBRUTT' })])
+            svarJson(route, [
+                lagSamtykke({ tilstand: 'AVBRUTT', samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT' }),
+            ])
         );
         await gåTilStilling(page, 'samtykke-avbrutt');
 
@@ -255,13 +265,21 @@ test.describe('Avbrutt forespørsel', () => {
     const svarMedAvbruttForespørsel = [
         {
             beskrivelse: 'ja-svar',
-            samtykke: lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(true) }),
+            samtykke: lagSamtykke({
+                tilstand: 'AVBRUTT',
+                svar: lagSvar(true),
+                samtykkeStatus: 'SAMTYKKE_GITT',
+            }),
             statustekst: /Du har sagt ja til/,
             knapp: 'Trekk samtykke',
         },
         {
             beskrivelse: 'nei-svar',
-            samtykke: lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(false) }),
+            samtykke: lagSamtykke({
+                tilstand: 'AVBRUTT',
+                svar: lagSvar(false),
+                samtykkeStatus: 'SAMTYKKE_AVSLÅTT',
+            }),
             statustekst: /Du har sagt nei til/,
         },
         {
@@ -271,6 +289,7 @@ test.describe('Avbrutt forespørsel', () => {
                 svar: lagSvar(true),
                 trukket: true,
                 trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                samtykkeStatus: 'SAMTYKKE_TRUKKET',
             }),
             statustekst: /Du har trukket samtykket/,
         },
@@ -299,7 +318,11 @@ test.describe('Avbrutt forespørsel', () => {
     test('avbrutt forespørsel har forrang over utløpt svarfrist', async ({ page }) => {
         await mockSamtykkeApi(page, (route) =>
             svarJson(route, [
-                lagSamtykke({ tilstand: 'AVBRUTT', svarfrist: '2000-01-08T10:00:00.000Z' }),
+                lagSamtykke({
+                    tilstand: 'AVBRUTT',
+                    svarfrist: '2000-01-08T10:00:00.000Z',
+                    samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT',
+                }),
             ])
         );
         await gåTilStilling(page, 'samtykke-avbrutt-utlopt');
@@ -311,13 +334,18 @@ test.describe('Avbrutt forespørsel', () => {
 
     test('kan trekke samtykke selv om aktiviteten er avbrutt', async ({ page }) => {
         const id = 'samtykke-avbrutt-trekk';
-        let sisteSamtykke = lagSamtykke({ tilstand: 'AVBRUTT', svar: lagSvar(true) });
+        let sisteSamtykke = lagSamtykke({
+            tilstand: 'AVBRUTT',
+            svar: lagSvar(true),
+            samtykkeStatus: 'SAMTYKKE_GITT',
+        });
         const requests = await mockSamtykkeApi(page, async (route) => {
             if (route.request().method() === 'DELETE') {
                 sisteSamtykke = {
                     ...sisteSamtykke,
                     trukket: true,
                     trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                    samtykkeStatus: 'SAMTYKKE_TRUKKET',
                 };
                 await route.fulfill({ status: 204 });
                 return;
@@ -341,6 +369,7 @@ test.describe('Avbrutt forespørsel', () => {
         const nyesteAvbrutt = lagSamtykke({
             deltTidspunkt: '2024-02-01T10:00:00.000Z',
             tilstand: 'AVBRUTT',
+            samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT',
         });
         await mockSamtykkeApi(page, (route) => svarJson(route, [eldreUbesvart, nyesteAvbrutt]));
         await gåTilStilling(page, 'samtykke-nyeste-avbrutt');
@@ -353,6 +382,7 @@ test.describe('Avbrutt forespørsel', () => {
         const eldreAvbrutt = lagSamtykke({
             deltTidspunkt: '2024-01-01T10:00:00.000Z',
             tilstand: 'AVBRUTT',
+            samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT',
         });
         const nyesteUbesvart = lagSamtykke({ deltTidspunkt: '2024-02-01T10:00:00.000Z' });
         await mockSamtykkeApi(page, (route) => svarJson(route, [eldreAvbrutt, nyesteUbesvart]));
@@ -397,7 +427,12 @@ test.describe('Samtykkedialoger', () => {
             page,
         }) => {
             const requests = await mockSamtykkeApi(page, (route) =>
-                svarJson(route, [lagSamtykke({ svar: scenario.svar })])
+                svarJson(route, [
+                    lagSamtykke({
+                        svar: scenario.svar,
+                        samtykkeStatus: scenario.svar ? 'SAMTYKKE_GITT' : 'OPPRETTET',
+                    }),
+                ])
             );
             await gåTilStilling(page, `samtykke-dialog-${scenario.knapp.replace(/ /g, '-')}`);
 
@@ -437,10 +472,34 @@ test.describe('Samtykkedialoger', () => {
 });
 
 test.describe('Samtykkestatus og endringer', () => {
+    test('viser at samtykket har gått ut på tid uten svarknapper', async ({ page }) => {
+        await mockSamtykkeApi(page, (route) =>
+            svarJson(route, [
+                lagSamtykke({
+                    tilstand: 'SAMTYKKE_UTLOPT',
+                    svar: lagSvar(true),
+                    samtykkeStatus: 'SAMTYKKE_UTLØPT',
+                }),
+            ])
+        );
+        await gåTilStilling(page, 'samtykke-samtykke-utlopt');
+
+        const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
+        await expect(region.getByText(/Samtykket ditt .* har gått ut på tid/)).toBeVisible();
+        await expect(region.getByText(/Du har sagt ja til/)).toHaveCount(0);
+        await expect(region.getByRole('button')).toHaveCount(0);
+        await expect(region.getByRole('link', { name: lenketekst })).toHaveAttribute(
+            'href',
+            personvernUrl
+        );
+    });
+
     test('viser trukket tekst uten svarknapper når nyeste forespørsel er trukket', async ({
         page,
     }) => {
-        await mockSamtykkeApi(page, (route) => svarJson(route, [lagSamtykke({ trukket: true })]));
+        await mockSamtykkeApi(page, (route) =>
+            svarJson(route, [lagSamtykke({ trukket: true, samtykkeStatus: 'SAMTYKKE_TRUKKET' })])
+        );
         await gåTilStilling(page, 'samtykke-nyeste-trukket');
 
         const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
@@ -459,6 +518,7 @@ test.describe('Samtykkestatus og endringer', () => {
             deltTidspunkt: '2024-01-01T10:00:00.000Z',
             trukket: true,
             trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+            samtykkeStatus: 'SAMTYKKE_TRUKKET',
         });
         const nyere = lagSamtykke({
             deltTidspunkt: '2024-03-01T10:00:00.000Z',
@@ -520,6 +580,7 @@ test.describe('Samtykkestatus og endringer', () => {
                         ...sisteSamtykke,
                         tilstand: 'HAR_SVART',
                         svar: lagSvar(svar === 'JA'),
+                        samtykkeStatus: svar === 'JA' ? 'SAMTYKKE_GITT' : 'SAMTYKKE_AVSLÅTT',
                     };
                     await route.fulfill({ status: 204 });
                     return;
@@ -552,13 +613,14 @@ test.describe('Samtykkestatus og endringer', () => {
 
     test('trekker samtykke med én DELETE uten body og viser trukket status', async ({ page }) => {
         const id = 'samtykke-trekk';
-        let sisteSamtykke = lagSamtykke({ svar: lagSvar(true) });
+        let sisteSamtykke = lagSamtykke({ svar: lagSvar(true), samtykkeStatus: 'SAMTYKKE_GITT' });
         const requests = await mockSamtykkeApi(page, async (route) => {
             if (route.request().method() === 'DELETE') {
                 sisteSamtykke = {
                     ...sisteSamtykke,
                     trukket: true,
                     trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                    samtykkeStatus: 'SAMTYKKE_TRUKKET',
                 };
                 await route.fulfill({ status: 204 });
                 return;
@@ -747,16 +809,19 @@ test('velger nyeste samtykke fra usortert liste med tre forespørsler', async ({
         svarfrist: '2024-01-08T10:00:00.000Z',
         trukket: true,
         trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+        samtykkeStatus: 'SAMTYKKE_TRUKKET',
     });
     const nyeste = lagSamtykke({
         deltTidspunkt: '2024-03-01T10:00:00.000Z',
         svarfrist: '2100-03-08T10:00:00.000Z',
         svar: lagSvar(true),
+        samtykkeStatus: 'SAMTYKKE_GITT',
     });
     const mellomste = lagSamtykke({
         deltTidspunkt: '2024-02-01T10:00:00.000Z',
         svarfrist: '2024-02-08T10:00:00.000Z',
         svar: lagSvar(false),
+        samtykkeStatus: 'SAMTYKKE_AVSLÅTT',
     });
     await mockSamtykkeApi(page, (route) => svarJson(route, [eldre, nyeste, mellomste]));
     await gåTilStilling(page, 'samtykke-usortert');
@@ -764,4 +829,40 @@ test('velger nyeste samtykke fra usortert liste med tre forespørsler', async ({
     const region = page.getByRole('region', { name: 'Samtykke til deling av CV' });
     await expect(region.getByText(/Du har sagt ja til/)).toBeVisible();
     await expect(region.getByRole('button', { name: 'Trekk samtykke' })).toBeVisible();
+});
+
+test.describe('Forespørsler fra gammel løsning (brukerAkas = false)', () => {
+    test('vises ikke når det bare finnes gamle forespørsler', async ({ page }) => {
+        await mockSamtykkeApi(page, (route) =>
+            svarJson(route, [lagSamtykke({ brukerAkas: false })])
+        );
+        await gåTilStilling(page, 'samtykke-bare-gammel');
+
+        await expect(
+            page.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
+        ).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Gi samtykke' })).toHaveCount(0);
+        await expect(page.getByRole('link', { name: lenketekst })).toHaveCount(0);
+    });
+
+    test('viser ingenting når nyeste forespørsel er fra gammel løsning', async ({ page }) => {
+        const eldreNy = lagSamtykke({
+            deltTidspunkt: '2024-01-01T10:00:00.000Z',
+            svar: lagSvar(true),
+            samtykkeStatus: 'SAMTYKKE_GITT',
+        });
+        const nyereGammel = lagSamtykke({
+            deltTidspunkt: '2024-02-01T10:00:00.000Z',
+            brukerAkas: false,
+        });
+        await mockSamtykkeApi(page, (route) => svarJson(route, [eldreNy, nyereGammel]));
+        await gåTilStilling(page, 'samtykke-gammel-og-ny');
+
+        await expect(
+            page.getByText('Kontakt veilederen din i dialogen i aktivitetsplanen.')
+        ).toBeVisible();
+        await expect(page.getByText(/Du har sagt ja til/)).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Trekk samtykke' })).toHaveCount(0);
+        await expect(page.getByRole('link', { name: lenketekst })).toHaveCount(0);
+    });
 });

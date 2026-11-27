@@ -19,12 +19,15 @@ const lagSamtykke = (stillingsId: string, overstyr: Record<string, unknown> = {}
     trukketAv: null,
     begrunnelseForAtAktivitetIkkeBleOpprettet: null,
     navKontor: '0403',
+    samtykkeStatus: 'OPPRETTET',
+    brukerAkas: true,
     ...overstyr,
 });
 
 const lagSvar = (harSvartJa: boolean) => ({
     deltStatus: harSvartJa ? 'SENDT' : 'IKKE_SENDT',
     tilstand: 'HAR_SVART',
+    samtykkeStatus: harSvartJa ? 'SAMTYKKE_GITT' : 'SAMTYKKE_AVSLÅTT',
     svar: {
         harSvartJa,
         svarTidspunkt: iso(-dag),
@@ -36,14 +39,32 @@ const scenarioer: Record<string, (stillingsId: string) => unknown[]> = {
     'samtykke-ingen': () => [],
     'samtykke-ubesvart': (id) => [lagSamtykke(id)],
     'samtykke-lagrefeil': (id) => [lagSamtykke(id)],
-    'samtykke-utlopt': (id) => [
-        lagSamtykke(id, { svarfrist: iso(-dag), tilstand: 'SVARFRIST_UTLOPT' }),
+    'samtykke-svarfrist-utlopt': (id) => [
+        lagSamtykke(id, {
+            svarfrist: iso(-dag),
+            tilstand: 'SVARFRIST_UTLOPT',
+            samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT',
+        }),
+    ],
+    'samtykke-samtykke-utlopt': (id) => [
+        lagSamtykke(id, {
+            ...lagSvar(true),
+            tilstand: 'SAMTYKKE_UTLOPT',
+            samtykkeStatus: 'SAMTYKKE_UTLØPT',
+        }),
     ],
     'samtykke-ja': (id) => [lagSamtykke(id, lagSvar(true))],
     'samtykke-nei': (id) => [lagSamtykke(id, lagSvar(false))],
-    'samtykke-avbrutt': (id) => [lagSamtykke(id, { tilstand: 'AVBRUTT' })],
+    'samtykke-avbrutt': (id) => [
+        lagSamtykke(id, { tilstand: 'AVBRUTT', samtykkeStatus: 'SAMTYKKE_SVARFRIST_UTLØPT' }),
+    ],
     'samtykke-trukket': (id) => [
-        lagSamtykke(id, { ...lagSvar(true), trukket: true, trukketTidspunkt: iso(-dag) }),
+        lagSamtykke(id, {
+            ...lagSvar(true),
+            trukket: true,
+            trukketTidspunkt: iso(-dag),
+            samtykkeStatus: 'SAMTYKKE_TRUKKET',
+        }),
     ],
 };
 
@@ -69,7 +90,12 @@ export const samtykkeHandlers = [
     http.delete(samtykkeUrl, ({ params }) => {
         const id = String(params.stillingsId);
         lagredeSamtykker.set(id, [
-            lagSamtykke(id, { ...lagSvar(true), trukket: true, trukketTidspunkt: iso(0) }),
+            lagSamtykke(id, {
+                ...lagSvar(true),
+                trukket: true,
+                trukketTidspunkt: iso(0),
+                samtykkeStatus: 'SAMTYKKE_TRUKKET',
+            }),
         ]);
         return new HttpResponse(null, { status: 204 });
     }),

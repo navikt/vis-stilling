@@ -1,18 +1,32 @@
-import type { Samtykke } from '../samtykke/samtykkeSchema.ts';
+import { SamtykkeStatus, type Samtykke } from '../samtykke/samtykkeSchema.ts';
 
-export type Samtykkestatus =
+// Hva samtykkeboksen skal vise. Utledes fra samtykkeStatus fra backend.
+export type Samtykkevisning =
     | 'INGEN_FORESPØRSEL'
     | 'UBESVART'
-    | 'UTLØPT'
+    | 'SVARFRIST_UTLØPT'
+    | 'SAMTYKKE_UTLØPT'
     | 'SAMTYKKET'
     | 'SVART_NEI'
     | 'TRUKKET'
     | 'AVBRUTT_FORESPØRSEL';
 
-export const lesSamtykkestatus = (samtykke: Samtykke | undefined): Samtykkestatus => {
+export const lesSamtykkevisning = (samtykke: Samtykke | undefined): Samtykkevisning => {
     if (!samtykke) return 'INGEN_FORESPØRSEL';
-    if (samtykke.trukket) return 'TRUKKET';
-    if (samtykke.svar) return samtykke.svar.harSvartJa ? 'SAMTYKKET' : 'SVART_NEI';
-    if (samtykke.tilstand == 'AVBRUTT') return 'AVBRUTT_FORESPØRSEL';
-    return samtykke.svarfrist.getTime() < Date.now() ? 'UTLØPT' : 'UBESVART';
+    switch (samtykke.samtykkeStatus) {
+        case SamtykkeStatus.OPPRETTET:
+            return 'UBESVART';
+        case SamtykkeStatus.SAMTYKKE_GITT:
+            return 'SAMTYKKET';
+        case SamtykkeStatus.SAMTYKKE_AVSLÅTT:
+            return 'SVART_NEI';
+        case SamtykkeStatus.SAMTYKKE_TRUKKET:
+            return 'TRUKKET';
+        case SamtykkeStatus.SAMTYKKE_UTLØPT:
+            return 'SAMTYKKE_UTLØPT';
+        case SamtykkeStatus.SAMTYKKE_SVARFRIST_UTLØPT:
+            // Backend bruker også denne statusen når aktiviteten er avbrutt.
+            if (samtykke.tilstand === 'AVBRUTT') return 'AVBRUTT_FORESPØRSEL';
+            return 'SVARFRIST_UTLØPT';
+    }
 };

@@ -2,7 +2,7 @@
 
 import { BodyLong, Box, Button, ErrorMessage, Heading, Link, VStack } from '@navikt/ds-react';
 
-import { lesSamtykkestatus } from '../types/Samtykkesvar.ts';
+import { lesSamtykkevisning } from '../types/Samtykkesvar.ts';
 import { useEndreSamtykke } from '../samtykke/useEndreSamtykke.ts';
 import { useHentSamtykke } from '../samtykke/useHentSamtykke.ts';
 import * as eksternTekster from '../../_ekstern/samtykke/tekster.ts';
@@ -69,7 +69,7 @@ const Samtykkeboks = ({
         error: lagreFeil,
     } = useEndreSamtykke(stillingsId, erVeileder, ident);
     const tekster = erVeileder ? internTekster : eksternTekster;
-    const status = lesSamtykkestatus(samtykke);
+    const status = lesSamtykkevisning(samtykke);
     const venter = isMutating || isValidating;
     const harAktivForespørsel =
         innlogget &&

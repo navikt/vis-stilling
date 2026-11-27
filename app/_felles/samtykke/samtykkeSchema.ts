@@ -16,7 +16,20 @@ const tilstandSchema = z.enum([
     'HAR_SVART',
     'AVBRUTT',
     'SVARFRIST_UTLOPT',
+    'SAMTYKKE_UTLOPT',
 ]);
+
+export const samtykkeStatusSchema = z.enum([
+    'OPPRETTET',
+    'SAMTYKKE_GITT',
+    'SAMTYKKE_AVSLÅTT',
+    'SAMTYKKE_TRUKKET',
+    'SAMTYKKE_UTLØPT',
+    'SAMTYKKE_SVARFRIST_UTLØPT',
+]);
+export const SamtykkeStatus = samtykkeStatusSchema.enum;
+export type SamtykkeStatus = z.infer<typeof samtykkeStatusSchema>;
+
 const datoSchema = z.string().pipe(z.coerce.date());
 
 const identSchema = z.object({
@@ -38,6 +51,8 @@ export const samtykkeSchema = z.object({
     svar: svarSchema.nullable(),
     trukket: z.boolean(),
     trukketTidspunkt: datoSchema.nullable(),
+    samtykkeStatus: samtykkeStatusSchema,
+    brukerAkas: z.boolean(),
 });
 
 export const samtykkeListeSchema = z.array(samtykkeSchema);

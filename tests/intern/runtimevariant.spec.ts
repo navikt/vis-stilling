@@ -13,6 +13,8 @@ type Samtykke = {
     } | null;
     trukket: boolean;
     trukketTidspunkt: string | null;
+    samtykkeStatus: string;
+    brukerAkas: boolean;
 };
 
 type RegistrertKall = {
@@ -29,6 +31,8 @@ const syntetiskSamtykke = (stillingsId: string): Samtykke => ({
     svar: null,
     trukket: false,
     trukketTidspunkt: null,
+    samtykkeStatus: 'OPPRETTET',
+    brukerAkas: true,
 });
 
 const svarJson = (route: Route, data: unknown) =>
@@ -124,6 +128,7 @@ test('intern samtykke hentes og endres med syntetisk fixture', async ({ page }) 
             samtykke = {
                 ...samtykke,
                 tilstand: 'HAR_SVART',
+                samtykkeStatus: 'SAMTYKKE_GITT',
                 svar: {
                     harSvartJa: true,
                     svarTidspunkt: '2024-01-02T10:00:00.000Z',
@@ -138,6 +143,7 @@ test('intern samtykke hentes og endres med syntetisk fixture', async ({ page }) 
                 ...samtykke,
                 trukket: true,
                 trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                samtykkeStatus: 'SAMTYKKE_TRUKKET',
             };
             await route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
             return;
@@ -240,6 +246,7 @@ test('veilederen bekrefter nei for valgt bruker og ser nei-status', async ({ pag
                 samtykke = {
                     ...samtykke,
                     tilstand: 'HAR_SVART',
+                    samtykkeStatus: 'SAMTYKKE_AVSLÅTT',
                     svar: { harSvartJa: false, svarTidspunkt: '2024-01-02T10:00:00.000Z' },
                 };
                 return route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
@@ -376,6 +383,7 @@ test('intern samtykke lukker dialog og holder brukerbytte isolert fra sene svar'
             samtykker.set(ident, {
                 ...eksisterende,
                 tilstand: 'HAR_SVART',
+                samtykkeStatus: 'SAMTYKKE_GITT',
                 svar: {
                     harSvartJa: true,
                     svarTidspunkt: '2024-01-02T10:00:00.000Z',
@@ -459,6 +467,7 @@ test('intern samtykke bruker identiteten fra fnr-changed før Modia-svaret', asy
             samtykker.set(ident, {
                 ...eksisterende,
                 tilstand: 'HAR_SVART',
+                samtykkeStatus: 'SAMTYKKE_GITT',
                 svar: {
                     harSvartJa: true,
                     svarTidspunkt: '2024-01-02T10:00:00.000Z',
@@ -473,6 +482,7 @@ test('intern samtykke bruker identiteten fra fnr-changed før Modia-svaret', asy
                 ...eksisterende,
                 trukket: true,
                 trukketTidspunkt: '2024-01-03T10:00:00.000Z',
+                samtykkeStatus: 'SAMTYKKE_TRUKKET',
             });
             await route.fulfill({ status: 200, contentType: 'text/plain', body: 'OK' });
             return;
